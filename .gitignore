@@ -6,7 +6,6 @@
 # Pycharm
 .idea/*
 # User-specific stuff:
-.idea/workspace.xml
 .idea/tasks.xml
 
 
@@ -59,24 +58,19 @@ media
 sftp-config.json
 
 # Basics
-*.py[cod]
 __pycache__
 
 # Logs
 logs
-*.log
-pip-log.txt
 npm-debug.log*
 
 # Unit test / coverage reports
-.coverage
 .tox
 nosetests.xml
 htmlcov
 
 # Translations
 *.mo
-*.pot
 
 
 
@@ -144,7 +138,6 @@ fabric.properties
 
 ### Python ###
 # Byte-compiled / optimized / DLL files
-*.py[cod]
 *$py.class
 
 # C extensions
@@ -184,13 +177,10 @@ htmlcov/
 .coverage
 .coverage.*
 .cache
-nosetests.xml
 coverage.xml
 *,cover
 .hypothesis/
 
-# Translations
-*.mo
 
 # Django stuff:
 
@@ -215,9 +205,6 @@ target/
 
 # celery beat schedule file
 celerybeat-schedule
-
-# dotenv
-.env
 
 # virtualenv
 .venv/
@@ -249,11 +236,6 @@ pip-selfcheck.json
 .sass-cache/
 *.css.map
 
-
-### Node ###
-# Logs
-logs
-npm-debug.log*
 
 # Runtime data
 pids
