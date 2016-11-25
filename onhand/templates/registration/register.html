@@ -1,0 +1,336 @@
+{% extends "account/welcome.html" %}
+
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% load addcss %}
+
+{% block head_title %}{% trans "Signup" %}{% endblock %}
+{% block inner %}
+    {% block content %}
+        <form class="signup" autocomplete="off" id="signup_form" method="post" action="{% url 'register' %} ">
+            {% csrf_token %}
+            {% if redirect_field_value %}
+                <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+            {% endif %}
+
+            <!--Start FIRST POPUP -->
+            <div id="planspopup" class="modal-box" style="display: block;">
+                <header>
+                    <a class="close" href="{% url 'login' %}">X</a>
+                    <div class="clear"></div>
+                </header>
+                <div class="modal-body add_plan_main">
+                    <div class="add_new_ser_wpr2">
+                        <div align="center" class="add_plan_mid">
+                            <h2>
+                                Let's get started by choosing the plan that suits your requirements.
+                            </h2>
+                            <div align="center" class="select_plan_wpr">
+                                {% if onhandplans %}
+                                    <table style="height: 300px;">
+                                        <tr style="width: 100%;">
+                                            {% for plan in onhandplans %}
+                                                <td align="center" style="width:50%;">
+                                                <ul style="list-style-type: none;">
+                                                <li>
+                                            <span>
+                                                {% if  plan.prod_code == 'basic' %}
+                                                    <img src="{% static "images/BasicSubscription.png" %}"
+                                                         style="height:200px;"/>
+                                                {% endif %}
+                                                {% if  plan.prod_code == 'premim' %}
+                                                    <img src="{% static "images/PremimumSubscription.png" %}"
+                                                         style="height:200px;"/>
+                                                {% endif %}
+                                             </span>
+                                                </li>
+                                                <li>
+                                                    <span id="ohplantitle"
+                                                          class="ohplantitle ">{{ plan.prod_name }}</span>
+                                                </li>
+                                                <li>
+                                             <span id="ohplantitledesc" class="ohplantitledesc">
+                                                    {{ plan.prod_desc }}
+                                             </span>
+                                                </li>
+
+                                                <li>
+                                                             <span id="ohplanbasis" class="ohplanbasis">
+                                                                 {% for choice in form.ohplanselect %}
+                                                                     {% if  plan.prod_code == choice.choice_label %}
+                                                                         {% for basisplan in onhandbasisplans %}
+                                                                             {% ifequal basisplan.prdb_id|stringformat:"s" choice.choice_value %}
+                                                                                 <span class="ohplanbasis">{{ choice.tag }}&nbsp;${{ basisplan.prdb_list_price }} / {{ basisplan.basi_code.basi_desc }}&nbsp;&nbsp;&nbsp; </span>
+                                                                             {% endifequal %}
+                                                                         {% endfor %}
+                                                                     {% endif %}
+                                                                 {% endfor %}
+                                                             </span>
+                                                </li>
+                                            {% endfor %}
+                                            </ul>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                {% else %}
+                                    <p>No Plans are available at the moment</p>
+                                {% endif %}
+                            </div>
+                            <div>
+                            <span class="disc_code">{{ form.discount.label }}
+                                {{ form.discount }}
+                                 <a style="text-decoration: none" class="ser_know_more" id="id_apply_discount"
+                                    onclick="return ValidateDiscount();" href="#">Apply Code</a>
+                            </span>
+                                <a href="#" style="text-decoration: none"
+                                   class="oh-planselect-button oh-button oh-button-pill"
+                                   onmouseover="return ValidatePlanSelection();" data-modal-id="popup_card_details">Select
+                                    Plan</a>
+                                <div class="clear"></div>
+                                <span id="id_discount_message" class="oh_id_discount_message_invalid">
+                            </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <span id="alertplanselectionnone"></span>
+            </div>
+            <!--End FIRST POPUP -->
+
+            <!-- Second POPUP -->
+            <div id="popup_card_details" class="modal-box-card-details">
+                <header><a href="#" class="js-modal-close-card-details close">×</a>
+                    <div class="clear"></div>
+                </header>
+                <div class="modal-body add_plan_main">
+                    <div class="add_new_ser_wpr2">
+                        <div class="add_plan_mid">
+                            <h2>Please enter your payment information</h2>
+                            <div class="add_card_billing">
+                                {#                        {{ form.errors }}#}
+                                {#                        {{ form.non_field_errors }}#}
+                                <h2 class="add_card_billing_h2 mrg_top_large"><span>1</span> Billing Information.<span
+                                        class="inp_card_info_plandetails_left_label"
+                                        style="border-radius: 0px;background: none;color: white;font-size: 20px;padding-left: 350px;">Address details</span>
+                                </h2>
+                                <div class="add_card_bill_left">
+                                    <table class="tbl_bill">
+                                        <tr>
+                                            <td>{{ form.firstname.label }}</td>
+                                            <td>
+                                                {% for field in form %}
+                                                    {% if field == form.firstname %}
+                                                        {% if field.errors %}
+                                                            {{ form.firstname | add_attributes:"inp_card_info_firstname  has-danger" }}
+                                                            <span class="oh-alert-error">{% for error in  field.errors %}
+                                                                {{ error }}<br/>{% endfor %}</span>
+                                                        {% else %}
+                                                            {{ field }}
+                                                        {% endif %}
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>{{ form.lastname.label }} </td>
+                                            <td>
+                                                {% for field in form %}
+                                                    {% if field == form.lastname %}
+                                                        {% if field.errors %}
+                                                            {{ form.lastname | add_attributes:"inp_card_info_lastname  has-danger" }}
+                                                            <span class="oh-alert-error">{% for error in  field.errors %}
+                                                                {{ error }}<br/>{% endfor %}</span>
+                                                        {% else %}
+                                                            {{ field }}
+                                                        {% endif %}
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td> {{ form.email.label }} </td>
+                                            <td>
+                                                {% for field in form %}
+                                                    {% if field == form.email %}
+                                                        {% if field.errors %}
+                                                            {{ form.email | add_attributes:"inp_card_info_email  has-danger" }}
+                                                            <span class="oh-alert-error">{% for error in  field.errors %}
+                                                                {{ error }}<br/>{% endfor %}</span>
+                                                        {% else %}
+                                                            {{ field }}
+                                                        {% endif %}
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td> {{ form.compname.label }} </td>
+                                            <td>
+                                                {% for field in form %}
+                                                    {% if field == form.compname %}
+                                                        {% if field.errors %}
+                                                            {{ form.compname | add_attributes:"inp_card_info_business  has-danger" }}
+                                                            <span class="oh-alert-error">{% for error in  field.errors %}
+                                                                {{ error }}<br/>{% endfor %}</span>
+                                                        {% else %}
+                                                            {{ field }}
+                                                        {% endif %}
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </td>
+                                        </tr>
+
+                                    </table>
+                                </div>
+                                <div class="add_card_bill_left">
+                                    <table class="tbl_bill">
+                                        <tr>
+                                            <td>
+                                                {% for field in form %}
+                                                    {% if field == form.addressline1 %}
+                                                        {% if field.errors %}
+                                                            {{ form.addressline1 | add_attributes:"inp_card_info_addressline1  has-danger" }}
+                                                            <span class="oh-alert-error">{% for error in  field.errors %}
+                                                                {{ error }}<br/>{% endfor %}</span>
+                                                        {% else %}
+                                                            {{ field }}
+                                                        {% endif %}
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td> {{ form.addressline2 }} </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                {% for field in form %}
+                                                    {% if field == form.zipcode %}
+                                                        {% if field.errors %}
+                                                            {{ form.zipcode | add_attributes:"inp_card_info_zip  has-danger" }}
+                                                        {% else %}
+                                                            {{ field }}
+                                                        {% endif %}
+                                                    {% endif %}
+                                                    {% if field == form.cityopt %}
+                                                        <div class="inp_card_info_city_dropdown_div"
+                                                             id="id_city_div_dropdown" name="city_div_dropdown"
+                                                             style="display: inline-table">
+                                                            {{ cityopt }}
+                                                            {% if field.errors %}
+                                                                {{ form.cityopt | add_attributes:"inp_card_info_city_dropdown  has-danger" }}
+                                                            {% else %}
+                                                                {{ field }}
+                                                            {% endif %}
+                                                        </div>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                <div class="inp_card_info_city_div" id="id_city_div" name="city_div"
+                                                     style="display: none"><input type="text" id="id_city" name="city"
+                                                                                  class="inp_card_info_city"
+                                                                                  style="display: inline"
+                                                                                  placeholder="Enter city"></div>
+                                                {% for field in form %}
+                                                    {% if field == form.zipcode %}
+                                                        {% if field.errors %}
+                                                            <span class="oh-alert-error">{% for error in  field.errors %}
+                                                                {{ error }}<br/>{% endfor %}</span>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                {{ form.county }}
+                                                {{ form.state }}
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="clear"></div>
+                                <h2 class="add_card_billing_h2 mrg_top_large"><span>2</span> Credit card
+                                    Information<span class="inp_card_info_plandetails_left_label"
+                                                     style="border-radius: 0px;background: none;color: white;font-size: 20px;padding-left: 310px;">Selected Plan</span>
+                                </h2>
+                                <div class="add_card_details">
+                                    <table class="tbl_bill">
+                                        <tr>
+                                            <td>{{ form.cardnumber.label }}</td>
+                                            <td>
+                                                {% for field in form %}
+                                                    {% if field == form.cardnumber %}
+                                                        {% if field.errors %}
+                                                            {{ form.cardnumber | add_attributes:"inp_card_info  has-danger" }}
+                                                            <span class="oh-alert-error">{% for error in  field.errors %}
+                                                                {{ error }}<br/>{% endfor %}</span>
+                                                        {% else %}
+                                                            {{ field }}
+                                                        {% endif %}
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Expires On</td>
+                                            <td>
+                                                {{ form.cardmonth }}
+                                                {{ form.cardyear }}
+                                                {% for field in form %}
+                                                    {% if field == form.cardcvv %}
+                                                        {% if field.errors %}
+                                                            {{ form.cardcvv | add_attributes:"inp_card_info_cvv  has-danger" }}
+                                                            <span class="oh-alert-error">{% for error in  field.errors %}
+                                                                {{ error }}<br/>{% endfor %}</span>
+                                                        {% else %}
+                                                            {{ field }}
+                                                        {% endif %}
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="inp_card_info_plandetails_left">
+                                    <table class="inp_card_info_plan_formlabel">
+                                        <tr>
+                                            <td> Plan</td>
+                                            <td><span id="ohselected_plan"></span></td>
+                                        </tr>
+                                        <tr>
+                                            <td> Price</td>
+                                            <td><span id="ohselected_price"></span></td>
+                                        </tr>
+                                        <tr>
+                                            <td> Billed</td>
+                                            <td><span id="ohselected_basis"></span></td>
+                                        </tr>
+                                        <tr>
+                                            <td> Promotion</td>
+                                            <td><span id="ohselected_promotion"></span></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="clear"></div>
+                            <div class="add_details_ftr">
+                                <button class="ser_know_more get_plan Procede_Pay_btn"
+                                        type="submit">{% trans "Sign Up" %} &raquo;</button>
+                                <div class="clear"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+            </div>
+            <!-- Second POPUP -->
+        </form>
+    {% endblock %}
+{% endblock %}
+
+
+
+
+

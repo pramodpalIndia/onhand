@@ -58,7 +58,7 @@ gulp.task('styles', function() {
 
 // Javascript minification
 gulp.task('scripts', function() {
-  return gulp.src(paths.js + '/project.js')
+  return gulp.src(paths.js + '/project1.js')
     .pipe(plumber()) // Checks for errors
     .pipe(uglify()) // Minifies the js
     .pipe(rename({ suffix: '.min' }))
@@ -74,7 +74,7 @@ gulp.task('imgCompression', function(){
 
 // Run django server
 gulp.task('runServer', function() {
-  exec('python manage.py runserver', function (err, stdout, stderr) {
+  exec('python manage.py runserver 192.168.33.20:8020', function (err, stdout, stderr) {
     console.log(stdout);
     console.log(stderr);
   });

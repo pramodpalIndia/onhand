@@ -1,0 +1,378 @@
+{% load staticfiles i18n compress%}<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <link rel="shortcut icon" href="{%  static 'images/favicon.ico' %}">
+    <title>{% block title %}Onhand{% endblock title %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+{#      <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>#}
+    <![endif]-->
+
+    {% block css %}
+    <!-- Latest compiled and minified Bootstrap 4 Alpha 4 CSS -->
+{#    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/css/bootstrap.min.css" integrity="sha384-2hfp1SzUoho7/TsGGGDaFdsuuDL0LX2hnUp6VkX3CUQ2K4K+xjboZdsXyp4oUHZj" crossorigin="anonymous">#}
+
+    <!-- Your stuff: Third-party CSS libraries go here -->
+    {% compress css %}
+    <!-- This file stores project-specific CSS -->
+{#    <link href="{% static 'css/project.css' %}" rel="stylesheet">#}
+    <link href="{% static 'css/welcometheme.css' %}" rel="stylesheet">
+        <link href="{% static 'css/popup.css' %}" rel="stylesheet">
+        <link href="{% static 'css/editable-select.css' %}" rel="stylesheet">
+    {% endcompress %}
+    {% endblock %}
+
+
+  </head>
+
+  <body>
+
+
+    <div class="container">
+
+      {% if messages %}
+          {% for message in messages %}
+              <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">{{ message }}</div>
+          {% endfor %}
+      {% endif %}
+
+      {% block content %}
+        <p>Use this document as a way to quick start any new project.</p>
+      {% endblock content %}
+
+    </div> <!-- /container -->
+
+    {% block modal %}{% endblock modal %}
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    {% block javascript %}
+      <!-- Required by Bootstrap v4 Alpha 4 -->
+{#      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js" integrity="sha384-3ceskX3iaEnIogmQchP8opvBy3Mi7Ce34nWjpBIwVTHfGYWQS9jwHDVRnpKKHJg7" crossorigin="anonymous"></script>#}
+        <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.js" />
+        <script type="text/javascript" src="{{ STATIC_URL }}js/tether.min.js" />
+{#      <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.3.7/js/tether.min.js" integrity="sha384-XTs3FgkjiBgo8qjEjBk0tGmf3wPrWtA6coPfQDfFEY8AnYJwjalXCiosYRBIBZX8" crossorigin="anonymous"></script>#}
+        <script type="text/javascript" src="{{ STATIC_URL }}js/bootstrap.min.js" />
+{#                <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.smartWizard.js" />#}
+        <script type="text/javascript" src="{{ STATIC_URL }}js/popup.js" />
+{#        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/js/bootstrap.min.js" integrity="sha384-VjEeINv9OSwtWFLAtmc4JCtEJXXBub00gtSnszmspDLCtC0I4z4nqz7rEFbIZLLU" crossorigin="anonymous"></script>#}
+
+      <!-- Your stuff: Third-party javascript libraries go here -->
+
+      <!-- place project specific Javascript in this file -->
+      {% compress js %}
+
+      <script src="{% static 'js/project.js' %}"></script>
+{#           <script src="{% static 'js/jquery.smartWizard.js' %}"></script>#}
+          <script src="{% static 'js/popup.js' %}"></script>
+          <script src="{% static 'js/jquery-editable-select.js' %}"></script>
+
+      {% endcompress %}
+
+      <script type="text/javascript" language="javascript">
+
+
+
+      function ValidatePlanSelection()
+        {
+            var plansslected =false;
+            var str=true;
+            var radioonhandplan = document.getElementsByName("ohplanselect");
+            var radiocheckedonhandplans = 0;
+{#            alert(getCookie("onhand.us"));#}
+            for(var i=0; i < radioonhandplan.length; i++){
+                if(radioonhandplan[i].checked) {
+                    radiocheckedonhandplans = i;
+                    plansslected =true;
+                }
+            }
+
+            if(plansslected==false)
+            {
+
+                for(var i=0; i < radioonhandplan.length; i++){
+                    radioonhandplan[i].style = "box-shadow: 0px 0px 7px 4px rgba(230,9,52,1)";
+                }
+                document.getElementById("alertplanselectionnone").innerHTML="Please select Onhand Plan before you proceed";
+                alert("Please select Onhand Plan before you proceed");
+                str=false;
+            }else {
+
+                for(var i=0; i < radioonhandplan.length; i++){
+                    radioonhandplan[i].style= "";
+                }
+                document.getElementById("alertplanselectionnone").innerHTML="";
+                str=true;
+            }
+            return str;
+        }
+
+
+      function getCookie(name) {
+          var cookieValue = null;
+          if (document.cookie && document.cookie !== '') {
+              var cookies = document.cookie.split(';');
+              for (var i = 0; i < cookies.length; i++) {
+                  var cookie = jQuery.trim(cookies[i]);
+                  // Does this cookie string begin with the name we want?
+                  if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                      cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                      break;
+                  }
+              }
+          }
+          return cookieValue;
+      }
+      var csrftoken = getCookie('csrftoken');
+      function csrfSafeMethod(method) {
+          // these HTTP methods do not require CSRF protection
+          return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+      }
+      $.ajaxSetup({
+          beforeSend: function (xhr, settings) {
+              if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                  xhr.setRequestHeader("X-CSRFToken", csrftoken);
+              }
+          }
+      });
+
+{#      alert(csrftoken);#}
+
+       function ValidateDiscount()
+        {
+            var plansslected =false;
+            var str=true;
+            var radioonhandplan = document.getElementsByName("ohplanselect");
+            var textdiscountcode = document.getElementById('id_discount').value;
+            var radiocheckedonhandplans = 0;
+            var ohbasisplan="";
+{#            alert(getCookie("onhand.us"));#}
+            for(var i=0; i < radioonhandplan.length; i++){
+                if(radioonhandplan[i].checked) {
+                    radiocheckedonhandplans = i;
+                    plansslected =true;
+{#                    ohbasisplan=radioonhandplan[i].value;#}
+                }
+            }
+
+            if(plansslected==false)
+            {
+                for(var i=0; i < radioonhandplan.length; i++){
+                    radioonhandplan[i].style= "box-shadow: 0px 0px 7px 4px rgba(230,9,52,1)";
+                }
+                document.getElementById("alertplanselectionnone").innerHTML="Please select Onhand Plan before you proceed";
+{#                alert("Please select Onhand Plan before you proceed");#}
+                str=false;
+            }else {
+
+                for(var i=0; i < radioonhandplan.length; i++){
+                    radioonhandplan[i].style= "";
+                }
+                document.getElementById("alertplanselectionnone").innerHTML="";
+                str=true;
+
+                if (textdiscountcode != "") {
+{#                    alert("I am in");#}
+                    $("#id_apply_discount").click(function () {
+{#                        console.log($(this).val());#}
+                        var ohbasisplan = 0;
+                        for (var i = 0; i < radioonhandplan.length; i++) {
+                            if (radioonhandplan[i].checked) {
+                                radiocheckedonhandplans = i;
+                                plansslected = true;
+                                ohbasisplan = radioonhandplan[i].value;
+                            }
+                        }
+                        var discount = document.getElementById('id_discount').value;
+
+                        $.ajax({
+                            url: '/validate_discount_code/',
+                            data: {
+                                'discount': discount,
+                                'plan':ohbasisplan
+                            },
+                            dataType: 'json',
+                            success: function (data) {
+                                if (data.valid) {
+                                    document.getElementById("id_discount_message").innerHTML = "<span class='oh_id_discount_message_valid'>" + data.valid+"</span>" ;
+                                } else {
+                                    document.getElementById("id_discount_message").innerHTML = "<span class='oh_id_discount_message_invalid'>" + data.error_message+"</span>" ;
+                                }
+                                {#                  alert(data.response);#}
+
+                            }
+                        });
+
+                    });
+
+                }else {
+                    document.getElementById("id_discount_message").innerHTML=""
+                }
+
+{#                    $('#signup_form').validate('{% url validate_discount_code %}',#}
+{#                      {#}
+{#                          type: 'ul',#}
+{#                          fields: [ohbasisplan , textdiscountcode],#}
+{#                          event: 'focusout',#}
+{#                          fieldSuccessCallback: function(field) {#}
+{#                              if(field.next("span").length == 0) {#}
+{#                                  field.after("<span class=\"ico-ok\">ok</span>");#}
+{#                              }#}
+{#                          }#}
+{#                      });#}
+{#                if(textdiscountcode != "")#}
+{#                alert(textdiscountcode + ohbasisplan);#}
+            }
+            return str;
+        }
+
+$('#id_cityopt').on('change', function() {
+    if(this.value == 'add'){
+                        $('#id_city_div_dropdown').css("display", "none");
+                    $('#id_city_opt').css("display", "none");
+                $('#id_city_div').css("display", "inline-table");
+                    $('#id_city').css("display", "inline-table");
+    }
+
+});
+
+$("#id_zipcode").keyup(function() {
+{#    console.log($(this).val());#}
+{#    console.log($(this).val().substr(0,5));#}
+    if($.trim($(this).val()).length >=5 )
+    {
+{#        console.log($.trim($(this).val()).length + ' -> '+ $(this).val().substr(0,5));#}
+        var zipcode = document.getElementById('id_zipcode').value;
+        var city = document.getElementById('id_cityopt').value;
+        $('#id_cityopt').find('option').remove().end();
+{#                .append('<option value="whatever">text</option>').val('whatever')#}
+
+        $.ajax({
+            url: '/ajax_getcityfromzip',
+            data: {
+                'zipcode': $.trim(zipcode.substr(0,5)),
+                'city': $.trim(city)
+            },
+            dataType: 'json',
+            success: function (response_data) {
+                console.log(response_data.result);
+                if (response_data.result == 'is_valid_zipcode' ) {
+                    console.log(response_data.city[0][0] + response_data.city[0][1]);
+                    console.log($("#city_opt"));
+{#                    document.getElementsByName("cityopt").append(new Option('optionName', 'optionValue'));#}
+{#                    document.getElementById('id_city_opt').value = response_data.city;#}
+                    console.log($("#id_city_opt").disabled);
+                    $('#id_cityopt').removeAttr('disabled');
+                    $.each(response_data.city, function (key, value) {
+                        $('#id_cityopt').append(
+                                $("<option></option>")
+                                        .attr("value", value[0])
+                                        .text(value[1])
+                        );
+                    });
+                    $('#id_cityopt').append('<option value="add">Add city</option>').val('add');
+                    $("#id_cityopt")[0].selectedIndex = 0;
+                    console.log($('#inp_card_info_city_dropdown_div'));
+                    $('#id_city_div_dropdown').css("display", "inline-table");
+                    $('#id_city_opt').css("display", "inline-table");
+                    $('#id_city_div').css("display", "none");
+                    $('#id_city').css("display", "none");
+{#                    $('#id_cityopt').append($("<option></option>").attr("value", response_data.city[0][0]).text(response_data.city[0][1]));#}
+
+                    document.getElementById('id_county').value = response_data.county;
+                    document.getElementById('id_state').value = response_data.state;
+{#                    document.getElementById("id__message").innerHTML = "<span class='oh_id_discount_message_valid'>" + data.valid + "</span>";#}
+                } else {
+                        if (response_data.result == 'is_nearby_zipcode' ){
+                            $('#id_cityopt').find('option').remove().end().append('<option value="">City unavailable for Zip</option>').val('');
+{#                            $('#id_cityopt').find('option').remove().end().append('<option value="add">Add city</option>').val('add');#}
+{#                            $("#id_city_opt").removeAttr('disabled');#}
+{#                            $("#id_county").removeAttr('disabled');#}
+{#                            $("#id_state").removeAttr('disabled');#}
+                            $("#id_city_opt").append(
+                                    $("<option>", response_data.city
+                                    )
+                            );
+                            $('#id_city_div_dropdown').css("display", "none");
+                            $('#id_city_opt').css("display", "none");
+                            $('#id_city_div').css("display", "inline-table");
+                            $('#id_city').css("display", "inline-table");
+{#                            document.getElementById('id_city_opt').value = "";#}
+                            document.getElementById('id_county').value = response_data.county;
+                            document.getElementById('id_state').value = response_data.state;
+                        }else
+                            if(response_data.result == 'is_invalid_zipcode' ){
+                                $("#id_city_opt").removeAttr('disabled');
+                                $("#id_county").removeAttr('disabled');
+                                $("#id_state").removeAttr('disabled');
+                                document.getElementById('id_city_opt').value = "";
+                                document.getElementById('id_county').value = "";
+                                document.getElementById('id_state').value = "";
+{#                                alert('1');#}
+                            }
+                }
+
+            }
+         });
+    }
+    else{
+{#        document.getElementById('id_city_opt').selectedIndex = "";#}
+        $("#id_city").visibility = false;
+        $('#id_cityopt').find('option').remove().end();
+        document.getElementById('id_county').value = "";
+        document.getElementById('id_state').value = "";
+{#        alert('2');#}
+    }
+});
+
+{#$("#id_zipcode").onkeydown(function () {#}
+{#                        console.log($(this).val());#}
+{#                        var ohbasisplan = 0;#}
+{#                        for (var i = 0; i < radioonhandplan.length; i++) {#}
+{#                            if (radioonhandplan[i].checked) {#}
+{#                                radiocheckedonhandplans = i;#}
+{#                                plansslected = true;#}
+{#                                ohbasisplan = radioonhandplan[i].value;#}
+{#                            }#}
+{#                        }#}
+{#                        var discount = document.getElementById('id_discount').value;#}
+{##}
+{#                        $.ajax({#}
+{#                            url: '/validate_discount_code/',#}
+{#                            data: {#}
+{#                                'discount': discount,#}
+{#                                'plan':ohbasisplan#}
+{#                            },#}
+{#                            dataType: 'json',#}
+{#                            success: function (data) {#}
+{#                                if (data.valid) {#}
+{#                                    document.getElementById("id_discount_message").innerHTML = "<span class='oh_id_discount_message_valid'>" + data.valid+"</span>" ;#}
+{#                                } else {#}
+{#                                    document.getElementById("id_discount_message").innerHTML = "<span class='oh_id_discount_message_invalid'>" + data.error_message+"</span>" ;#}
+{#                                }#}
+                                {#                  alert(data.response);#}
+{##}
+{#                            }#}
+{#                        });#}
+{##}
+{#                    });#}
+
+
+{#      $('#id_cityopt').editableSelect();#}
+
+
+      </script>
+
+
+    {% endblock javascript %}
+  </body>
+</html>
+

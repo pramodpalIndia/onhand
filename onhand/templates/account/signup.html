@@ -1,23 +1,1097 @@
-{% extends "account/base.html" %}
+{% load staticfiles i18n compress %}<!DOCTYPE html>
+{% load addcss %}
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}">
+    <title>{% block title %}Onhand{% endblock title %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
 
-{% load i18n %}
-{% load crispy_forms_tags %}
+    {% block css %}
+        {% compress css %}
+            <link href="{% static 'css/smart_wizard.css' %}" rel="stylesheet">
+            <link href="{% static 'css/welcometheme.css' %}" rel="stylesheet">
+            <link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet">
+        {% endcompress %}
+    {% endblock %}
+</head>
+<body>
+<div class="container">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
 
-{% block head_title %}{% trans "Signup" %}{% endblock %}
+    <form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
+        {% csrf_token %}
 
-{% block inner %}
-<h1>{% trans "Sign Up" %}</h1>
+        {#  {{ form|crispy }}#}
 
-<p>{% blocktrans %}Already have an account? Then please <a href="{{ login_url }}">sign in</a>.{% endblocktrans %}</p>
+        {% if redirect_field_value %}
+            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+        {% endif %}
 
-<form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
-  {% csrf_token %}
-  {{ form|crispy }}
-  {% if redirect_field_value %}
-  <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-  {% endif %}
-  <button class="btn btn-primary" type="submit">{% trans "Sign Up" %} &raquo;</button>
-</form>
+        {% block content %}
 
-{% endblock %}
+            <table align="center" border="0" cellpadding="0" cellspacing="0" style="margin:auto;">
+                <tr>
+                    <td><!-- Smart Wizard -->
+
+                        <div id="wizard" class="swMain">
+                            <ul>
+                                <li><a href="#step-1">
+                                    <label class="stepNumber"></label>
+                                    <span class="stepDesc"> <small>Step 1 :</small><br/>
+                                Company information </span> </a></li>
+                                <li><a href="#step-2">
+                                    <label class="stepNumber"></label>
+                                    <span class="stepDesc"><small>Step 2 :</small> <br/>
+                                Your information </span> </a></li>
+                                <li><a href="#step-3">
+                                    <label class="stepNumber"></label>
+                                    <span class="stepDesc"> <small>Step 3 :</small><br/>
+                                Service Setup </span> </a></li>
+                            </ul>
+                            <div id="step-1" style="height:480px;">
+                                {#                        <h2 class="StepTitle">Company Details</h2>#}
+                                <div class="form_wapper_m">
+                                    <div class="step1_user_d">
+                                        <div class="form_wapper">
+                                            <div class="row_step2_left">
+                                                <div class="f_name">
+                                                    <h5><label
+                                                            class="required control-label">{{ form.compname.label }}​ </label>
+                                                    </h5>
+                                                </div>
+                                                <div class="f_inp_bx">
+                                                    {% for field in form %}
+                                                        {% if field == form.compname %}
+                                                            {% if field.errors %}
+                                                                {{ form.compname | add_attributes:"inp_steps_compname  has-danger" }}
+                                                                <span class="oh-alert-error apphelp-block">{% for error in  field.errors %}
+                                                                    {{ error }}<br/>{% endfor %}</span>
+                                                            {% else %}
+                                                                {{ field }}
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </div>
+                                                <div class="clear"></div>
+                                            </div>
+                                            <div class="row_step2_left">
+                                                <div class="f_name">
+                                                    <h5>{{ form.compemail.label }}</h5>
+                                                </div>
+                                                <div class="f_inp_bx">
+                                                    {% for field in form %}
+                                                        {% if field == form.compemail %}
+                                                            {% if field.errors %}
+                                                                {{ form.compemail | add_attributes:"inp_steps_email  has-danger" }}
+                                                                <span class="oh-alert-error apphelp-block">{% for error in  field.errors %}
+                                                                    {{ error }}<br/>{% endfor %}</span>
+                                                            {% else %}
+                                                                {{ field }}
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                    <span class="apphelp-block">
+                                                <strong></strong>
+                                            </span>
+                                                </div>
+                                                <div class="clear"></div>
+                                            </div>
+                                            <div class="row_step2_left">
+                                                <div class="f_name">
+                                                    <h5>{{ form.website.label }}</h5>
+                                                </div>
+                                                <div class="f_inp_bx">
+                                                    {% for field in form %}
+                                                        {% if field == form.website %}
+                                                            {% if field.errors %}
+                                                                {{ form.website | add_attributes:"inp_steps_website  has-danger" }}
+                                                                <span class="oh-alert-error apphelp-block">{% for error in  field.errors %}
+                                                                    {{ error }}<br/>{% endfor %}</span>
+                                                            {% else %}
+                                                                {{ field }}
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </div>
+                                                <div class="clear"></div>
+                                            </div>
+                                            <div class="row_step2_left">
+                                                <div class="f_name">
+                                                    <h5>{{ form.phone.label }}</h5>
+                                                </div>
+                                                <div class="f_inp_bx">
+                                                    {% for field in form %}
+                                                        {% if field == form.phone %}
+                                                            {% if field.errors %}
+                                                                {{ form.phone | add_attributes:"inp_steps_phone  has-danger" }}
+                                                            {% else %}
+                                                                {{ field }}
+                                                            {% endif %}
+                                                        {% endif %}
+                                                        {% if field == form.fax %}
+                                                            {% if field.errors %}
+                                                                {{ form.fax | add_attributes:"inp_steps_fax  has-danger" }}
+                                                            {% else %}
+                                                                {{ field }}
+                                                            {% endif %}
+
+                                                        {% endif %}
+                                                    {% endfor %}
+
+                                                </div>
+                                                <div class="clear"></div>
+                                            </div>
+                                        </div>
+                                        <div class="form_wapper">
+                                            <div class="row_step2_left">
+                                                <div class="f_name">
+                                                    <h5>{{ form.addressline1.label }}</h5>
+                                                </div>
+                                                <div class="f_inp_bx">
+                                                    {% for field in form %}
+                                                        {% if field == form.addressline1 %}
+                                                            {% if field.errors %}
+                                                                {{ form.addressline1 | add_attributes:"inp_steps_addressline1  has-danger" }}
+                                                                <span class="oh-alert-error apphelp-block">{% for error in  field.errors %}
+                                                                    {{ error }}<br/>{% endfor %}</span>
+                                                            {% else %}
+                                                                {{ field }}
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </div>
+                                                <div class="clear"></div>
+                                            </div>
+                                            <div class="row_step2_left">
+                                                <div class="f_name">
+                                                    <h5>{{ form.addressline2.label }}</h5>
+                                                </div>
+                                                <div class="f_inp_bx">
+                                                    {{ form.addressline2 }}
+                                                    <span class="apphelp-block">
+                                                <strong></strong>
+                                            </span>
+                                                </div>
+                                                <div class="clear"></div>
+                                            </div>
+                                            <div class="row_step2_left">
+                                                <div class="f_name">
+                                                    <h5>{{ form.zipcode.label }}</h5>
+                                                </div>
+                                                <div class="f_inp_bx">
+                                                    {% for field in form %}
+                                                        {% if field == form.zipcode %}
+                                                            {% if field.errors %}
+                                                                {{ form.zipcode | add_attributes:"inp_steps_zipcode  has-danger" }}
+                                                            {% else %}
+                                                                {{ field }}
+                                                            {% endif %}
+                                                        {% endif %}
+                                                        {% if field == form.cityopt %}
+                                                            <div class="inp_steps__city_dropdown_div"
+                                                                 id="id_city_div_dropdown" name="city_div_dropdown"
+                                                                 style="display: inline-table">
+                                                                {{ cityopt }}
+                                                                {% if field.errors %}
+                                                                    {{ form.cityopt | add_attributes:"inp_steps_city_opt  has-danger" }}
+                                                                {% else %}
+                                                                    {{ field }}
+                                                                {% endif %}
+                                                            </div>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                    <div class="inp_steps_city_div" id="id_city_div" name="city_div"
+                                                         style="display: none"><input type="text" id="id_city"
+                                                                                      name="city"
+                                                                                      class="inp_steps_City"
+                                                                                      style="display: inline"
+                                                                                      placeholder="Enter city"></div>
+                                                    {% for field in form %}
+                                                        {% if field == form.zipcode %}
+                                                            {% if field.errors %}
+                                                                <span class="oh-alert-error apphelp-block">{% for error in  field.errors %}
+                                                                    {{ error }}<br/>{% endfor %}</span>
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </div>
+                                                <div class="clear"></div>
+                                            </div>
+                                            <div class="row_step2_left">
+                                                <div class="f_name">
+                                                    <h5>{{ form.county.label }}</h5>
+                                                </div>
+                                                <div class="f_inp_bx">
+                                                    {{ form.county }}
+                                                    {{ form.state }}
+                                                    <span class="apphelp-block">
+                                                <strong></strong>
+                                            </span>
+                                                </div>
+                                                <div class="clear"></div>
+                                            </div>
+                                        </div>
+
+                                        <div class="clear"></div>
+                                    </div>
+                                    <div class="clear"></div>
+                                    <div class="step1_company_naic">
+                                        <div class="step1_company_naic_form_wapper">
+
+                                            <div class="step1_company_languages_row ">
+                                                <div class="step1_company_naic_title">
+                                                    <label class="required control-label">NAICS Business
+                                                        Classification</label>
+                                                </div>
+                                                <div class="step1_company_inp_steps_naic">
+                                                    {% for field in form %}
+                                                        {% if field == form.naicslevel1opt %}
+                                                            {% if field.errors %}
+                                                                {{ form.naicslevel1opt | add_attributes:"step1_company_naics_dropdown  has-danger" }}
+                                                                <span class="oh-alert-error">{% for error in  field.errors %}
+                                                                    {{ error }}<br/>{% endfor %}</span>
+                                                            {% else %}
+                                                                {{ field }}
+                                                            {% endif %}
+                                                        {% endif %}
+                                                        {% if field == form.naicslevel2opt %}
+                                                            {% if field.errors %}
+                                                                {{ form.naicslevel2opt | add_attributes:"step1_company_naics_dropdown  has-danger" }}
+                                                                <span class="oh-alert-error">{% for error in  field.errors %}
+                                                                    {{ error }}<br/>{% endfor %}</span>
+                                                            {% else %}
+                                                                {{ field }}
+                                                            {% endif %}
+                                                        {% endif %}
+                                                        {% if field == form.naicslevel3opt %}
+                                                            {% if field.errors %}
+                                                                {{ form.naicslevel3opt | add_attributes:"step1_company_naics_dropdown  has-danger" }}
+                                                                <span class="oh-alert-error">{% for error in  field.errors %}
+                                                                    {{ error }}<br/>{% endfor %}</span>
+                                                            {% else %}
+                                                                {{ field }}
+                                                            {% endif %}
+                                                        {% endif %}
+                                                        {% if field == form.naicslevel4opt %}
+                                                            {% if field.errors %}
+                                                                {{ form.naicslevel4opt | add_attributes:"step1_company_naics_dropdown  has-danger" }}
+                                                                <span class="oh-alert-error">{% for error in  field.errors %}
+                                                                    {{ error }}<br/>{% endfor %}</span>
+                                                            {% else %}
+                                                                {{ field }}
+                                                            {% endif %}
+                                                        {% endif %}
+                                                        {% if field == form.naicslevel5opt %}
+                                                            {% if field.errors %}
+                                                                {{ form.naicslevel5opt | add_attributes:"step1_company_naics_dropdown  has-danger" }}
+                                                                <span class="oh-alert-error apphelp-block">{% for error in  field.errors %}
+                                                                    {{ error }}<br/>{% endfor %}</span>
+                                                            {% else %}
+                                                                {{ field }}
+                                                            {% endif %}
+                                                        {% endif %}
+
+                                                    {% endfor %}
+                                                    <span id="step1_company_naics_description"
+                                                          class="step1_company_naics_description">
+                                            </span>
+                                                </div>
+                                                <div class="clear"></div>
+                                            </div>
+                                        </div>
+
+                                        <div class="clear"></div>
+                                    </div>
+                                    <div class="clear"></div>
+                                    <div class="step1_company_languages">
+                                        <div class="step1_company_languages_form_wapper">
+
+                                            <div class="step1_company_languages_row ">
+                                                <div class="step1_company_languages_spoke_title">
+                                                    <label class="required control-label">Languages spoken in the
+                                                        company</label>
+                                                </div>
+                                                <div class="inp_steps_language">
+                                                    {% for field in form %}
+                                                        {% if field == form.languagechecklist %}
+                                                            {% if field.errors %}
+                                                                {{ form.languagechecklist }}
+                                                                <span class="apphelp-block">{% for error in  field.errors %}
+                                                                    {{ error }}<br/>{% endfor %}</span>
+                                                            {% else %}
+                                                                {{ field }}
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </div>
+                                                <div class="clear"></div>
+                                            </div>
+                                        </div>
+
+                                        <div class="clear"></div>
+                                    </div>
+                                    <div class="clear"></div>
+                                </div>
+                                <div class="clear"></div>
+                            </div>
+                            <div id="step-2" style="height:480px;">
+                                {#                        <h2 class="StepTitle">Step 2 Logon details</h2>#}
+                                <div class="form_wapper_m">
+                                    <div class="step2_user_languages">
+                                        <div class="step2_user_languages_form_wapper">
+
+                                            <div class="step2_user_languages_row ">
+                                                <div class="step2_user_languages_spoke_title">
+                                                    <label class="required control-label">Languages you speak</label>
+                                                </div>
+                                                <div class="f_inp_bx">
+                                                    {% for field in form %}
+                                                        {% if field == form.personlanguagechecklist %}
+                                                            {% if field.errors %}
+                                                                {{ form.personlanguagechecklist }}
+                                                                <span class="apphelp-block">{% for error in  field.errors %}
+                                                                    {{ error }}<br/>{% endfor %}</span>
+                                                            {% else %}
+                                                                {{ field }}
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </div>
+                                                <div class="clear"></div>
+                                            </div>
+                                        </div>
+
+                                        <div class="clear"></div>
+                                    </div>
+                                    <div class="clear"></div>
+                                    <div class="step2_user_role">
+                                        <div class="step2_user_role_form_wapper">
+
+                                            <div class="step2_user_role_row ">
+                                                <div class="step2_user_role_title">
+                                                    <label class="required control-label">Your role in the
+                                                        company</label>
+                                                </div>
+                                                <div class="f_inp_bx">
+                                        <span class="step2_user_role_items">
+
+                                         {% for field in form %}
+                                             {% if field == form.personroles %}
+                                                 {% if field.errors %}
+                                                     {% for choice in form.personroles %}
+                                                         <span class="ohplanbasis">{{ choice.tag }}&nbsp;{{ choice.choice_label }}&nbsp;&nbsp;&nbsp;&nbsp; </span>
+                                                     {% endfor %}
+                                                     <span class="apphelp-block">{% for error in  field.errors %}
+                                                         {{ error }}<br/>{% endfor %}</span>
+                                                 {% else %}
+                                                     {% for choice in form.personroles %}
+                                                         <span class="ohplanbasis">{{ choice.tag }}&nbsp;{{ choice.choice_label }}&nbsp;&nbsp;&nbsp;&nbsp; </span>
+                                                     {% endfor %}
+                                                 {% endif %}
+                                             {% endif %}
+                                         {% endfor %}
+                                        </span>
+                                                </div>
+                                                <div class="clear"></div>
+                                            </div>
+                                        </div>
+
+                                        <div class="clear"></div>
+                                    </div>
+
+                                    <div class="step2_user_login">
+                                        <div class="step2_user_login_form_wapper">
+                                            <div class="step2_user_login_row ">
+                                                <div id="Login_container">
+                                                    <div id="Login_container_username">
+                                                <span class="step2_user_login_title">  <label
+                                                        class="required control-label">Login credentials </label></span>
+                                                        <div class="row_step2_login_username">
+                                                            <div class="inp_steps_lanbel_login">
+                                                                <h5>{{ form.username.label }}</h5>
+                                                            </div>
+                                                            <div class="f_inp_bx">
+                                                                {% for field in form %}
+                                                                    {% if field == form.username %}
+                                                                        {% if field.errors %}
+                                                                            {{ form.username | add_attributes:"inp_steps_username  has-danger" }}
+                                                                            <span class="oh-alert-error apphelp-block">{% for error in  field.errors %}
+                                                                                {{ error }}{% endfor %}</span>
+                                                                        {% else %}
+                                                                            {{ field }}
+                                                                        {% endif %}
+                                                                    {% endif %}
+                                                                {% endfor %}
+                                                            </div>
+                                                            <div class="clear"></div>
+                                                        </div>
+                                                        <div class="row_step2_left">
+                                                            <div class="inp_steps_lanbel_login">
+                                                                <h5>{{ form.password1.label }}</h5>
+                                                            </div>
+                                                            <div class="f_inp_bx">
+                                                                {% for field in form %}
+                                                                    {% if field == form.password1 %}
+                                                                        {% if field.errors %}
+                                                                            {{ form.password1 | add_attributes:"inp_steps_password  has-danger" }}
+                                                                            <span class="oh-alert-error apphelp-block">{% for error in  field.errors %}
+                                                                                {{ error }}{% endfor %}</span>
+                                                                        {% else %}
+                                                                            {{ field }}
+                                                                        {% endif %}
+                                                                    {% endif %}
+                                                                {% endfor %}
+                                                                </span>
+                                                            </div>
+                                                            <div class="clear"></div>
+                                                        </div>
+                                                        <div class="row_step2_left">
+                                                            <div class="inp_steps_lanbel_login">
+                                                                <h5>{{ form.password2.label }}</h5>
+                                                            </div>
+                                                            <div class="f_inp_bx">
+                                                                {% for field in form %}
+                                                                    {% if field == form.password2 %}
+                                                                        {% if field.errors %}
+                                                                            {{ form.password2 | add_attributes:"inp_steps_password  has-danger" }}
+                                                                            <span class="oh-alert-error apphelp-block">{% for error in  field.errors %}
+                                                                                {{ error }}{% endfor %}</span>
+                                                                        {% else %}
+                                                                            {{ field }}
+                                                                        {% endif %}
+                                                                    {% endif %}
+                                                                {% endfor %}
+                                                                <strong></strong>
+                                                                </span>
+                                                            </div>
+                                                            <div class="clear"></div>
+                                                        </div>
+
+                                                    </div>
+                                                    <span class="step2_user_login_title"> Security questions recommended for extra security</span>
+                                                    <div id="Login_container_questions">
+                                                        <div class="step2_user_login_questions_row_right">
+                                                            <div class="step2_user_login_questions_row_right_label">
+                                                                Security Question 1 :
+                                                                {{ form.secquestion1 }}
+                                                                {{ form.secanswer1 }}
+                                                            </div>
+                                                            <div class="clear"></div>
+                                                        </div>
+                                                        <div class="step2_user_login_questions_row_right">
+                                                            <div class="step2_user_login_questions_row_right_label">
+                                                                Security Question 2 :
+                                                                {{ form.secquestion2 }}
+                                                                {{ form.secanswer2 }}
+                                                            </div>
+                                                            <div class="clear"></div>
+                                                        </div>
+                                                        <div class="step2_user_login_questions_row_right">
+                                                            <div class="step2_user_login_questions_row_right_label">
+                                                                Security Question 3 :
+                                                                {{ form.secquestion3 }}
+                                                                {{ form.secanswer3 }}
+                                                            </div>
+
+                                                            <div class="clear"></div>
+                                                        </div>
+                                                        <div class="step2_user_login_questions_row_right">
+                                                            <div class="step2_user_login_questions_row_right_label">
+                                                                Security Question 4 :
+                                                                {{ form.secquestion4 }}
+                                                                {{ form.secanswer4 }}
+                                                            </div>
+                                                            <div class="clear"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="clear"></div>
+                                    </div>
+                                </div>
+                                <div class="clear"></div>
+                            </div>
+                            <div id="step-3" style="height:480px;">
+                                {#                        <h2 class="StepTitle">Step 2 Logon details</h2>#}
+                                <div class="form_wapper_m">
+                                    <div class="step2_user_languages">
+                                        <div class="step2_user_languages_form_wapper">
+
+                                            <div class="step2_user_languages_row ">
+                                                <div class="step2_user_languages_spoke_title">
+                                                    Select your compliance services, government submissions and
+                                                    insurance policy requirements
+                                                </div>
+                                                <table class="responstable">
+
+                                                    <tr>
+                                                        <th>Select</th>
+                                                        <th data-th="Plans"><span>Type</span></th>
+                                                        <th>Description</th>
+                                                        <th>Frequency</th>
+                                                        <th>Renewal date</th>
+                                                        <th>Agency</th>
+                                                        <th>Goverment level</th>
+                                                    </tr>
+
+                                                    <tr>
+                                                        <td><input type="checkbox"/></td>
+                                                        <td>Service</td>
+                                                        <td>RPZ Test</td>
+                                                        <td>Annual</td>
+                                                        <td>2016-11-17</td>
+                                                        <td>NYC Bulidings</td>
+                                                        <td>USA</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><input type="checkbox"/></td>
+                                                        <td>Service</td>
+                                                        <td>Carting</td>
+                                                        <td>Weekly</td>
+                                                        <td>2016-11-17</td>
+                                                        <td>NYC Consumer Affairs</td>
+                                                        <td>New York City</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><input type="checkbox"/></td>
+                                                        <td>Insurance</td>
+                                                        <td>Flood inurance</td>
+                                                        <td>Annual</td>
+                                                        <td>2016-11-17</td>
+                                                        <td>NYC Finance Dept</td>
+                                                        <td>NYC State</td>
+                                                    </tr>
+
+                                                </table>
+                                                <div class="clear"></div>
+                                            </div>
+                                        </div>
+                                        <div class="clear"></div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- End SmartWizard Content --></td>
+                </tr>
+            </table>
+
+        {% endblock %}
+
+
+        {#  <button class="btn btn-primary" type="submit">{% trans "Sign Up" %} &raquo;</button>#}
+    </form>
+
+
+</div> <!-- /container -->
+
+{% block modal %}{% endblock modal %}
+{% block javascript %}
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.js"></script>
+
+    {% compress js %}
+        <script src="{% static 'js/project.js' %}"></script>
+        <script src="{% static 'js/jquery.smartWizard.js' %}"></script>
+    {% endcompress %}
+    <script type="text/javascript" language="javascript">
+
+        $(document).ready(function () {
+            // Smart Wizard
+            $('#wizard').smartWizard({
+                // Properties
+                selected: 0,  // Selected Step, 0 = first step
+                keyNavigation: true, // Enable/Disable key navigation(left and right keys are used if enabled)
+                enableAllSteps: false,  // Enable/Disable all steps on first load
+                transitionEffect: 'slideleft', // Effect on navigation, none/fade/slide/slideleft
+                contentURL: null, // specifying content url enables ajax content loading
+                contentURLData: null, // override ajax query parameters
+                contentCache: true, // cache step contents, if false content is fetched always from ajax url
+                cycleSteps: false, // cycle step navigation
+                enableFinishButton: false, // makes finish button enabled always
+                hideButtonsOnDisabled: true, // when the previous/next/finish buttons are disabled, hide them instead
+                errorSteps: [],    // array of step numbers to highlighting as error steps
+                labelNext: 'Next', // label for Next button
+                labelPrevious: 'Previous', // label for Previous button
+                labelFinish: 'Done',  // label for Finish button
+                noForwardJumping: false,
+                ajaxType: 'POST',
+                // Events
+                onLeaveStep: null, // triggers when leaving a step
+                onShowStep: null,  // triggers when showing a step
+                onFinish: onFinishValidation(),  // triggers when Finish button is clicked
+                includeFinishButton: true,   // Add the finish button
+                reverseButtonsOrder: false //shows buttons ordered as: prev, next and finish
+            });
+
+            $("#id_zipcode").keyup();
+        });
+
+        function onFinishValidation() {
+            console.log('onFinishValidation');
+            if ($('#id_naicslevel5opt option:selected').val() != null && $('#id_naicslevel5opt option:selected').val() != 'None' && $('#id_naicslevel5opt option:selected').val() != '0000000'
+                    && $('#id_naicslevel5opt option:selected').val() != ' ') {
+                console.log($('#id_naicslevel5opt option:selected').val());
+                document.getElementById('step1_company_naics_description').innerHTML = "NAICS Classification : " + $('#id_naicslevel5opt option:selected').val();
+            } else {
+                document.getElementById('step1_company_naics_description').innerHTML = ""
+            }
+
+        }
+
+
+        $("#id_naicslevel1opt").on('change', function () {
+            if ($.trim($(this).val()) != 'None') {
+                var form_naicslevel1opt = document.getElementById('id_naicslevel1opt').value;
+                $('#id_naicslevel2opt').find('option').remove().end();
+                $('#id_naicslevel3opt').find('option').remove().end();
+                $('#id_naicslevel4opt').find('option').remove().end();
+                $('#id_naicslevel5opt').find('option').remove().end();
+                console.log(form_naicslevel1opt);
+                $.ajax({
+                    url: '/ajax_getnaiclevel',
+                    data: {
+                        'form_naicslevelopt': $(this).val(),
+                        'form_naicslevel': 'NAICS_LEVEL1'
+                        {#                'city': $.trim(city)#}
+                    },
+                    dataType: 'json',
+                    success: function (response_data) {
+                        console.log('response_data : ' + response_data.result);
+                        if (response_data.result == 'is_valid_NaicsLevel') {
+                            $('#id_naicslevel2opt').removeAttr('disabled');
+                            $('#id_naicslevel2opt').find('option').remove().end();
+                            $('#id_naicslevel2opt').append('<option value="None">Select subsector</option>').val('None');
+                            $.each(response_data.NaicsLevel, function (key, value) {
+                                $('#id_naicslevel2opt').append(
+                                        $("<option></option>")
+                                                .attr("value", value[0])
+                                                .text(value[1])
+                                );
+                            });
+                            $("#id_naicslevel2opt")[0].selectedIndex = 0;
+                        } else {
+                            if (response_data.result == 'NaicsLevel_None') {
+                                {#                            $('#id_naicslevel2opt').find('option').remove().end().append('<option value="">Classification unavailable</option>').val('');#}
+                                $('#id_naicslevel2opt').find('option').remove().end();
+                                $('#id_naicslevel3opt').find('option').remove().end();
+                                $('#id_naicslevel4opt').find('option').remove().end();
+                                $('#id_naicslevel5opt').find('option').remove().end();
+
+                            }
+                        }
+
+                    }
+                });
+            }
+            else {
+                $('#id_naicslevel2opt').find('option').remove().end();
+                $('#id_naicslevel3opt').find('option').remove().end();
+                $('#id_naicslevel4opt').find('option').remove().end();
+                $('#id_naicslevel5opt').find('option').remove().end();
+
+            }
+        });
+
+
+        $("#id_naicslevel2opt").on('change', function () {
+            if ($.trim($(this).val()) != 'None') {
+                var form_naicslevel2opt = document.getElementById('id_naicslevel2opt').value;
+                $('#id_naicslevel3opt').find('option').remove().end();
+                $('#id_naicslevel4opt').find('option').remove().end();
+                $('#id_naicslevel5opt').find('option').remove().end();
+                console.log(form_naicslevel2opt);
+                $.ajax({
+                    url: '/ajax_getnaiclevel',
+                    data: {
+                        'form_naicslevelopt': $(this).val(),
+                        'form_naicslevel': 'NAICS_LEVEL2'
+                    },
+                    dataType: 'json',
+                    success: function (response_data) {
+                        console.log('response_data : ' + response_data.result);
+                        if (response_data.result == 'is_valid_NaicsLevel') {
+                            $('#id_naicslevel3opt').removeAttr('disabled');
+                            $('#id_naicslevel3opt').find('option').remove().end();
+                            $('#id_naicslevel3opt').append('<option value="None">Select industry group</option>').val('None');
+                            $.each(response_data.NaicsLevel, function (key, value) {
+                                $('#id_naicslevel3opt').append(
+                                        $("<option></option>")
+                                                .attr("value", value[0])
+                                                .text(value[1])
+                                );
+                            });
+                            $("#id_naicslevel3opt")[0].selectedIndex = 0;
+                        } else {
+                            if (response_data.result == 'NaicsLevel_None') {
+                                $('#id_naicslevel3opt').find('option').remove().end();
+                                $('#id_naicslevel4opt').find('option').remove().end();
+                                $('#id_naicslevel5opt').find('option').remove().end();
+
+                            }
+                        }
+
+                    }
+                });
+            }
+            else {
+                $('#id_naicslevel3opt').find('option').remove().end();
+                $('#id_naicslevel4opt').find('option').remove().end();
+                $('#id_naicslevel5opt').find('option').remove().end();
+
+            }
+        });
+
+        $("#id_naicslevel3opt").on('change', function () {
+            if ($.trim($(this).val()) != 'None') {
+                var form_naicslevel3opt = document.getElementById('id_naicslevel3opt').value;
+                $('#id_naicslevel4opt').find('option').remove().end();
+                $('#id_naicslevel5opt').find('option').remove().end();
+                console.log(form_naicslevel3opt);
+                $.ajax({
+                    url: '/ajax_getnaiclevel',
+                    data: {
+                        'form_naicslevelopt': $(this).val(),
+                        'form_naicslevel': 'NAICS_LEVEL3'
+                        {#                'city': $.trim(city)#}
+                    },
+                    dataType: 'json',
+                    success: function (response_data) {
+                        console.log('response_data : ' + response_data.result);
+                        if (response_data.result == 'is_valid_NaicsLevel') {
+                            $('#id_naicslevel4opt').removeAttr('disabled');
+                            $('#id_naicslevel4opt').find('option').remove().end();
+                            $('#id_naicslevel4opt').append('<option value="None">Select NAICS industry</option>').val('None');
+                            $.each(response_data.NaicsLevel, function (key, value) {
+                                $('#id_naicslevel4opt').append(
+                                        $("<option></option>")
+                                                .attr("value", value[0])
+                                                .text(value[1])
+                                );
+                            });
+                            $("#id_naicslevel4opt")[0].selectedIndex = 0;
+                        } else {
+                            if (response_data.result == 'NaicsLevel_None') {
+                                $('#id_naicslevel4opt').find('option').remove().end();
+                                $('#id_naicslevel5opt').find('option').remove().end();
+
+                            }
+                        }
+
+                    }
+                });
+            }
+            else {
+                $('#id_naicslevel4opt').find('option').remove().end();
+                $('#id_naicslevel5opt').find('option').remove().end();
+
+            }
+        });
+
+
+        $("#id_naicslevel4opt").on('change', function () {
+            if ($.trim($(this).val()) != 'None') {
+                var form_naicslevel4opt = document.getElementById('id_naicslevel4opt').value;
+                $('#id_naicslevel5opt').find('option').remove().end();
+                console.log(form_naicslevel4opt);
+                $.ajax({
+                    url: '/ajax_getnaiclevel',
+                    data: {
+                        'form_naicslevelopt': $(this).val(),
+                        'form_naicslevel': 'NAICS_LEVEL4'
+                        {#                'city': $.trim(city)#}
+                    },
+                    dataType: 'json',
+                    success: function (response_data) {
+                        console.log('response_data : ' + response_data.result);
+                        if (response_data.result == 'is_valid_NaicsLevel') {
+                            $('#id_naicslevel5opt').removeAttr('disabled');
+                            $('#id_naicslevel5opt').find('option').remove().end();
+                            $('#id_naicslevel5opt').append('<option value="None">Select National industry</option>').val('None');
+                            $.each(response_data.NaicsLevel, function (key, value) {
+                                $('#id_naicslevel5opt').append(
+                                        $("<option></option>")
+                                                .attr("value", value[0])
+                                                .text(value[1])
+                                );
+                            });
+                            $("#id_naicslevel5opt")[0].selectedIndex = 0;
+                        } else {
+                            if (response_data.result == 'NaicsLevel_None') {
+                                $('#id_naicslevel5opt').find('option').remove().end();
+
+                            }
+                        }
+
+                    }
+                });
+            }
+            else {
+                $('#id_naicslevel5opt').find('option').remove().end();
+
+            }
+        });
+
+        $("#id_naicslevel5opt").on('change', function () {
+            document.getElementById('step1_company_naics_description').innerHTML = "";
+            if ($.trim($(this).val()) != 'None') {
+                document.getElementById('step1_company_naics_description').innerHTML = "NAICS Classification : " + $.trim($(this).val());
+                console.log($.trim($(this).val()));
+
+            }
+        });
+
+
+        $("#id_zipcode").keyup(function () {
+            {#    console.log($(this).val());#}
+            {#    console.log($(this).val().substr(0,5));#}
+            if ($.trim($(this).val()).length >= 5) {
+                {#        console.log($.trim($(this).val()).length + ' -> '+ $(this).val().substr(0,5));#}
+                var zipcode = document.getElementById('id_zipcode').value;
+                var city = document.getElementById('id_cityopt').value;
+                $('#id_cityopt').find('option').remove().end();
+                {#                .append('<option value="whatever">text</option>').val('whatever')#}
+
+                $.ajax({
+                    url: '/ajax_getcityfromzip',
+                    data: {
+                        'zipcode': $.trim(zipcode.substr(0, 5)),
+                        'city': $.trim(city)
+                    },
+                    dataType: 'json',
+                    success: function (response_data) {
+                        console.log(response_data.result);
+                        if (response_data.result == 'is_valid_zipcode') {
+                            console.log(response_data.city[0][0] + response_data.city[0][1]);
+                            console.log($("#city_opt"));
+                            {#                    document.getElementsByName("cityopt").append(new Option('optionName', 'optionValue'));#}
+                            {#                    document.getElementById('id_city_opt').value = response_data.city;#}
+                            console.log($("#id_city_opt").disabled);
+                            $('#id_cityopt').removeAttr('disabled');
+                            $.each(response_data.city, function (key, value) {
+                                $('#id_cityopt').append(
+                                        $("<option></option>")
+                                                .attr("value", value[0])
+                                                .text(value[1])
+                                );
+                            });
+                            $('#id_cityopt').append('<option value="add">Add city</option>').val('add');
+                            $("#id_cityopt")[0].selectedIndex = 0;
+                            console.log($('#inp_card_info_city_dropdown_div'));
+                            $('#id_city_div_dropdown').css("display", "inline-table");
+                            $('#id_city_opt').css("display", "inline-table");
+                            $('#id_city_div').css("display", "none");
+                            $('#id_city').css("display", "none");
+                            {#                    $('#id_cityopt').append($("<option></option>").attr("value", response_data.city[0][0]).text(response_data.city[0][1]));#}
+
+                            document.getElementById('id_county').value = response_data.county;
+                            document.getElementById('id_state').value = response_data.state;
+                            {#                    document.getElementById("id__message").innerHTML = "<span class='oh_id_discount_message_valid'>" + data.valid + "</span>";#}
+                        } else {
+                            if (response_data.result == 'is_nearby_zipcode') {
+                                $('#id_cityopt').find('option').remove().end().append('<option value="">City unavailable for Zip</option>').val('');
+                                {#                            $('#id_cityopt').find('option').remove().end().append('<option value="add">Add city</option>').val('add');#}
+                                {#                            $("#id_city_opt").removeAttr('disabled');#}
+                                {#                            $("#id_county").removeAttr('disabled');#}
+                                {#                            $("#id_state").removeAttr('disabled');#}
+                                $("#id_city_opt").append(
+                                        $("<option>", response_data.city
+                                        )
+                                );
+                                $('#id_city_div_dropdown').css("display", "none");
+                                $('#id_city_opt').css("display", "none");
+                                $('#id_city_div').css("display", "inline-table");
+                                $('#id_city').css("display", "inline-table");
+                                {#                            document.getElementById('id_city_opt').value = "";#}
+                                document.getElementById('id_county').value = response_data.county;
+                                document.getElementById('id_state').value = response_data.state;
+                            } else if (response_data.result == 'is_invalid_zipcode') {
+                                $("#id_city_opt").removeAttr('disabled');
+                                $("#id_county").removeAttr('disabled');
+                                $("#id_state").removeAttr('disabled');
+                                document.getElementById('id_city_opt').value = "";
+                                document.getElementById('id_county').value = "";
+                                document.getElementById('id_state').value = "";
+                                {#                                alert('1');#}
+                            }
+                        }
+
+                    }
+                });
+            }
+            else {
+                {#        document.getElementById('id_city_opt').selectedIndex = "";#}
+                $("#id_city").visibility = false;
+                $('#id_cityopt').find('option').remove().end();
+                document.getElementById('id_county').value = "";
+                document.getElementById('id_state').value = "";
+                {#        alert('2');#}
+            }
+        });
+
+
+        $('#id_cityopt').on('change', function () {
+            if (this.value == 'add') {
+                $('#id_city_div_dropdown').css("display", "none");
+                $('#id_city_opt').css("display", "none");
+                $('#id_city_div').css("display", "inline-table");
+                $('#id_city').css("display", "inline-table");
+            }
+
+        });
+
+
+        $('#id_naicslevel1opt').on('change', function () {
+            document.getElementById('step1_company_naics_description').innerHTML = "";
+        });
+        $('#id_naicslevel2opt').on('change', function () {
+            document.getElementById('step1_company_naics_description').innerHTML = "";
+        });
+        $('#id_naicslevel3opt').on('change', function () {
+            document.getElementById('step1_company_naics_description').innerHTML = "";
+        });
+        $('#id_naicslevel4opt').on('change', function () {
+            document.getElementById('step1_company_naics_description').innerHTML = "";
+        });
+
+
+        $('#id_naicslevel5opt').on('change', function () {
+            if (this.value != 'None') {
+                $('#id_naicslevel5opt').removeClass("has-danger step1_company_naics_dropdown_required");
+            }
+
+        });
+
+
+        function ValidateSignup() {
+            var signup_is_valid = true;
+            console.log("Validating Signup :");
+            console.log(document.getElementById('id_compname').value);
+            if (document.getElementById('id_compname').value == '') {
+                console.log('setting css for id_compname');
+                $('#id_compname').addClass("inp_steps_compname  has-danger");
+                signup_is_valid = false;
+            } else {
+                $('#id_compname').removeClass("has-danger");
+            }
+
+            console.log($('#id_naicslevel5opt option:selected').length);
+            console.log('Val & Lenght ->' + $('#id_naicslevel5opt option:selected').val(), $('#id_naicslevel5opt option:selected').length);
+            if ($('#id_naicslevel5opt option:selected').val() != '' && $('#id_naicslevel5opt option:selected').val() != 'None') {
+                if ($('#id_naicslevel5opt option:selected').length != 0)
+                    $('#id_naicslevel5opt').removeClass("has-danger step1_company_naics_dropdown_required");
+                else
+                    $('#id_naicslevel5opt').addClass("step1_company_naics_dropdown  has-danger step1_company_naics_dropdown_required");
+                signup_is_valid = false;
+            }
+            else {
+                $('#id_naicslevel5opt').addClass("step1_company_naics_dropdown  has-danger step1_company_naics_dropdown_required");
+                signup_is_valid = false;
+            }
+
+            var is_languageslected = false;
+            var checkedonhandlang = document.getElementsByName("languagechecklist");
+            var checkedlanguages = 0;
+            for (var i = 0; i < checkedonhandlang.length; i++) {
+                if (checkedonhandlang[i].checked) {
+                    checkedlanguages = i;
+                    is_languageslected = true;
+                }
+            }
+            if (is_languageslected == false) {
+                for (var i = 0; i < checkedonhandlang.length; i++) {
+                    checkedonhandlang[i].style = "box-shadow: 0px 0px 7px 4px rgba(230,9,52,1)";
+                    {#            checkedonhandlang[i].addClass("has-danger")#}
+                }
+                signup_is_valid = false;
+            } else {
+                for (var i = 0; i < checkedonhandlang.length; i++) {
+                    checkedonhandlang[i].style = "";
+                }
+            }
+
+            var is_personlanguageslected = false;
+            var checkedonhandpersonlang = document.getElementsByName("personlanguagechecklist");
+            var checkedpersonlanguages = 0;
+            for (var i = 0; i < checkedonhandpersonlang.length; i++) {
+                if (checkedonhandpersonlang[i].checked) {
+                    checkedpersonlanguages = i;
+                    is_personlanguageslected = true;
+                }
+            }
+            if (is_personlanguageslected == false) {
+                for (var i = 0; i < checkedonhandpersonlang.length; i++) {
+                    console.log(checkedonhandpersonlang[i].checked);
+                    checkedonhandpersonlang[i].style = "box-shadow: 0px 0px 7px 4px rgba(230,9,52,1)";
+                    {#            checkedonhandpersonlang[i].addClass("has-danger")#}
+                }
+                signup_is_valid = false;
+            } else {
+                for (var i = 0; i < checkedonhandpersonlang.length; i++) {
+                    checkedonhandpersonlang[i].style = "";
+                }
+            }
+
+            var personroleslected = false;
+            var personroleradio = document.getElementsByName("ohplanselect");
+            var personroleradioindex = 0;
+            for (var i = 0; i < personroleradio.length; i++) {
+                if (personroleradio[i].checked) {
+                    personroleradioindex = i;
+                    personroleslected = true;
+                }
+            }
+
+            if (personroleslected == false) {
+                for (var i = 0; i < personroleradio.length; i++) {
+                    personroleradio[i].style = "box-shadow: 0px 0px 7px 4px rgba(230,9,52,1)";
+                }
+                signup_is_valid = false;
+            } else {
+                for (var i = 0; i < personroleradio.length; i++) {
+                    personroleradio[i].style = "";
+                }
+            }
+
+
+            if (document.getElementById('id_username').value == '') {
+                $('#id_username').addClass("inp_steps_username  has-danger");
+                signup_is_valid = false;
+            } else {
+                $('#id_username').removeClass("has-danger");
+            }
+
+            if (document.getElementById('id_password1').value == '') {
+                $('#id_password1').addClass("inp_steps_password  has-danger");
+                signup_is_valid = false;
+            } else {
+                $('#id_password1').removeClass("has-danger");
+            }
+
+            if (document.getElementById('id_password2').value == '') {
+                $('#id_password2').addClass("inp_steps_password  has-danger");
+                signup_is_valid = false;
+            } else {
+                $('#id_password2').removeClass("has-danger");
+            }
+
+
+            console.log(signup_is_valid);
+            return signup_is_valid;
+        }
+
+
+    </script>
+{% endblock javascript %}
+</body>
+</html>
 

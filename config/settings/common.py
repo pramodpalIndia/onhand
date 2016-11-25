@@ -27,7 +27,7 @@ DJANGO_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    'jquery',
     # Useful template tags:
     # 'django.contrib.humanize',
 
@@ -38,13 +38,16 @@ THIRD_PARTY_APPS = (
     'crispy_forms',  # Form layouts
     'allauth',  # registration
     'allauth.account',  # registration
-    'allauth.socialaccount',  # registration
+    # 'allauth.socialaccount',  # registration
 )
 
 # Apps specific for this project go here.
 LOCAL_APPS = (
     # custom users app
+    'onhand.products.apps.ProductsConfig',
+    'onhand.provider.apps.ProviderConfig',
     'onhand.users.apps.UsersConfig',
+    'onhand.management.apps.ManagementConfig'
     # Your stuff: custom apps go here
 )
 
@@ -238,7 +241,8 @@ AUTHENTICATION_BACKENDS = (
 ACCOUNT_AUTHENTICATION_METHOD = 'username'
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
-
+ACCOUNT_SIGNUP_FORM_CLASS = 'onhand.provider.forms.SignupForm'
+# ''users.forms'
 ACCOUNT_ALLOW_REGISTRATION = env.bool('DJANGO_ACCOUNT_ALLOW_REGISTRATION', True)
 ACCOUNT_ADAPTER = 'onhand.users.adapters.AccountAdapter'
 SOCIALACCOUNT_ADAPTER = 'onhand.users.adapters.SocialAccountAdapter'
@@ -249,6 +253,10 @@ AUTH_USER_MODEL = 'users.User'
 LOGIN_REDIRECT_URL = 'users:redirect'
 LOGIN_URL = 'account_login'
 
+# Select the correct user model
+OH_PERSON_MODEL = 'provider.person'
+# Select the correct user model
+OH_COMPANY_MODEL = 'provider.company'
 # SLUGLIFIER
 AUTOSLUG_SLUGIFY_FUNCTION = 'slugify.slugify'
 

@@ -7,9 +7,22 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.views.generic import TemplateView
 from django.views import defaults as default_views
+from allauth.account.views import login
+from onhand.provider.views import register,validate_discount_code
 
-urlpatterns = [
-    url(r'^$', TemplateView.as_view(template_name='pages/home.html'), name='home'),
+urlpatterns = [url('^', include('onhand.provider.urls'))]
+
+urlpatterns += [
+    url(r'^$',  login,  name="login"),
+
+    # url(r"^login/$", views.login, name="account_login"),
+    # url(r"^login/$", views.login, name="ac_login"),
+    # url(r'^registration/$', TemplateView.as_view(template_name='registration/register.html'), name='register'),
+    url(r'^registration/$',register , name='register'),
+
+    # url(r'^$', TemplateView.as_view(template_name='pages/home.html'), name='home'),
+    # url(r'^$', TemplateView.as_view(template_name='pages/welcome.html'), name='home'),
+    # url(r'^$', ),
     url(r'^about/$', TemplateView.as_view(template_name='pages/about.html'), name='about'),
 
     # Django Admin, use {% url 'admin:index' %}
@@ -17,7 +30,9 @@ urlpatterns = [
 
     # User management
     url(r'^users/', include('onhand.users.urls', namespace='users')),
-    url(r'^accounts/', include('allauth.urls')),
+    # url(r'^accounts/', include('allauth.urls')),
+
+
 
     # Your stuff: custom urls includes go here
 

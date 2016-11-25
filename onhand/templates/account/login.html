@@ -1,4 +1,5 @@
-{% extends "account/base.html" %}
+{#{% extends "account/base.html" %}#}
+{% extends "account/welcome.html" %}
 
 {% load i18n %}
 {% load account socialaccount %}
@@ -8,41 +9,116 @@
 
 {% block inner %}
 
-<h1>{% trans "Sign In" %}</h1>
+    {#signup Content#}
+    <div class="main_login_con">
 
-{% get_providers as socialaccount_providers %}
+        <div class="login_m_wapper">
 
-{% if socialaccount_providers %}
-<p>{% blocktrans with site.name as site_name %}Please sign in with one
-of your existing third party accounts. Or, <a href="{{ signup_url }}">sign up</a>
-for a {{ site_name }} account and sign in below:{% endblocktrans %}</p>
+            <div class="login_m_wapper_left">
+                {% load static %}
+                <img src="{% static "images/logo.png" %}" style="width:120px; margin-top:90px; margin-left:0px;"/>
+            </div>
 
-<div class="socialaccount_ballot">
+            <div class="login_m_wapper_right">
 
-  <ul class="socialaccount_providers">
-    {% include "socialaccount/snippets/provider_list.html" with process="login" %}
-  </ul>
+                <div class="top_name">
 
-  <div class="login-or">{% trans 'or' %}</div>
+                    <label class="tn_right">
 
-</div>
+                        {#                    <a id="sign-up-link"  class="js-open-modal join_n" href="{% url 'account_signup' %}" >{% trans "Sign Up" %}</a>#}
+                        {#                    {{--<a class="js-open-modal join_n" href="#" data-modal-id="planspopup" href="#"> <i class="fa fa-hand-o-right" aria-hidden="true"></i> Signup Now</a>--}}#}
 
-{% include "socialaccount/snippets/login_extra.html" %}
 
-{% else %}
-<p>{% blocktrans %}If you have not created an account yet, then please
-<a href="{{ signup_url }}">sign up</a> first.{% endblocktrans %}</p>
-{% endif %}
+                        <!--<a href="customer-registration.php" class="join_n"><i class="fa fa-hand-o-right" aria-hidden="true"></i> Join Now</a>--></label>
 
-<form class="login" method="POST" action="{% url 'account_login' %}">
+                    <div class="clear"></div>
+
+                </div>
+
+                <div class="top_name">
+                <span id="oh-sign-in-header" class="oh-sign-in-header ">{% trans "Sign In" %}</span>
+{#                    <p>#}
+{#                        {% blocktrans %}#}
+{#                            If you have not created an account yet, then please#}
+{#                            <a href="{{ signup_url }}">sign up</a> first.#}
+{#                        {% endblocktrans %}#}
+{#                    </p>#}
+                    <div class="clear"></div>
+                </div>
+
+            <form class="login" method="POST" action="{% url 'login' %}">
   {% csrf_token %}
   {{ form|crispy }}
   {% if redirect_field_value %}
   <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
   {% endif %}
-  <a class="button secondaryAction" href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
+  <a class="button secondaryAction">{% trans "Forgot Password?" %}</a>
+{#            <a class="button secondaryAction" href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>#}
   <button class="primaryAction btn btn-primary" type="submit">{% trans "Sign In" %}</button>
+                <div id="oh-terms-of-use" class="oh-side oh-sign-in-tos">
+                <span id="ius-terms-of-use-text">By clicking Sign In, you agree to our <a id="oh-link-terms-of-use" href="http://www.onhand.us/terms.html" target="_blank" style="color:#15C;">License Agreement</a>
+                </span>
+                </div>
 </form>
+                <ul style="list-style-type: none;padding-top:10px;">
+                    <li id="oh-sign-up-link-li">
+                        <span id="oh-link-sign-up-prefix-text">{% blocktrans %}New to Onhand?{% endblocktrans %}</span>
+                        <span><a id="oh-link-sign-up" href="registration/" style="color:#15C;font-size: 15px;font-weight: 500">{% blocktrans %}Create an account{% endblocktrans %}</a>
+                            <span id="oh-create-account-option-period">.</span>
+                        </span>
+
+                    </li>
+                </ul>
+
+{#                <div class="inp_wpr">#}
+{#                    <div class="inp_m_d">#}
+{#                        <input type="text" class="inp_text" placeholder="Enter User Name"/>#}
+{#                    </div>#}
+{##}
+{#                </div>#}
+{##}
+{#                <div class="inp_wpr">#}
+{##}
+{#                    <div class="inp_m_d">#}
+{##}
+{#                        <input type="password" class="inp_text" placeholder="Enter Password"/>#}
+{##}
+{#                    </div>#}
+{##}
+{#                </div>#}
+{##}
+{#                <div class="inp_wpr2">#}
+{##}
+{#                    <label class="f_pass"><a href="#">Forgot Your Password ?</a></label>#}
+{##}
+{#                    <button class="inp_btn">Sign In</button>#}
+{##}
+{#                    <div class="clear"></div>#}
+{##}
+{#                </div>#}
+
+            </div>
+
+            <div class="clear"></div>
+
+        </div>
+
+    </div>
+        {#End signup Content#}
+
+
+{#<h1>{% trans "Sign In" %}</h1>#}
+
+
+{#<form class="login" method="POST" action="{% url 'account_login' %}">#}
+{#  {% csrf_token %}#}
+{#  {{ form|crispy }}#}
+{#  {% if redirect_field_value %}#}
+{#  <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />#}
+{#  {% endif %}#}
+{#  <a class="button secondaryAction" href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>#}
+{#  <button class="primaryAction btn btn-primary" type="submit">{% trans "Sign In" %}</button>#}
+{#</form>#}
 
 {% endblock %}
 

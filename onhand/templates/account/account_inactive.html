@@ -1,12 +1,56 @@
-{% extends "account/base.html" %}
-
+{% extends "account/welcome.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% load addcss %}
 {% load i18n %}
 
 {% block head_title %}{% trans "Account Inactive" %}{% endblock %}
 
 {% block inner %}
-<h1>{% trans "Account Inactive" %}</h1>
+  {% block content %}
+        <form class="inactive" autocomplete="off" id="inactiveuser_form" method="post" action="{% url 'account_signup' %} ">
+            {% csrf_token %}
+            {% if redirect_field_value %}
+                <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+            {% endif %}
 
-<p>{% trans "This account is inactive." %}</p>
+    <div class="oh_accounts_inactive_t_wapper">
+
+        <div class="t_w_header_bottom">
+            <div class="oh_accounts_inactive_header_bottom_left">
+                <span id="oh_accounts_inactive_header_user" >{{ form.firstname.value }} {{ form.lastname.value }}, </span>
+                <span> <img src="{% static "images/logo.png" %}" style="width: 100px"/></span>
+{#                <p>#}
+{#                <span id="oh_accounts_inactive_header_user_detail_address1">6th Cross steet, </span>#}
+{#                <span id="oh_accounts_inactive_header_user_detail_address2" >address line2, </span>#}
+{#                <span id="oh_accounts_inactive_header_user_detail_city" >Rockaway Beach, </span>#}
+{#                <span id="oh_accounts_inactive_header_user_detail_state" >New york, </span>#}
+{#                <span id="oh_accounts_inactive_header_user_detail_zip" >11693 </span>#}
+{#                </p>#}
+            </div>
+{#            <div class="oh_accounts_inactive_header_bottom_right">#}
+{#            <img src="{% static "images/logo.png" %}" style="width: 100px"/>#}
+{#            </div>#}
+{#            <div class="clear"></div>#}
+        </div>
+        <div class="t_w_middle">
+            <div class="t_w_middle_left">
+                <h1>Thank you for signing up !</h1>
+                <h3>You’re Almost Done – Activate your Subscription by creating login for your account</h3>
+
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="t_w_footer">
+                                            <button class="ser_know_more get_plan Procede_Pay_btn"
+                                        type="submit">{% trans "Click here to get started" %} &raquo;</button>
+            <div class="clear"></div>
+
+        </div>
+    </div>
+
+        </form>
+    {% endblock %}
 {% endblock %}
-
