@@ -13,7 +13,7 @@ from django import forms
 from django.utils.html import conditional_escape
 from django.utils.safestring import mark_safe
 
-from onhand.provider import adapter, get_subscription_model
+from onhand.provider import adapter, get_subscription_model, get_company_person_role_model, get_company_language_model, get_person_language_model
 from onhand.provider import app_settings
 
 try:
@@ -156,6 +156,54 @@ def company_field(company, field, *args):
             # Getter
             return getattr(company, field)
 
+def company_person_role_field(company_person_role, field, *args):
+    """
+    Gets or sets (optional) user model fields. No-op if fields do not exist.
+    """
+    if field and hasattr(company_person_role, field):
+        if args:
+            # Setter
+            v = args[0]
+            if v:
+                Company_person_role = get_company_person_role_model()
+                # v = v[0:Company._meta.get_field(field).max_length]
+            setattr(company_person_role, field, v)
+        else:
+            # Getter
+            return getattr(company_person_role, field)
+
+def company_language_field(company_language, field, *args):
+    """
+    Gets or sets (optional) user model fields. No-op if fields do not exist.
+    """
+    if field and hasattr(company_language, field):
+        if args:
+            # Setter
+            v = args[0]
+            if v:
+                Company_language = get_company_language_model()
+                # v = v[0:Company._meta.get_field(field).max_length]
+            setattr(company_language, field, v)
+        else:
+            # Getter
+            return getattr(company_language, field)
+
+def person_language_field(person_language, field, *args):
+    """
+    Gets or sets (optional) user model fields. No-op if fields do not exist.
+    """
+    if field and hasattr(person_language, field):
+        if args:
+            # Setter
+            v = args[0]
+            if v:
+                Person_language = get_person_language_model()
+                # v = v[0:Company._meta.get_field(field).max_length]
+            setattr(person_language, field, v)
+        else:
+            # Getter
+            return getattr(person_language, field)
+
 def subscription_field(subscription, field, *args):
     """
     Gets or sets (optional) user model fields. No-op if fields do not exist.
@@ -270,7 +318,7 @@ def provider_create_account(request, person, company, address, account):
         return None
     return account
 
-def complete_signup(request, person, company, address, provider_subscription_api_id, signal_kwargs=None):
+def complete_signup_prelim(request, person, company, address,ohsubscription, provider_subscription_api_id, person_role_company, signal_kwargs=None):
     if signal_kwargs is None:
         signal_kwargs = {}
     signals.user_signed_up.send(sender=person.__class__,
@@ -280,10 +328,14 @@ def complete_signup(request, person, company, address, provider_subscription_api
     adapter = get_adapter(request)
     adapter.stash_person(request, person)
     adapter.stash_company( request, company)
+    adapter.stash_subscription(request, ohsubscription)
     print('adapter.stash_subscription(request, provider_subscription_api_id)',provider_subscription_api_id)
     adapter.stash_providersubscription(request, provider_subscription_api_id)
+    adapter.stash_person_role_company(request, person_role_company)
 
     return adapter.respond_person_registered(request)
+
+
 
 def url_str_to_person_pk(s):
     Person = get_person_model()

@@ -9,8 +9,8 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import pgettext, ugettext_lazy as _, ugettext
 
 from onhand.provider.models import Person, Company, CompanyRole
-from onhand.provider.utils import complete_signup, provider_create_account, person_field, ColumnCheckboxSelectMultiple, \
-    url_str_to_company_pk, url_str_to_address_pk
+from onhand.provider.utils import  provider_create_account, person_field, ColumnCheckboxSelectMultiple, \
+    url_str_to_company_pk, url_str_to_address_pk,  complete_signup_prelim
 from . import app_settings
 from .adapter import get_adapter
 from .validators import validate_all_city_choices
@@ -528,9 +528,13 @@ class RegisterForm(BaseRegisterForm):
             salessource =2
             ohsubscription = adapter.save_subscription(request, subscription, salessource, provider_subscription_api_id, company, self)
             print('adapter.stash_subscription(request, ohsubscription)',ohsubscription)
-            adapter.stash_subscription(request, ohsubscription)
+
         else:
             provider_subscription_api_id = None
+            print('provider_subscription_api_id = None',provider_subscription_api_id)
+
+        person_role_company = adapter.new_person_role_company(request)
+        adapter.save_company_person_role(request, person_role_company, company, person, self)
 
         # print('provider_subscription_api_id',provider_subscription_api_id)
         # print('person', person)
@@ -538,7 +542,7 @@ class RegisterForm(BaseRegisterForm):
         # print('company',company)
         # print('company.pk',company.pk)
 
-        ret = complete_signup(request, person.pk, company.pk, address, provider_subscription_api_id, signal_kwargs=None)
+        ret = complete_signup_prelim(request, person.pk, company.pk, address, ohsubscription, provider_subscription_api_id, person_role_company, signal_kwargs=None)
         return ret
 
 
@@ -618,7 +622,7 @@ class SetPasswordField(PasswordField):
 
 class _DummyCustomSignupForm(forms.Form):
 
-    def signup(self, request, user):
+    def signup1(self, request, user):
         """
         Invoked at signup time to complete the signup of the user.
         need to check when invoked within the sales account or not
@@ -632,7 +636,12 @@ def _base_signup_form_class():
 
 class BaseSignupForm(_base_signup_form_class()):
 
-
+    def signup(self, request, user):
+        """
+        Invoked at signup time to complete the signup of the user.
+        need to check when invoked within the sales account or not
+        """
+        pass
 
     compname = forms.CharField(label=_("Name"), required=True,
                                 min_length=app_settings.FIRSTNAME_MIN_LENGTH,
@@ -731,7 +740,7 @@ class BaseSignupForm(_base_signup_form_class()):
                                                     widget=forms.Select(
                                                         attrs={'class': "step1_company_naics_dropdown"}))
 
-    naicslevel5opt = AjaxModelChoiceField(NaicsLevel5, required=True, initial='None', disabled=False,error_messages={'required': "NAICS Business Classification required"},
+    naicslevel5opt = AjaxModelChoiceField(NaicsLevel5, required=True, initial='None', disabled=False,
                                                     widget=forms.Select(
                                                         attrs={'class': "step1_company_naics_dropdown"}))
 
@@ -1185,11 +1194,11 @@ class SignupForm(BaseSignupForm):
 
     def save(self, request):
         adapter = get_adapter(request)
+
+
         user = adapter.new_user(request)
         adapter.save_user(request, user, self)
-        self.custom_signup(request, user)
-        # to do : Move into adapter `save_user` ?
-        # setup_user_email(request, user, [])
+        # self.custom_signup(request, user)
+        # # to do : Move into adapter `save_user` ?
+        # # setup_user_email(request, user, [])
         return user
-
-        return None

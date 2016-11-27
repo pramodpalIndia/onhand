@@ -245,7 +245,7 @@ ACCOUNT_SIGNUP_FORM_CLASS = 'onhand.provider.forms.SignupForm'
 # ''users.forms'
 ACCOUNT_ALLOW_REGISTRATION = env.bool('DJANGO_ACCOUNT_ALLOW_REGISTRATION', True)
 ACCOUNT_ADAPTER = 'onhand.users.adapters.AccountAdapter'
-SOCIALACCOUNT_ADAPTER = 'onhand.users.adapters.SocialAccountAdapter'
+# SOCIALACCOUNT_ADAPTER = 'onhand.users.adapters.SocialAccountAdapter'
 
 # Custom user app defaults
 # Select the correct user model

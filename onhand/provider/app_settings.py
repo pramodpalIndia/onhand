@@ -32,6 +32,35 @@ class AppSettings(object):
         # print('getter(self.prefix + name, dflt)->',getter(self.prefix + name, dflt))
         return getter(self.prefix + name, dflt)
 
+
+    class EmailVerificationMethod:
+        # After signing up, keep the user account inactive until the email
+        # address is verified
+        MANDATORY = 'mandatory'
+        # Allow login with unverified e-mail (e-mail verification is
+        # still sent)
+        OPTIONAL = 'optional'
+        # Don't send e-mail verification mails during signup
+        NONE = 'none'
+
+    def __init__(self, prefix):
+        self.prefix = prefix
+        # If login is by email, email must be required
+        # assert (not self.AUTHENTICATION_METHOD ==
+        #         self.AuthenticationMethod.EMAIL) or self.EMAIL_REQUIRED
+        # # If login includes email, login must be unique
+        # assert (self.AUTHENTICATION_METHOD ==
+        #         self.AuthenticationMethod.USERNAME) or self.UNIQUE_EMAIL
+        assert (self.EMAIL_VERIFICATION !=
+                self.EmailVerificationMethod.MANDATORY) \
+            or self.EMAIL_REQUIRED
+        # if not self.USER_MODEL_USERNAME_FIELD:
+        #     assert not self.USERNAME_REQUIRED
+        #     assert self.AUTHENTICATION_METHOD \
+        #         not in (self.AuthenticationMethod.USERNAME,
+        #                 self.AuthenticationMethod.USERNAME_EMAIL)
+
+
     # def _setting(self, name, dflt):
     #     from django.conf import settings
     #     getter = getattr(settings,
@@ -196,6 +225,19 @@ class AppSettings(object):
     def FORMS(self):
         return self._setting('FORMS', {})
 
+    @property
+    def EMAIL_VERIFICATION(self):
+        """
+        See e-mail verification method
+        """
+        ret = self._setting("EMAIL_VERIFICATION",
+                            self.EmailVerificationMethod.NONE)
+        # Deal with legacy (boolean based) setting
+        if ret is True:
+            ret = self.EmailVerificationMethod.MANDATORY
+        elif ret is False:
+            ret = self.EmailVerificationMethod.OPTIONAL
+        return ret
 
 
 # Ugly? Guido recommends this himself ...

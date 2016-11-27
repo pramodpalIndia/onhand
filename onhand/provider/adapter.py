@@ -18,9 +18,10 @@ from django.utils import six, dateparse
 from onhand.management.models import City, Zipcode, State, County, Basis, NaicsLevel5
 from onhand.products.models import ProductDiscount, Discount, ProductBasis
 from onhand.provider.compat import validate_password
-from onhand.provider.models import Address
+from onhand.provider.models import Address, CompanyRole
+# from onhand.provider.utils import company_person_role_field
 from . import app_settings, get_person_model, get_company_model, get_address_model, get_user_model, \
-    get_subscription_model
+    get_subscription_model, get_company_person_role_model, get_company_language_model, get_person_language_model
 from django.utils.translation import ugettext_lazy as _
 
 from onhand.provider.compat import importlib
@@ -149,12 +150,33 @@ class DefaultAccountAdapter(object):
         company  = get_company_model()()
         return company
 
+    def new_person_role_company(self, request):
+        """
+        Instantiates a new person role in company instance.
+        """
+        person_role_company  = get_company_person_role_model()()
+        return person_role_company
+
     def new_address(self, request):
         """
         Instantiates a new User instance.
         """
         address  = get_address_model()()
         return address
+
+    def new_company_language(self, request):
+        """
+        Instantiates a new User instance.
+        """
+        company_language  = get_company_language_model()()
+        return company_language
+
+    def new_person_language(self, request):
+        """
+        Instantiates a new User instance.
+        """
+        person_language  = get_person_language_model()()
+        return person_language
 
 
     def populate_person(self, request, person):
@@ -562,24 +584,7 @@ class DefaultAccountAdapter(object):
         user = get_user_model()()
         return user
 
-    def populate_username(self, request, user):
-        """
-        Fills in a valid username, if required and missing.  If the
-        username is already present it is assumed to be valid
-        (unique).
-        """
-        from .utils import user_username,user_field
-        first_name = user_field(user, 'first_name')
-        last_name = user_field(user, 'last_name')
-        username = user_username(user)
-        if app_settings.USER_MODEL_USERNAME_FIELD:
-            user_username(
-                user,
-                username or self.generate_unique_username([
-                    first_name,
-                    last_name,
-                    username,
-                    'user']))
+
 
     def save_address(self, request, address, form, commit=True):
         from .utils import address_field
@@ -679,6 +684,30 @@ class DefaultAccountAdapter(object):
         return company
 
 
+    def save_company_person_role(self, request, person_role_company, company, person, form, commit=True):
+        from .utils import company_field
+        data = form.cleaned_data
+        compname = data.get('compname')
+
+        adapter = get_adapter()
+        person_role_company = adapter.new_person_role_company(request)
+        if company:
+            from onhand.provider.utils import company_person_role_field
+            company_person_role_field(person_role_company, 'comp_id', company)
+        if person:
+            company_person_role_field(person_role_company, 'prsn_id', person)
+
+        if (form == 'onhand.provider.forms.RegisterForm'):
+            company_person_role_field(person_role_company, 'crol_code', CompanyRole.objects.get(pk='owner'))
+
+
+        if commit:
+            # Ability not to commit makes it easier to derive from
+            # this adapter by adding
+            person_role_company.save()
+        return person_role_company
+
+
     def save_subscription(self, request, subscription, salessource, provider_subscription_api_id, company, form, commit=True):
         from .utils import subscription_field
         data = form.cleaned_data
@@ -691,7 +720,7 @@ class DefaultAccountAdapter(object):
         if salessource:
             subscription_field(subscription, 'ssrc_id', int(salessource))
 
-        subscription_field(subscription, 'subs_naic_group_level', '2')
+        subscription_field(subscription, 'subs_naic_group_level', '1')
 
         if(request.POST.get('cardnumber', None) and request.POST.get("cardmonth", "") and request.POST.get("cardyear", "") ):
             expire_date = date.today()
@@ -750,16 +779,22 @@ class DefaultAccountAdapter(object):
         return request.session.pop('account_company', None)
 
     def stash_subscription(self, request, subscription):
-        request.session['account_subscription'] = subscription
+        request.session['ohaccount_subscription'] = subscription
 
     def unstash_subscription(self, request):
-        return request.session.pop('account_subscription', None)
+        return request.session.pop('ohaccount_subscription', None)
 
     def stash_providersubscription(self, request, subscription):
-        request.session['account_subscription'] = subscription
+        request.session['provideraccount_subscription'] = subscription
 
     def unstash_providersubscription(self, request):
-        return request.session.pop('account_subscription', None)
+        return request.session.pop('provideraccount_subscription', None)
+
+    def stash_person_role_company(self, request, person_role_company):
+        request.session['company_person_role'] = person_role_company
+
+    def unstash_person_role_company(self, request):
+        return request.session.pop('company_person_role', None)
 
 
     def add_message(self, request, level, message_template,
