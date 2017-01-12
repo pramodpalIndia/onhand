@@ -35,7 +35,7 @@
                                                 <ul style="list-style-type: none;">
                                                 <li>
                                             <span>
-                                                {% if  plan.prod_code == 'basic' %}
+                                                {% if  plan.prod_code == 'BASIC' %}
                                                     <img src="{% static "images/BasicSubscription.png" %}"
                                                          style="height:200px;"/>
                                                 {% endif %}
@@ -316,7 +316,7 @@
                             </div>
                             <div class="clear"></div>
                             <div class="add_details_ftr">
-                                <button class="ser_know_more get_plan Procede_Pay_btn"
+                                <button id="registration_submit" class="ser_know_more get_plan Procede_Pay_btn"
                                         type="submit">{% trans "Sign Up" %} &raquo;</button>
                                 <div class="clear"></div>
                             </div>

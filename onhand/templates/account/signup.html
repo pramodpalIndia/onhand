@@ -1,5 +1,6 @@
 {% load staticfiles i18n compress %}<!DOCTYPE html>
 {% load addcss %}
+{% load render_table from django_tables2 %}
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -9,9 +10,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
-
     {% block css %}
         {% compress css %}
+            <link href="{% static 'css/screen.css' %}" rel="stylesheet" />
             <link href="{% static 'css/smart_wizard.css' %}" rel="stylesheet">
             <link href="{% static 'css/welcometheme.css' %}" rel="stylesheet">
             <link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet">
@@ -51,10 +52,12 @@
                                     <label class="stepNumber"></label>
                                     <span class="stepDesc"><small>Step 2 :</small> <br/>
                                 Your information </span> </a></li>
-                                <li><a href="#step-3">
-                                    <label class="stepNumber"></label>
-                                    <span class="stepDesc"> <small>Step 3 :</small><br/>
-                                Service Setup </span> </a></li>
+{#                                #}
+{#                                <li><a href="#step-3">#}
+{#                                    <label class="stepNumber"></label>#}
+{#                                    <span class="stepDesc"> <small>Step 3 :</small><br/>#}
+{#                                Service Setup </span> </a></li>#}
+{#                                #}
                             </ul>
                             <div id="step-1" style="height:480px;">
                                 {#                        <h2 class="StepTitle">Company Details</h2>#}
@@ -292,7 +295,7 @@
                                                         {% if field == form.naicslevel5opt %}
                                                             {% if field.errors %}
                                                                 {{ form.naicslevel5opt | add_attributes:"step1_company_naics_dropdown  has-danger" }}
-                                                                <span class="oh-alert-error apphelp-block">{% for error in  field.errors %}
+                                                                <span id="span_naicslevel5opt" class="oh-alert-error apphelp-block">{% for error in  field.errors %}
                                                                     {{ error }}<br/>{% endfor %}</span>
                                                             {% else %}
                                                                 {{ field }}
@@ -520,66 +523,67 @@
                                 </div>
                                 <div class="clear"></div>
                             </div>
-                            <div id="step-3" style="height:480px;">
+{#                            <div id="step-3" style="height:480px;">#}
                                 {#                        <h2 class="StepTitle">Step 2 Logon details</h2>#}
-                                <div class="form_wapper_m">
-                                    <div class="step2_user_languages">
-                                        <div class="step2_user_languages_form_wapper">
-
-                                            <div class="step2_user_languages_row ">
-                                                <div class="step2_user_languages_spoke_title">
-                                                    Select your compliance services, government submissions and
-                                                    insurance policy requirements
-                                                </div>
-                                                <table class="responstable">
-
-                                                    <tr>
-                                                        <th>Select</th>
-                                                        <th data-th="Plans"><span>Type</span></th>
-                                                        <th>Description</th>
-                                                        <th>Frequency</th>
-                                                        <th>Renewal date</th>
-                                                        <th>Agency</th>
-                                                        <th>Goverment level</th>
-                                                    </tr>
-
-                                                    <tr>
-                                                        <td><input type="checkbox"/></td>
-                                                        <td>Service</td>
-                                                        <td>RPZ Test</td>
-                                                        <td>Annual</td>
-                                                        <td>2016-11-17</td>
-                                                        <td>NYC Bulidings</td>
-                                                        <td>USA</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td><input type="checkbox"/></td>
-                                                        <td>Service</td>
-                                                        <td>Carting</td>
-                                                        <td>Weekly</td>
-                                                        <td>2016-11-17</td>
-                                                        <td>NYC Consumer Affairs</td>
-                                                        <td>New York City</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td><input type="checkbox"/></td>
-                                                        <td>Insurance</td>
-                                                        <td>Flood inurance</td>
-                                                        <td>Annual</td>
-                                                        <td>2016-11-17</td>
-                                                        <td>NYC Finance Dept</td>
-                                                        <td>NYC State</td>
-                                                    </tr>
-
-                                                </table>
-                                                <div class="clear"></div>
-                                            </div>
-                                        </div>
-                                        <div class="clear"></div>
-                                    </div>
-
-                                </div>
-                            </div>
+{#                                <div class="form_wapper_m">#}
+{#                                    <div class="step2_user_languages">#}
+{#                                        <div class="step2_user_languages_form_wapper">#}
+{##}
+{#                                            <div class="step2_user_languages_row ">#}
+{#                                                <div class="step2_user_languages_spoke_title">#}
+{#                                                    Select your compliance services, government submissions and#}
+{#                                                    insurance policy requirements#}
+{#                                                </div>#}
+{#                                                {% render_table defaultservicetable %}#}
+{#                                                <table class="responstable">#}
+{##}
+{#                                                    <tr>#}
+{#                                                        <th>Select</th>#}
+{#                                                        <th data-th="Plans"><span>Type</span></th>#}
+{#                                                        <th>Description</th>#}
+{#                                                        <th>Frequency</th>#}
+{#                                                        <th>Renewal date</th>#}
+{#                                                        <th>Agency</th>#}
+{#                                                        <th>Goverment level</th>#}
+{#                                                    </tr>#}
+{##}
+{#                                                    <tr>#}
+{#                                                        <td><input type="checkbox"/></td>#}
+{#                                                        <td>Service</td>#}
+{#                                                        <td>RPZ Test</td>#}
+{#                                                        <td>Annual</td>#}
+{#                                                        <td>2016-11-17</td>#}
+{#                                                        <td>NYC Bulidings</td>#}
+{#                                                        <td>USA</td>#}
+{#                                                    </tr>#}
+{#                                                    <tr>#}
+{#                                                        <td><input type="checkbox"/></td>#}
+{#                                                        <td>Service</td>#}
+{#                                                        <td>Carting</td>#}
+{#                                                        <td>Weekly</td>#}
+{#                                                        <td>2016-11-17</td>#}
+{#                                                        <td>NYC Consumer Affairs</td>#}
+{#                                                        <td>New York City</td>#}
+{#                                                    </tr>#}
+{#                                                    <tr>#}
+{#                                                        <td><input type="checkbox"/></td>#}
+{#                                                        <td>Insurance</td>#}
+{#                                                        <td>Flood inurance</td>#}
+{#                                                        <td>Annual</td>#}
+{#                                                        <td>2016-11-17</td>#}
+{#                                                        <td>NYC Finance Dept</td>#}
+{#                                                        <td>NYC State</td>#}
+{#                                                    </tr>#}
+{##}
+{#                                                </table>#}
+{#                                                <div class="clear"></div>#}
+{#                                            </div>#}
+{#                                        </div>#}
+{#                                        <div class="clear"></div>#}
+{#                                    </div>#}
+{##}
+{#                                </div>#}
+{#                            </div>#}
                         </div>
 
                         <!-- End SmartWizard Content --></td>
@@ -967,6 +971,7 @@
         $('#id_naicslevel5opt').on('change', function () {
             if (this.value != 'None') {
                 $('#id_naicslevel5opt').removeClass("has-danger step1_company_naics_dropdown_required");
+                document.getElementById('span_naicslevel5opt').innerHTML = "";
             }
 
         });

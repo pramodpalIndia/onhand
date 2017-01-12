@@ -33,6 +33,7 @@
   </head>
 
   <body>
+<div id="loading"></div>
 
 
     <div class="container">
@@ -80,6 +81,17 @@
       <script type="text/javascript" language="javascript">
 
 
+        function preloader(){
+          document.getElementById("loading").style.display = "block";
+          console.log('Loading loader');
+          document.getElementById("container").style.display = "none";
+      }//preloader
+
+
+     $('#registration_submit').click(function() {
+       preloader();
+         console.log('registration_submit_clicked')
+     });
 
       function ValidatePlanSelection()
         {

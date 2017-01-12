@@ -1,0 +1,82 @@
+{% load render_table from django_tables2 %}
+{% load querystring from django_tables2 %}
+{#    <form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">#}
+{#        {% csrf_token %}#}
+{##}
+{#{% render_table defaultservicetable %}#}
+{#    </form>#}
+
+{% block content %}
+
+{% if table.page %}
+  <div class="table-container">
+{% endif %}
+
+{% block table %}
+
+    <div class="table-responsive" id="SubscribedServicesTableDiv" style="margin-top:-20px;">
+
+        <table class="paleblue table table-hover table-bordered table-striped "{% if defaultservicetable.attrs %} {{ defaultservicetable.attrs.as_html }}{% endif %}>
+            {% block defaultservicetable.thead %}
+            <thead>
+{#                <tr>#}
+{#                    <th colspan="3">#}
+{#                        <h3><i class="fa fa-warning"></i> Manage Alerts </h3>#}
+{#                    </th>#}
+{#                    <th colspan="3">#}
+
+{#                          {% csrf_token %}#}
+{#                            <div>#}
+{#                              <input id="search_form_id" name="search" type="text" class="form-control col-md-4" placeholder="Search by Alert Type or Customer Name"{% if search %} value="{{ search }}"{% endif %} size="30">#}
+{#                              <button type="submit" class="btn btn-small btn-dark"><i class="fa fa-search"></i> Search</button>#}
+{#                            </div>#}
+{#                        </form>#}
+{#                    </th>#}
+{#                </tr>#}
+
+              <tr class="primary">
+                {% for column in defaultservicetable.columns %}
+{#                    {% if column.orderable %}#}
+{#                    <th {{ column.attrs.th.as_html }}><a href="{% querystring table.prefixed_order_by_field=column.order_by_alias.next %}">{{ column.header|title }}</a></th>#}
+{#                    {% else %}#}
+                    <th {{ column.attrs.th.as_html }}>{{ column.header|title }}</th>
+{#                    {% endif %}#}
+                {% endfor %}
+              </tr>
+            </thead>
+            {% endblock defaultservicetable.thead %}
+            {% block defaultservicetable.tbody %}
+            <tbody>
+                {% for row in defaultservicetable.page.object_list|default:defaultservicetable.rows %} {# support pagination #}
+                  {% block defaultservicetable.tbody.row %}
+                  <tr {{ row.attrs.as_html }} style="background: rgba(207, 42, 39, 0.23)" >
+                      {% for column, cell in row.items %}
+                          <td {{ column.attrs.td.as_html }} >{{ cell }}</td>
+                      {% endfor %}
+                  </tr>
+                  {% endblock defaultservicetable.tbody.row %}
+                {% empty %}
+                  {% if defaultservicetable.empty_text %}
+                  {% block defaultservicetable.tbody.empty_text %}
+                  <tr><td colspan="{{ defaultservicetable.columns|length }}">{{ defaultservicetable.empty_text }}</td></tr>
+                  {% endblock defaultservicetable.tbody.empty_text %}
+                  {% endif %}
+                {% endfor %}
+            </tbody>
+            {% endblock defaultservicetable.tbody %}
+            {% block defaultservicetable.tfoot %}
+            <tfoot></tfoot>
+            {% endblock defaultservicetable.tfoot %}
+        </table>
+    </div>
+{% endblock table %}
+
+{% if table.page %}
+    {% block pagination %}
+{#        {% bootstrap_pagination table.page url=request.get_full_path %}#}
+    {% endblock pagination %}
+  </div>
+{% endif %}
+
+
+{% endblock content %}

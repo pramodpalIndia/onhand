@@ -6,8 +6,8 @@ from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 
-from onhand.management.models import Role
-from onhand.provider.models import CompanyPersonRole
+from onhand.management.models import Role, UserPreferenceType
+from onhand.subscription.models import CompanyPersonRole, Subscription
 from django.contrib import auth
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.signals import user_logged_in
@@ -61,7 +61,7 @@ class AbstractUser(AbstractBaseUser, PermissionsMixin):
     )
     is_active = models.CharField(
         _('active'), db_column='user_is_active',max_length=1,
-        default='y',
+        default='Y',
         help_text=_(
             'Designates whether this user should be treated as active. '
             'Unselect this instead of deleting accounts.'
@@ -99,10 +99,11 @@ class AbstractUser(AbstractBaseUser, PermissionsMixin):
 
 @python_2_unicode_compatible
 class User(AbstractUser):
-    id = models.AutoField(primary_key=True,default=0,db_column='user_id')
+    id = models.AutoField(primary_key=True,default=1,db_column='user_id')
     password = models.CharField(max_length=2000, db_column='user_password', verbose_name=('password'))
-    role_code = models.ForeignKey(Role, models.DO_NOTHING, db_column='role_code', verbose_name=('role'),default='custom')
-    cprs = models.ForeignKey(CompanyPersonRole, models.DO_NOTHING,db_column='cprs_id', verbose_name=('companyrole')),
+    role_code = models.ForeignKey(Role, models.DO_NOTHING, db_column='role_code',
+                                  verbose_name=('role'),default='custom')
+    cprs_id = models.ForeignKey(CompanyPersonRole, models.DO_NOTHING,db_column='cprs_id', verbose_name=('companypersonrole'),default=1)
     user_security_question1 = models.CharField(max_length=60, blank=True, null=True, verbose_name=('question1'))
     user_security_answer1 = models.CharField(max_length=20, blank=True, null=True, verbose_name=('answer1'))
     user_security_question2 = models.CharField(max_length=60, blank=True, null=True, verbose_name=('question2'))
@@ -162,20 +163,20 @@ class AnonymousUser(object):
     def get_group_permissions(self, obj=None):
         return set()
 
-    def get_all_permissions(self, obj=None):
-        return _user_get_all_permissions(self, obj=obj)
-
-    def has_perm(self, perm, obj=None):
-        return _user_has_perm(self, perm, obj=obj)
-
-    def has_perms(self, perm_list, obj=None):
-        for perm in perm_list:
-            if not self.has_perm(perm, obj):
-                return False
-        return True
-
-    def has_module_perms(self, module):
-        return _user_has_module_perms(self, module)
+    # def get_all_permissions(self, obj=None):
+    #     return _user_get_all_permissions(self, obj=obj)
+    #
+    # def has_perm(self, perm, obj=None):
+    #     return _user_has_perm(self, perm, obj=obj)
+    #
+    # def has_perms(self, perm_list, obj=None):
+    #     for perm in perm_list:
+    #         if not self.has_perm(perm, obj):
+    #             return False
+    #     return True
+    #
+    # def has_module_perms(self, module):
+    #     return _user_has_module_perms(self, module)
 
     @property
     def is_anonymous(self):
@@ -189,5 +190,17 @@ class AnonymousUser(object):
         return self.username
 
 
+class UserPreference(models.Model):
+    from onhand.users.models import User
+    uprf_id = models.AutoField(primary_key=True, db_column='uprf_id', verbose_name=('UserPreferencId'))
+    user = models.ForeignKey(User, models.DO_NOTHING, verbose_name='User')
+    uprt_code = models.ForeignKey(UserPreferenceType, models.DO_NOTHING, db_column='uprt_code', verbose_name='UserPreferenceType')
+    uprf_value = models.CharField(max_length=40, verbose_name='UserPreferenceValue')
 
+    def __str__(self):
+        return "%s / %s " % (self.user, self.uprt_code)
 
+    class Meta:
+        db_table = 'oh_user_preference'
+        verbose_name = "UserPreference"
+        verbose_name_plural = "UserPreferences"

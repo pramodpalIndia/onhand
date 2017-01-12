@@ -1,0 +1,13 @@
+li a {
+    color: green;
+}
+
+body {
+
+	background: #E6E6E6 url("images/background.jpg");
+	font-family: 'Open Sans', sans-serif;
+	font-weight: normal;
+	font-size: 12px;
+	background-repeat: repeat-x;
+
+}

@@ -152,8 +152,9 @@ position: relative;
 background: rgb(0, 0, 0);
 	/*background: rgba(0, 0, 0, 0.29);*/
 	    border: 1px solid #f8fafb;
+      width: 488px;
 	cursor: text;
-  width: 312px;
+  /*width: 312px;*/
   /* -moz-box-shadow: 5px 5px 8px #888;
 
   -webkit-box-shadow: 5px 5px 8px #888;
@@ -171,8 +172,10 @@ background: rgb(0, 0, 0);
 	background: rgba(0, 0, 0, 0.1);
 	border: 1px solid #142c33;
 	z-index: 99;
-  width: 312px;
+  /*width: 312px;*/
+  width: 465px;
 }
+
 .swMain ul.anchor li a.done:hover {
 	color: #cccccc;
 	background: #000000;
@@ -185,7 +188,8 @@ background: rgb(0, 0, 0);
 	background: rgba(0, 0, 0, 0.1);
 	border: 1px solid #142C33;
 	cursor: text;
-  width: 312px;
+  /*width: 312px;*/
+  width: 465px;
 }
 .swMain ul.anchor li a.disabled:hover {
 	color: #CCCCCC;

@@ -18,7 +18,8 @@ urlpatterns = [
     ),
     url(
         regex=r'^(?P<username>[\w.@+-]+)/$',
-        view=views.UserDetailView.as_view(),
+        # view=views.UserDetailView.as_view(),
+        view=views.HomeView.as_view(),
         name='detail'
     ),
     url(
@@ -26,4 +27,9 @@ urlpatterns = [
         view=views.UserUpdateView.as_view(),
         name='update'
     ),
+
+# E-mail
+#     url(r"^email/$", views.email, name="account_email"),
+#     url(r"^confirm-email/$", views.email_verification_sent,
+#         name="account_email_verification_sent"),
 ]

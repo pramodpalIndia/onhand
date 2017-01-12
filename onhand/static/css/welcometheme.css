@@ -11,6 +11,16 @@ body {
   font-size: 12px;
   background-repeat: repeat-x; }
 
+div#loading {
+    top: 200px;
+    margin: auto;
+    position: absolute;
+    z-index: 1000;
+    width: 160px;
+    height: 24px;
+    background: url(images/ohajax-loader.gif) no-repeat;
+    cursor: wait;
+    }
 
 .oh-sign-in-header {
     font-family: HelveticaNeueBold,HelveticaNeue-Bold,HelveticaNeueLight,HelveticaNeue-Light,HelveticaNeue,"iusHelvetica Neue",Helvetica,Arial,sans-serif;

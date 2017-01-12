@@ -1,0 +1,65 @@
+{% for column in row.columns %}
+    {% if forloop.last %}
+
+        {% ifequal forloop.counter 1 %}
+        <div class="row dashboard-row{{ forloop.counter }}">
+        {%endifequal%}
+
+        {% ifequal forloop.counter 2 %}
+        <div class="row dashboard-row{{ forloop.counter }}">
+        {%endifequal%}
+
+         {% ifequal forloop.counter 3 %}
+        <div class="row dashboard-row{{ forloop.counter }}">
+        {%endifequal%}
+
+         {% ifequal forloop.counter 4 %}
+        <div class="row dashboard-row{{ forloop.counter }}">
+        {%endifequal%}
+
+         {% ifequal forloop.counter 5 %}
+        <div class="row dashboard-row{{ forloop.counter }}">
+        {%endifequal%}
+
+
+        {% ifequal forloop.counter 6 %}
+        <div class="row dashboard-row{{ forloop.counter }}">
+        {%endifequal%}
+
+        {% ifequal forloop.counter 7 %}
+        <div class="row dashboard-row{{ forloop.counter }}">
+        {%endifequal%}
+
+        {% ifequal forloop.counter 8 %}
+        <div class="row dashboard-row{{ forloop.counter }}">
+        {%endifequal%}
+
+        {% ifequal forloop.counter 9 %}
+        <div class="row dashboard-row{{ forloop.counter }}">
+        {%endifequal%}
+
+
+        {% ifequal forloop.counter 10 %}
+        <div class="row dashboard-row{{ forloop.counter }}">
+        {%endifequal%}
+
+        {% ifequal forloop.counter 11 %}
+        <div class="row dashboard-row{{ forloop.counter }}">
+        {%endifequal%}
+
+        {% ifequal forloop.counter 12 %}
+        <div class="row dashboard-row{{ forloop.counter }}">
+        {%endifequal%}
+
+    {%endif%}
+{% endfor %}
+
+{#<div class="row dashboard-row{{ forloop.counter }}">#}
+  {% for column in row.columns %}
+    <div class="dashboard-col-{{ column.width }}">
+      {% for element in column.elements %}
+        {% include "suit_dashboard/element.html" %}
+      {% endfor %}
+    </div>
+  {% endfor %}
+</div>

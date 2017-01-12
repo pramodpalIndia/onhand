@@ -1,0 +1,774 @@
+{% extends "suit_dashboard/base.html" %}
+{% load staticfiles i18n compress%}
+{% load i18n admin_static %}
+{% load crispy_forms_tags %}
+{% load humanize %}
+
+{% block title %}
+  {% trans "Service|Add" %}
+{% endblock %}
+{#{% extends "account/welcome.html" %}#}
+
+{% load i18n %}
+{#{% load crispy_forms_tags %}#}
+{% load static %}
+{% load addcss %}
+
+{% block extrastyle %}
+        {% compress css %}
+{#            <link href="{% static 'css/screen.css' %}" rel="stylesheet" />#}
+            <link href="{% static 'css/naic722/compliance/ComplianceAdd.css' %}" rel="stylesheet">
+            <link href="{% static 'css/welcometheme.css' %}" rel="stylesheet">
+            <link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet">
+        {% endcompress %}
+    {% endblock %}
+
+{#    {% block css %}#}
+{#    {% compress css %}#}
+{#    <link href="{% static 'css/welcometheme.css' %}" rel="stylesheet">#}
+{#        <link rel="stylesheet" type="text/css" href="{% block stylesheet %}{% endblock %}"/>#}
+{#    <link rel="stylesheet" type="text/css" href="{% static 'css/jquery.dropdown.css' %}" media="all">#}
+{#    <link rel="stylesheet" type="text/css" href="{% static 'suit/bootstrap/css/bootstrap.min.css' %}" media="all"/>#}
+{#        <link rel="stylesheet" type="text/css" href="{% static 'suit/css/suit.css' %}" media="all">#}
+{#        <link href="{% static 'css/jquery-ui1.12.1.min.css' %}" rel="stylesheet">#}
+{#            <link href="{% static 'css/jquery-ui1.12.1.theme.min.css' %}" rel="stylesheet">#}
+{#            <link href="{% static 'css/jquery-ui1.12.1.structure.min.css' %}" rel="stylesheet">#}
+{#    <script src="{% static 'suit/js/jquery-1.8.3.min.js' %}"></script>#}
+{#    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.js"/>#}
+{#        <link href="{% static 'css/popup.css' %}" rel="stylesheet">#}
+{#        <link href="{% static 'css/editable-select.css' %}" rel="stylesheet">#}
+{#    {% endcompress %}#}
+{#    {% endblock %}#}
+
+{% block head_title %}{% trans "Service | New" %}{% endblock %}
+{% block inner %}
+    {% block content %}
+        <form class="ComplianceForm" autocomplete="off" id="compliance_addnew_form" method="post" action="{% url 'compliance:compliance_addnew' %} ">
+            {% csrf_token %}
+            {% if redirect_field_value %}
+                <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+            {% endif %}
+{#            {% crispy example_form %}#}
+
+             <table align="center" border="0" cellpadding="0" cellspacing="0" style="margin:auto;">
+                <tr>
+                    <td><!-- Smart Wizard -->
+
+                        <div id="wizard" class="swMain">
+                            <ul>
+                                <li><a href="#step-1">
+                                    <label class="stepNumber"></label>
+                                    <span class="stepDesc"> <small>Add New</small><br/>
+                                Service </span> </a></li>
+                                <li><a href="#step-2">
+                                    <label class="stepNumber"></label>
+                                    <span class="stepDesc"><small>Add Action</small> <br/>
+                                New Service  </span> </a></li>
+{#                                #}
+{#                                <li><a href="#step-3">#}
+{#                                    <label class="stepNumber"></label>#}
+{#                                    <span class="stepDesc"> <small>Step 3 :</small><br/>#}
+{#                                Service Setup </span> </a></li>#}
+{#                                #}
+                            </ul>
+                            <div id="step-1" style="height:70vh;">
+                                {#                        <h2 class="StepTitle">Company Details</h2>#}
+                                <div class="form_wapper_m">
+                                    <div class="step1_service">
+                                        <div class="form_wapper">
+                                            <div class="row_step2_left">
+                                                <div class="label_name">
+                                                    <h5><label class=" label_name required control-label">{{ form.complianceservice.label }}​ </label>
+                                                    </h5>
+                                                </div>
+                                                <div class="dropdown">
+                                                    {% for field in form %}
+                                                        {% if field == form.complianceservice %}
+                                                            {% if field.errors %}
+                                                                {{ form.complianceservice | add_attributes:"inp_steps_compname  has-danger" }}
+                                                                <span class="oh-alert-error apphelp-block">{% for error in  field.errors %}
+                                                                    {{ error }}<br/>{% endfor %}</span>
+                                                            {% else %}
+                                                                {{ field }}
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </div>
+                                                <div class="clear"></div>
+                                            </div>
+                                            <div class="row_step2_left">
+                                                <div class="label_name">
+                                                    <h5>{{ form.frequency.label }}</h5>
+                                                </div>
+                                                <div class="f_inp_bx">
+                                                    {% for field in form %}
+                                                        {% if field == form.frequency %}
+                                                            {% if field.errors %}
+                                                                {{ form.frequency | add_attributes:"inp_steps_email  has-danger" }}
+                                                                <span class="oh-alert-error apphelp-block">{% for error in  field.errors %}
+                                                                    {{ error }}<br/>{% endfor %}</span>
+                                                            {% else %}
+                                                                {{ field }}
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                    <span class="apphelp-block">
+                                                <strong></strong>
+                                            </span>
+                                                </div>
+                                                <div class="clear"></div>
+                                            </div>
+                                            <div class="row_step2_left">
+                                                <div class="label_name">
+                                                    <h5>{{ form.lastservicedate.label }}</h5>
+                                                </div>
+                                                <div class="f_inp_bx">
+                                                    {% for field in form %}
+                                                        {% if field == form.lastservicedate %}
+                                                            {% if field.errors %}
+                                                                {{ form.lastservicedate | add_attributes:"inp_steps_website  has-danger" }}
+                                                                <span class="oh-alert-error apphelp-block">{% for error in  field.errors %}
+                                                                    {{ error }}<br/>{% endfor %}</span>
+                                                            {% else %}
+                                                                {{ field }}
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </div>
+                                                <div class="clear"></div>
+                                            </div>
+                                            <div class="row_step2_left">
+                                                <div class="label_name">
+                                                    <h5>{{ form.servicenote.label }}</h5>
+                                                </div>
+                                                <div class="f_inp_bx">
+                                                    {% for field in form %}
+                                                        {% if field == form.servicenote %}
+                                                            {% if field.errors %}
+                                                                {{ form.servicenote | add_attributes:"inp_steps_phone  has-danger" }}
+                                                            {% else %}
+                                                                {{ field }}
+                                                            {% endif %}
+                                                        {% endif %}
+                                                        {% if field == form.fax %}
+                                                            {% if field.errors %}
+                                                                {{ form.fax | add_attributes:"inp_steps_fax  has-danger" }}
+                                                            {% else %}
+                                                                {{ field }}
+                                                            {% endif %}
+
+                                                        {% endif %}
+                                                    {% endfor %}
+
+                                                </div>
+                                                <div class="clear"></div>
+                                            </div>
+                                        </div>
+                                        <div class="form_wapper">
+                                            <div class="row_step2_left">
+                                                <div class="label_name">
+                                                    <h5 style="text-align: right">Jurisdiction: &nbsp;</h5>
+                                                </div>
+                                                <div class="label_name">
+                                                    <h5 id="labeljurisdiction"></h5>
+                                                </div>
+                                                <div class="clear"></div>
+                                            </div>
+                                            <div class="row_step2_left">
+                                                <div class="label_name">
+                                                    <h5>{{ form.addressline2.label }}</h5>
+                                                </div>
+                                                <div class="f_inp_bx">
+                                                    {{ form.addressline2 }}
+                                                    <span class="apphelp-block">
+                                                <strong></strong>
+                                            </span>
+                                                </div>
+                                                <div class="clear"></div>
+                                            </div>
+                                            <div class="row_step2_left">
+                                                <div class="label_name">
+                                                    <h5>{{ form.zipcode.label }}</h5>
+                                                </div>
+                                                <div class="f_inp_bx">
+                                                    {% for field in form %}
+                                                        {% if field == form.zipcode %}
+                                                            {% if field.errors %}
+                                                                {{ form.zipcode | add_attributes:"inp_steps_zipcode  has-danger" }}
+                                                            {% else %}
+                                                                {{ field }}
+                                                            {% endif %}
+                                                        {% endif %}
+                                                        {% if field == form.cityopt %}
+                                                            <div class="inp_steps__city_dropdown_div"
+                                                                 id="id_city_div_dropdown" name="city_div_dropdown"
+                                                                 style="display: inline-table">
+                                                                {{ cityopt }}
+                                                                {% if field.errors %}
+                                                                    {{ form.cityopt | add_attributes:"inp_steps_city_opt  has-danger" }}
+                                                                {% else %}
+                                                                    {{ field }}
+                                                                {% endif %}
+                                                            </div>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                    <div class="inp_steps_city_div" id="id_city_div" name="city_div"
+                                                         style="display: none"><input type="text" id="id_city"
+                                                                                      name="city"
+                                                                                      class="inp_steps_City"
+                                                                                      style="display: inline"
+                                                                                      placeholder="Enter city"></div>
+                                                    {% for field in form %}
+                                                        {% if field == form.zipcode %}
+                                                            {% if field.errors %}
+                                                                <span class="oh-alert-error apphelp-block">{% for error in  field.errors %}
+                                                                    {{ error }}<br/>{% endfor %}</span>
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </div>
+                                                <div class="clear"></div>
+                                            </div>
+                                            <div class="row_step2_left">
+                                                <div class="label_name">
+                                                    <h5>{{ form.county.label }}</h5>
+                                                </div>
+                                                <div class="f_inp_bx">
+                                                    {{ form.county }}
+                                                    {{ form.state }}
+                                                    <span class="apphelp-block">
+                                                <strong></strong>
+                                            </span>
+                                                </div>
+                                                <div class="clear"></div>
+                                            </div>
+                                        </div>
+                                    <div class="form_wapper">
+                                            <div class="row_step2_left">
+                                                <div class="label_name">
+                                                    <h5>Factor</h5>
+                                                </div>
+                                                <div class="f_inp_bx">
+                                                    {% for field in form %}
+                                                        {% if field == form.factorvalue %}
+                                                            {% if field.errors %}
+                                                                {{ form.factorvalue | add_attributes:"inp_steps_addressline1  has-danger" }}
+                                                                <span class="oh-alert-error apphelp-block">{% for error in  field.errors %}
+                                                                    {{ error }}<br/>{% endfor %}</span>
+                                                            {% else %}
+                                                                {{ field }}
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </div>
+                                                <div class="clear"></div>
+                                            </div>
+                                            <div class="row_step2_left">
+                                                <div class="label_name">
+                                                    <h5>{{ form.addressline2.label }}</h5>
+                                                </div>
+                                                <div class="f_inp_bx">
+                                                    {{ form.addressline2 }}
+                                                    <span class="apphelp-block">
+                                                <strong></strong>
+                                            </span>
+                                                </div>
+                                                <div class="clear"></div>
+                                            </div>
+                                            <div class="row_step2_left">
+                                                <div class="label_name">
+                                                    <h5>{{ form.zipcode.label }}</h5>
+                                                </div>
+                                                <div class="f_inp_bx">
+                                                    {% for field in form %}
+                                                        {% if field == form.zipcode %}
+                                                            {% if field.errors %}
+                                                                {{ form.zipcode | add_attributes:"inp_steps_zipcode  has-danger" }}
+                                                            {% else %}
+                                                                {{ field }}
+                                                            {% endif %}
+                                                        {% endif %}
+                                                        {% if field == form.cityopt %}
+                                                            <div class="inp_steps__city_dropdown_div"
+                                                                 id="id_city_div_dropdown" name="city_div_dropdown"
+                                                                 style="display: inline-table">
+                                                                {{ cityopt }}
+                                                                {% if field.errors %}
+                                                                    {{ form.cityopt | add_attributes:"inp_steps_city_opt  has-danger" }}
+                                                                {% else %}
+                                                                    {{ field }}
+                                                                {% endif %}
+                                                            </div>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                    <div class="inp_steps_city_div" id="id_city_div" name="city_div"
+                                                         style="display: none"><input type="text" id="id_city"
+                                                                                      name="city"
+                                                                                      class="inp_steps_City"
+                                                                                      style="display: inline"
+                                                                                      placeholder="Enter city"></div>
+                                                    {% for field in form %}
+                                                        {% if field == form.zipcode %}
+                                                            {% if field.errors %}
+                                                                <span class="oh-alert-error apphelp-block">{% for error in  field.errors %}
+                                                                    {{ error }}<br/>{% endfor %}</span>
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </div>
+                                                <div class="clear"></div>
+                                            </div>
+                                            <div class="row_step2_left">
+                                                <div class="label_name">
+                                                    <h5>{{ form.county.label }}</h5>
+                                                </div>
+                                                <div class="f_inp_bx">
+                                                    {{ form.county }}
+                                                    {{ form.state }}
+                                                    <span class="apphelp-block">
+                                                <strong></strong>
+                                            </span>
+                                                </div>
+                                                <div class="clear"></div>
+                                            </div>
+                                        </div>
+
+                                        <div class="clear"></div>
+                                    </div>
+                                    <div class="clear"></div>
+
+                                </div>
+                                <div class="clear"></div>
+                            </div>
+                            <div id="step-2" style="height:70vh;">
+                                {#                        <h2 class="StepTitle">Step 2 Logon details</h2>#}
+                                <div class="form_wapper_m">
+                                    <div class="step2_user_languages">
+                                        <div class="step2_user_languages_form_wapper">
+
+                                            <div class="step2_user_languages_row ">
+                                                <div class="step2_user_languages_spoke_title">
+                                                    <label class="required control-label">Languages you speak</label>
+                                                </div>
+                                                <div class="f_inp_bx">
+                                                    {% for field in form %}
+                                                        {% if field == form.personlanguagechecklist %}
+                                                            {% if field.errors %}
+                                                                {{ form.personlanguagechecklist }}
+                                                                <span class="apphelp-block">{% for error in  field.errors %}
+                                                                    {{ error }}<br/>{% endfor %}</span>
+                                                            {% else %}
+                                                                {{ field }}
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </div>
+                                                <div class="clear"></div>
+                                            </div>
+                                        </div>
+
+                                        <div class="clear"></div>
+                                    </div>
+                                    <div class="clear"></div>
+                                    <div class="step2_user_role">
+                                        <div class="step2_user_role_form_wapper">
+
+                                            <div class="step2_user_role_row ">
+                                                <div class="step2_user_role_title">
+                                                    <label class="required control-label">Your role in the
+                                                        company</label>
+                                                </div>
+                                                <div class="f_inp_bx">
+                                        <span class="step2_user_role_items">
+
+                                         {% for field in form %}
+                                             {% if field == form.personroles %}
+                                                 {% if field.errors %}
+                                                     {% for choice in form.personroles %}
+                                                         <span class="ohplanbasis">{{ choice.tag }}&nbsp;{{ choice.choice_label }}&nbsp;&nbsp;&nbsp;&nbsp; </span>
+                                                     {% endfor %}
+                                                     <span class="apphelp-block">{% for error in  field.errors %}
+                                                         {{ error }}<br/>{% endfor %}</span>
+                                                 {% else %}
+                                                     {% for choice in form.personroles %}
+                                                         <span class="ohplanbasis">{{ choice.tag }}&nbsp;{{ choice.choice_label }}&nbsp;&nbsp;&nbsp;&nbsp; </span>
+                                                     {% endfor %}
+                                                 {% endif %}
+                                             {% endif %}
+                                         {% endfor %}
+                                        </span>
+                                                </div>
+                                                <div class="clear"></div>
+                                            </div>
+                                        </div>
+
+                                        <div class="clear"></div>
+                                    </div>
+
+                                    <div class="step2_user_login">
+                                        <div class="step2_user_login_form_wapper">
+                                            <div class="step2_user_login_row ">
+                                                <div id="Login_container">
+                                                    <div id="Login_container_username">
+                                                <span class="step2_user_login_title">  <label
+                                                        class="required control-label">Login credentials </label></span>
+                                                        <div class="row_step2_login_username">
+                                                            <div class="inp_steps_lanbel_login">
+                                                                <h5>{{ form.username.label }}</h5>
+                                                            </div>
+                                                            <div class="f_inp_bx">
+                                                                {% for field in form %}
+                                                                    {% if field == form.username %}
+                                                                        {% if field.errors %}
+                                                                            {{ form.username | add_attributes:"inp_steps_username  has-danger" }}
+                                                                            <span class="oh-alert-error apphelp-block">{% for error in  field.errors %}
+                                                                                {{ error }}{% endfor %}</span>
+                                                                        {% else %}
+                                                                            {{ field }}
+                                                                        {% endif %}
+                                                                    {% endif %}
+                                                                {% endfor %}
+                                                            </div>
+                                                            <div class="clear"></div>
+                                                        </div>
+                                                        <div class="row_step2_left">
+                                                            <div class="inp_steps_lanbel_login">
+                                                                <h5>{{ form.password1.label }}</h5>
+                                                            </div>
+                                                            <div class="f_inp_bx">
+                                                                {% for field in form %}
+                                                                    {% if field == form.password1 %}
+                                                                        {% if field.errors %}
+                                                                            {{ form.password1 | add_attributes:"inp_steps_password  has-danger" }}
+                                                                            <span class="oh-alert-error apphelp-block">{% for error in  field.errors %}
+                                                                                {{ error }}{% endfor %}</span>
+                                                                        {% else %}
+                                                                            {{ field }}
+                                                                        {% endif %}
+                                                                    {% endif %}
+                                                                {% endfor %}
+                                                                </span>
+                                                            </div>
+                                                            <div class="clear"></div>
+                                                        </div>
+                                                        <div class="row_step2_left">
+                                                            <div class="inp_steps_lanbel_login">
+                                                                <h5>{{ form.password2.label }}</h5>
+                                                            </div>
+                                                            <div class="f_inp_bx">
+                                                                {% for field in form %}
+                                                                    {% if field == form.password2 %}
+                                                                        {% if field.errors %}
+                                                                            {{ form.password2 | add_attributes:"inp_steps_password  has-danger" }}
+                                                                            <span class="oh-alert-error apphelp-block">{% for error in  field.errors %}
+                                                                                {{ error }}{% endfor %}</span>
+                                                                        {% else %}
+                                                                            {{ field }}
+                                                                        {% endif %}
+                                                                    {% endif %}
+                                                                {% endfor %}
+                                                                <strong></strong>
+                                                                </span>
+                                                            </div>
+                                                            <div class="clear"></div>
+                                                        </div>
+
+                                                    </div>
+                                                    <span class="step2_user_login_title"> Security questions recommended for extra security</span>
+                                                    <div id="Login_container_questions">
+                                                        <div class="step2_user_login_questions_row_right">
+                                                            <div class="step2_user_login_questions_row_right_label">
+                                                                Security Question 1 :
+                                                                {{ form.secquestion1 }}
+                                                                {{ form.secanswer1 }}
+                                                            </div>
+                                                            <div class="clear"></div>
+                                                        </div>
+                                                        <div class="step2_user_login_questions_row_right">
+                                                            <div class="step2_user_login_questions_row_right_label">
+                                                                Security Question 2 :
+                                                                {{ form.secquestion2 }}
+                                                                {{ form.secanswer2 }}
+                                                            </div>
+                                                            <div class="clear"></div>
+                                                        </div>
+                                                        <div class="step2_user_login_questions_row_right">
+                                                            <div class="step2_user_login_questions_row_right_label">
+                                                                Security Question 3 :
+                                                                {{ form.secquestion3 }}
+                                                                {{ form.secanswer3 }}
+                                                            </div>
+
+                                                            <div class="clear"></div>
+                                                        </div>
+                                                        <div class="step2_user_login_questions_row_right">
+                                                            <div class="step2_user_login_questions_row_right_label">
+                                                                Security Question 4 :
+                                                                {{ form.secquestion4 }}
+                                                                {{ form.secanswer4 }}
+                                                            </div>
+                                                            <div class="clear"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="clear"></div>
+                                    </div>
+                                </div>
+                                <div class="clear"></div>
+                            </div>
+{#                            <div id="step-3" style="height:480px;">#}
+                                {#                        <h2 class="StepTitle">Step 2 Logon details</h2>#}
+{#                                <div class="form_wapper_m">#}
+{#                                    <div class="step2_user_languages">#}
+{#                                        <div class="step2_user_languages_form_wapper">#}
+{##}
+{#                                            <div class="step2_user_languages_row ">#}
+{#                                                <div class="step2_user_languages_spoke_title">#}
+{#                                                    Select your compliance services, government submissions and#}
+{#                                                    insurance policy requirements#}
+{#                                                </div>#}
+{#                                                {% render_table defaultservicetable %}#}
+{#                                                <table class="responstable">#}
+{##}
+{#                                                    <tr>#}
+{#                                                        <th>Select</th>#}
+{#                                                        <th data-th="Plans"><span>Type</span></th>#}
+{#                                                        <th>Description</th>#}
+{#                                                        <th>Frequency</th>#}
+{#                                                        <th>Renewal date</th>#}
+{#                                                        <th>Agency</th>#}
+{#                                                        <th>Goverment level</th>#}
+{#                                                    </tr>#}
+{##}
+{#                                                    <tr>#}
+{#                                                        <td><input type="checkbox"/></td>#}
+{#                                                        <td>Service</td>#}
+{#                                                        <td>RPZ Test</td>#}
+{#                                                        <td>Annual</td>#}
+{#                                                        <td>2016-11-17</td>#}
+{#                                                        <td>NYC Bulidings</td>#}
+{#                                                        <td>USA</td>#}
+{#                                                    </tr>#}
+{#                                                    <tr>#}
+{#                                                        <td><input type="checkbox"/></td>#}
+{#                                                        <td>Service</td>#}
+{#                                                        <td>Carting</td>#}
+{#                                                        <td>Weekly</td>#}
+{#                                                        <td>2016-11-17</td>#}
+{#                                                        <td>NYC Consumer Affairs</td>#}
+{#                                                        <td>New York City</td>#}
+{#                                                    </tr>#}
+{#                                                    <tr>#}
+{#                                                        <td><input type="checkbox"/></td>#}
+{#                                                        <td>Insurance</td>#}
+{#                                                        <td>Flood inurance</td>#}
+{#                                                        <td>Annual</td>#}
+{#                                                        <td>2016-11-17</td>#}
+{#                                                        <td>NYC Finance Dept</td>#}
+{#                                                        <td>NYC State</td>#}
+{#                                                    </tr>#}
+{##}
+{#                                                </table>#}
+{#                                                <div class="clear"></div>#}
+{#                                            </div>#}
+{#                                        </div>#}
+{#                                        <div class="clear"></div>#}
+{#                                    </div>#}
+{##}
+{#                                </div>#}
+{#                            </div>#}
+                        </div>
+
+                        <!-- End SmartWizard Content --></td>
+                </tr>
+            </table>
+
+        </form>
+
+    {% endblock %}
+{% endblock %}
+
+{% block extrajs %}
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.js"></script>
+
+    {% compress js %}
+{#        <script src="{% static 'js/project.js' %}"></script>#}
+        <script src="{% static 'js/naic722/compliance/complainceadd.js' %}"></script>
+    {% endcompress %}
+
+<script type="text/javascript" language="javascript">
+
+   $(document).ready(function () {
+            // Smart Wizard
+            $('#wizard').smartWizard({
+                // Properties
+                selected: 0,  // Selected Step, 0 = first step
+                keyNavigation: true, // Enable/Disable key navigation(left and right keys are used if enabled)
+                enableAllSteps: false,  // Enable/Disable all steps on first load
+                transitionEffect: 'fade', // Effect on navigation, none/fade/slide/slideleft
+                contentURL: null, // specifying content url enables ajax content loading
+                contentURLData: null, // override ajax query parameters
+                contentCache: true, // cache step contents, if false content is fetched always from ajax url
+                cycleSteps: true, // cycle step navigation
+                enableFinishButton: false, // makes finish button enabled always
+                hideButtonsOnDisabled: true, // when the previous/next/finish buttons are disabled, hide them instead
+                errorSteps: [],    // array of step numbers to highlighting as error steps
+                labelNext: 'Create Service', // label for Next button
+                labelPrevious: 'Previous', // label for Previous button
+                labelFinish: 'Save Sevice Action',  // label for Finish button
+                noForwardJumping: true,
+                ajaxType: 'POST',
+                // Events
+                onLeaveStep: null, // triggers when leaving a step
+                onShowStep: null,  // triggers when showing a step
+                onFinish: onFinishValidation(),  // triggers when Finish button is clicked
+                includeFinishButton: true,   // Add the finish button
+                reverseButtonsOrder: false //shows buttons ordered as: prev, next and finish
+            });
+
+            $("#id_zipcode").keyup();
+        });
+    function onFinishValidation() {
+            console.log('onFinishValidation');
+{#            if ($('#id_naicslevel5opt option:selected').val() != null && $('#id_naicslevel5opt option:selected').val() != 'None' && $('#id_naicslevel5opt option:selected').val() != '0000000'#}
+{#                    && $('#id_naicslevel5opt option:selected').val() != ' ') {#}
+{#                console.log($('#id_naicslevel5opt option:selected').val());#}
+{#                document.getElementById('step1_company_naics_description').innerHTML = "NAICS Classification : " + $('#id_naicslevel5opt option:selected').val();#}
+{#            } else {#}
+{#                document.getElementById('step1_company_naics_description').innerHTML = ""#}
+{#            }#}
+
+        }
+
+function ValidateSignup() {
+            var signup_is_valid = true;
+            console.log("Validating Signup :");
+{#            console.log(document.getElementById('id_compname').value);#}
+{#            if (document.getElementById('id_compname').value == '') {#}
+{#                console.log('setting css for id_compname');#}
+{#                $('#id_compname').addClass("inp_steps_compname  has-danger");#}
+{#                signup_is_valid = false;#}
+{#            } else {#}
+{#                $('#id_compname').removeClass("has-danger");#}
+{#            }#}
+{##}
+{#            console.log($('#id_naicslevel5opt option:selected').length);#}
+{#            console.log('Val & Lenght ->' + $('#id_naicslevel5opt option:selected').val(), $('#id_naicslevel5opt option:selected').length);#}
+{#            if ($('#id_naicslevel5opt option:selected').val() != '' && $('#id_naicslevel5opt option:selected').val() != 'None') {#}
+{#                if ($('#id_naicslevel5opt option:selected').length != 0)#}
+{#                    $('#id_naicslevel5opt').removeClass("has-danger step1_company_naics_dropdown_required");#}
+{#                else#}
+{#                    $('#id_naicslevel5opt').addClass("step1_company_naics_dropdown  has-danger step1_company_naics_dropdown_required");#}
+{#                signup_is_valid = false;#}
+{#            }#}
+{#            else {#}
+{#                $('#id_naicslevel5opt').addClass("step1_company_naics_dropdown  has-danger step1_company_naics_dropdown_required");#}
+{#                signup_is_valid = false;#}
+{#            }#}
+{##}
+{#            var is_languageslected = false;#}
+{#            var checkedonhandlang = document.getElementsByName("languagechecklist");#}
+{#            var checkedlanguages = 0;#}
+{#            for (var i = 0; i < checkedonhandlang.length; i++) {#}
+{#                if (checkedonhandlang[i].checked) {#}
+{#                    checkedlanguages = i;#}
+{#                    is_languageslected = true;#}
+{#                }#}
+{#            }#}
+{#            if (is_languageslected == false) {#}
+{#                for (var i = 0; i < checkedonhandlang.length; i++) {#}
+{#                    checkedonhandlang[i].style = "box-shadow: 0px 0px 7px 4px rgba(230,9,52,1)";#}
+                    {#            checkedonhandlang[i].addClass("has-danger")#}
+{#                }#}
+{#                signup_is_valid = false;#}
+{#            } else {#}
+{#                for (var i = 0; i < checkedonhandlang.length; i++) {#}
+{#                    checkedonhandlang[i].style = "";#}
+{#                }#}
+{#            }#}
+{##}
+{#            var is_personlanguageslected = false;#}
+{#            var checkedonhandpersonlang = document.getElementsByName("personlanguagechecklist");#}
+{#            var checkedpersonlanguages = 0;#}
+{#            for (var i = 0; i < checkedonhandpersonlang.length; i++) {#}
+{#                if (checkedonhandpersonlang[i].checked) {#}
+{#                    checkedpersonlanguages = i;#}
+{#                    is_personlanguageslected = true;#}
+{#                }#}
+{#            }#}
+{#            if (is_personlanguageslected == false) {#}
+{#                for (var i = 0; i < checkedonhandpersonlang.length; i++) {#}
+{#                    console.log(checkedonhandpersonlang[i].checked);#}
+{#                    checkedonhandpersonlang[i].style = "box-shadow: 0px 0px 7px 4px rgba(230,9,52,1)";#}
+                    {#            checkedonhandpersonlang[i].addClass("has-danger")#}
+{#                }#}
+{#                signup_is_valid = false;#}
+{#            } else {#}
+{#                for (var i = 0; i < checkedonhandpersonlang.length; i++) {#}
+{#                    checkedonhandpersonlang[i].style = "";#}
+{#                }#}
+{#            }#}
+{##}
+{#            var personroleslected = false;#}
+{#            var personroleradio = document.getElementsByName("ohplanselect");#}
+{#            var personroleradioindex = 0;#}
+{#            for (var i = 0; i < personroleradio.length; i++) {#}
+{#                if (personroleradio[i].checked) {#}
+{#                    personroleradioindex = i;#}
+{#                    personroleslected = true;#}
+{#                }#}
+{#            }#}
+{##}
+{#            if (personroleslected == false) {#}
+{#                for (var i = 0; i < personroleradio.length; i++) {#}
+{#                    personroleradio[i].style = "box-shadow: 0px 0px 7px 4px rgba(230,9,52,1)";#}
+{#                }#}
+{#                signup_is_valid = false;#}
+{#            } else {#}
+{#                for (var i = 0; i < personroleradio.length; i++) {#}
+{#                    personroleradio[i].style = "";#}
+{#                }#}
+{#            }#}
+{##}
+{##}
+{#            if (document.getElementById('id_username').value == '') {#}
+{#                $('#id_username').addClass("inp_steps_username  has-danger");#}
+{#                signup_is_valid = false;#}
+{#            } else {#}
+{#                $('#id_username').removeClass("has-danger");#}
+{#            }#}
+{##}
+{#            if (document.getElementById('id_password1').value == '') {#}
+{#                $('#id_password1').addClass("inp_steps_password  has-danger");#}
+{#                signup_is_valid = false;#}
+{#            } else {#}
+{#                $('#id_password1').removeClass("has-danger");#}
+{#            }#}
+{##}
+{#            if (document.getElementById('id_password2').value == '') {#}
+{#                $('#id_password2').addClass("inp_steps_password  has-danger");#}
+{#                signup_is_valid = false;#}
+{#            } else {#}
+{#                $('#id_password2').removeClass("has-danger");#}
+{#            }#}
+{##}
+{##}
+{#            console.log(signup_is_valid);#}
+{#            return signup_is_valid;#}
+    return false;
+        }
+
+
+$("#id_complianceservice").on('change', function() {
+
+    console.log($.trim($(this).select.val()));
+
+        });
+{#$( function() {#}
+{#    $( "#servicetabs" ).tabs();#}
+{#  } );#}
+</script>
+{% endblock %}
+

@@ -5,12 +5,16 @@ from django import forms
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as AuthUserAdmin
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
+from django.contrib.sites.models import Site
+from django.forms import fields
+
 from .models import User
 
 
 class MyUserChangeForm(UserChangeForm):
     class Meta(UserChangeForm.Meta):
         model = User
+    fields =['user_id','user_password']
 
 
 class MyUserCreationForm(UserCreationForm):
@@ -36,7 +40,13 @@ class MyUserAdmin(AuthUserAdmin):
     form = MyUserChangeForm
     add_form = MyUserCreationForm
     fieldsets = (
-            ('User Profile', {'fields': ('name',)}),
+            ('User Profile', {'fields': ('user_id',)}),
     )
-    list_display = ('username', 'is_active')
+    list_display = ('username', 'is_active','last_login')
     search_fields = ['username']
+
+
+@admin.register(Site)
+class SiteAdmin(admin.ModelAdmin):
+    list_display = ('domain', 'name')
+    search_fields = ('domain', 'name')

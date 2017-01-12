@@ -1,0 +1,1081 @@
+{% load staticfiles i18n compress %}<!DOCTYPE html>
+{% load addcss %}
+{% load render_table from django_tables2 %}
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}">
+    <title>{% block title %}Onhand{% endblock title %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    {% block css %}
+        {% compress css %}
+            <link href="{% static 'css/screen.css' %}" rel="stylesheet"/>
+            <link href="{% static 'css/servicesignup_wizard.css' %}" rel="stylesheet">
+            <link href="{% static 'css/welcometheme.css' %}" rel="stylesheet">
+            <link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet">
+            <link href="{% static 'css/jquery-ui1.12.1.min.css' %}" rel="stylesheet">
+            <link href="{% static 'css/jquery-ui1.12.1.theme.min.css' %}" rel="stylesheet">
+            <link href="{% static 'css/jquery-ui1.12.1.structure.min.css' %}" rel="stylesheet">
+        {% endcompress %}
+    {% endblock %}
+</head>
+<body>
+<div class="container">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <form class="signup" id="signup_form" method="post" action="{% url 'account_servicesignup' %}">
+        {% csrf_token %}
+
+        {#  {{ form|crispy }}#}
+
+        {% if redirect_field_value %}
+            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+        {% endif %}
+
+
+        {#        {% for choice in ServiceJurisdiction %}#}
+        {#            <input type="checkbox" name="complianceselect" id="complianceselect{{ forloop.counter }}" value="{{ choice.cont_id }}" />#}
+        {#            service#}
+        {#            {{ choice.ctyp.ctyp_desc }}#}
+        {#            <select id="compliancedropdown" >#}
+        {#                <option value="DAILY" {% if choice.ctyp.basi_code|stringformat:"s"  == "DAILY" %} selected {% endif %}>Daily</option>#}
+        {#                <option value="WEEKLY" {% if choice.ctyp.basi_code|stringformat:"s"  == "WEEKLY" %} selected {% endif %}>Weekly</option>#}
+        {#                <option value="MNTHLY" {% if choice.ctyp.basi_code|stringformat:"s"  == "MNTHLY" %} selected {% endif %}>Monthly</option>#}
+        {#                <option value="QTLY" {% if choice.ctyp.basi_code|stringformat:"s"  == "QTLY" %} selected {% endif %}>Quartely</option>#}
+        {#                <option value="SEMIAN" {% if choice.ctyp.basi_code|stringformat:"s"  == "SEMIAN" %} selected {% endif %}>Semi-Annual</option>#}
+        {#                <option value="ANNUAL" {% if choice.ctyp.basi_code|stringformat:"s"  == "ANNUAL" %} selected {% endif %}>Annual</option>#}
+        {#                <option value="BIEN" {% if choice.ctyp.basi_code|stringformat:"s"  == "BIEN" %} selected {% endif %}>Biennial</option>#}
+        {#                <option value="ONCE" {% if choice.ctyp.basi_code|stringformat:"s"  == "ONCE" %} selected {% endif %}>One Time Only</option>#}
+        {#            </select>#}
+        {#            {{ choice.ctyp.basi_code }}#}
+        {#            <input type="date"    name="compliancedate" data-date-format="MM DD YYYY" id="compliancedate{{ forloop.counter }}" value="{% now "Y-m-d" %}"  />#}
+        {#            {{ choice.ctyp.agen_code.agen_name }}#}
+        {#            {{ choice.govl_code.govl_desc }}#}
+        {#            <br />#}
+        {##}
+        {#        {% endfor %}#}
+
+        {% block content %}
+
+            <table align="center" border="0" cellpadding="0" cellspacing="0" style="margin:auto;">
+                <tr>
+                    <td><!-- Smart Wizard -->
+
+                        <div id="wizard" class="swMain">
+                            <ul>
+                                <li><a href="#step-1">
+                                    <label class="stepNumber"></label>
+                                    <span class="stepDesc"> Confirm Services </span> </a></li>
+                            </ul>
+                            <div id="step-1" style="height:480px;">
+                                <h2 class="StepTitle">Identify your service, insurance policy, filings, license, and
+                                    permit due/renewal dates</h2>
+                                <div class="form_wapper_m">
+                                    <div class="step1_services">
+                                        <div class="step1_services_form_wapper">
+                                            {#                                            {% render_table defaultservicetable %}#}
+                                            <table class="responstableheader">
+
+                                                <tr>
+                                                    <th>Select</th>
+                                                    <th data-th="Plans"><span style="width: 49px;">Type</span></th>
+                                                    <th style="width: 187px">Description</th>
+                                                    <th style="width: 124px">Frequency</th>
+                                                    <th style="width: 143px">Due/Renewal date</th>
+                                                    <th style="width: 175px">Agency</th>
+                                                    <th style="width: 94px">Goverment level</th>
+                                                </tr>
+                                            </table>
+                                            <div style="overflow-y: scroll;height: 382px;">
+                                                <table class="responstable">
+                                                    {% for service in ServiceJurisdiction %}
+                                                        <tr>
+                                                            <td><input type="checkbox" name="complianceselect"
+                                                                       id="complianceselect{{ service.srvj_id }}"
+                                                                       value="{{ service.srvj_id }}"
+                                                                       onchange="servicebasischeck('compliancecheckbox{{ service.srvj_id }}',this)"/>
+                                                            </td>
+                                                            <td>Service</td>
+                                                            <td>{{ service.ctyp.ctyp_desc }}</td>
+                                                            <td>
+                                                                <select disabled
+                                                                        id="compliancedropdown{{ service.srvj_id }}"
+                                                                        name="compliancedropdown{{ service.srvj_id }}"
+                                                                        onchange="servicebasischange('compliancedropdown{{ service.srvj_id }}',this)">
+                                                                    <option value="DAILY"
+                                                                            {% if service.ctyp.basi_code|stringformat:"s"  == "DAILY" %}
+                                                                            selected {% endif %}>Daily
+                                                                    </option>
+                                                                    <option value="WEEKLY"
+                                                                            {% if service.ctyp.basi_code|stringformat:"s"  == "WEEKLY" %}
+                                                                            selected {% endif %}>Weekly
+                                                                    </option>
+                                                                    <option value="MNTHLY"
+                                                                            {% if service.ctyp.basi_code|stringformat:"s"  == "MNTHLY" %}
+                                                                            selected {% endif %}>Monthly
+                                                                    </option>
+                                                                    <option value="QTLY"
+                                                                            {% if service.ctyp.basi_code|stringformat:"s"  == "QTLY" %}
+                                                                            selected {% endif %}>Quartely
+                                                                    </option>
+                                                                    <option value="SEMIAN"
+                                                                            {% if service.ctyp.basi_code|stringformat:"s"  == "SEMIAN" %}
+                                                                            selected {% endif %}>Semi-Annual
+                                                                    </option>
+                                                                    <option value="ANNUAL"
+                                                                            {% if service.ctyp.basi_code|stringformat:"s"  == "ANNUAL" %}
+                                                                            selected {% endif %}>Annual
+                                                                    </option>
+                                                                    <option value="BIEN"
+                                                                            {% if service.ctyp.basi_code|stringformat:"s"  == "BIEN" %}
+                                                                            selected {% endif %}>Biennial
+                                                                    </option>
+                                                                    <option value="ONCE"
+                                                                            {% if service.ctyp.basi_code|stringformat:"s"  == "ONCE" %}
+                                                                            selected {% endif %}>One Time Only
+                                                                    </option>
+                                                                    <option value="CUSTOM"
+                                                                            {% if service.ctyp.basi_code|stringformat:"s"  == "CUSTOM" %}
+                                                                            selected {% endif %}>Custom
+                                                                    </option>
+                                                                </select>
+                                                            </td>
+                                                            <td><input disabled type="text"
+                                                                       name="compliancedate{{ service.srvj_id }}"
+                                                                       id="compliancedate{{ service.srvj_id }}"
+                                                                       value="{% now "m/d/y" %}"/></td>
+                                                            <td>{{ service.ctyp.agen_code.agen_name }}</td>
+                                                            <td>{{ service.govl_code.govl_desc }}</td>
+
+                                                        </tr>
+                                                    {% endfor %}
+
+                                                    {% for insurance in InsuranceJurisdiction %}
+                                                        <tr>
+                                                            <td><input type="checkbox" name="insuranceselect"
+                                                                       id="insuranceselect{{ insurance.insj_id }}"
+                                                                       value="{{ insurance.insj_id }}"
+                                                                       onchange="insurancebasischeck('insurancecheckbox{{ insurance.insj_id }}',this)"/>
+                                                            </td>
+                                                            <td>Insurance</td>
+                                                            <td>{{ insurance.inty.inty_desc }}</td>
+                                                            <td>
+                                                                <select disabled
+                                                                        id="insurancedropdown{{ insurance.insj_id }}"
+                                                                        name="insurancedropdown{{ insurance.insj_id }}"
+                                                                        onchange="insurancebasischange('insurancedropdown{{ insurance.insj_id }}',this)">
+                                                                    <option value="DAILY"
+                                                                            {% if insurance.inty.basi_code|stringformat:"s"  == "DAILY" %}
+                                                                            selected {% endif %}>Daily
+                                                                    </option>
+                                                                    <option value="WEEKLY"
+                                                                            {% if insurance.inty.basi_code|stringformat:"s"  == "WEEKLY" %}
+                                                                            selected {% endif %}>Weekly
+                                                                    </option>
+                                                                    <option value="MNTHLY"
+                                                                            {% if insurance.inty.basi_code|stringformat:"s"  == "MNTHLY" %}
+                                                                            selected {% endif %}>Monthly
+                                                                    </option>
+                                                                    <option value="QTLY"
+                                                                            {% if insurance.inty.basi_code|stringformat:"s"  == "QTLY" %}
+                                                                            selected {% endif %}>Quartely
+                                                                    </option>
+                                                                    <option value="SEMIAN"
+                                                                            {% if insurance.inty.basi_code|stringformat:"s"  == "SEMIAN" %}
+                                                                            selected {% endif %}>Semi-Annual
+                                                                    </option>
+                                                                    <option value="ANNUAL"
+                                                                            {% if insurance.inty.basi_code|stringformat:"s"  == "ANNUAL" %}
+                                                                            selected {% endif %}>Annual
+                                                                    </option>
+                                                                    <option value="BIEN"
+                                                                            {% if insurance.inty.basi_code|stringformat:"s"  == "BIEN" %}
+                                                                            selected {% endif %}>Biennial
+                                                                    </option>
+                                                                    <option value="ONCE"
+                                                                            {% if insurance.inty.basi_code|stringformat:"s"  == "ONCE" %}
+                                                                            selected {% endif %}>One Time Only
+                                                                    </option>
+                                                                    <option value="CUSTOM"
+                                                                            {% if insurance.inty.basi_code|stringformat:"s"  == "CUSTOM" %}
+                                                                            selected {% endif %}>Custom
+                                                                    </option>
+                                                                </select>
+                                                            </td>
+                                                            <td><input disabled type="text"
+                                                                       name="insurancedate{{ insurance.insj_id }}"
+                                                                       id="insurancedate{{ insurance.insj_id }}"
+                                                                       value="{% now "m/d/y" %}"/></td>
+                                                            <td>{{ insurance.inty.agen_code.agen_name }}</td>
+                                                            <td>{{ insurance.govl_code.govl_desc }}</td>
+
+                                                        </tr>
+                                                    {% endfor %}
+                                                    {% for submission in SubmissionJurisdiction %}
+                                                        <tr>
+                                                            <td><input type="checkbox" name="submissionselect"
+                                                                       id="submissionselect{{ submission.subj_id }}"
+                                                                       value="{{ submission.subj_id }}"
+                                                                       onchange="submissionbasischeck('submissioncheckbox{{ submission.subj_id }}',this)"/>
+                                                            </td>
+                                                            <td>Filings, Licensing & Permits</td>
+                                                            <td>{{ submission.subt.subt_desc }}</td>
+                                                            <td>
+                                                                <select disabled
+                                                                        id="submissiondropdown{{ submission.subj_id }}"
+                                                                        name="submissiondropdown{{ submission.subj_id }}"
+                                                                        onchange="submissionbasischange('submissiondropdown{{ submission.subj_id }}',this)">
+                                                                    <option value="DAILY"
+                                                                            {% if submission.subt.basi_code|stringformat:"s"  == "DAILY" %}
+                                                                            selected {% endif %}>Daily
+                                                                    </option>
+                                                                    <option value="WEEKLY"
+                                                                            {% if submission.subt.basi_code|stringformat:"s"  == "WEEKLY" %}
+                                                                            selected {% endif %}>Weekly
+                                                                    </option>
+                                                                    <option value="MNTHLY"
+                                                                            {% if submission.subt.basi_code|stringformat:"s"  == "MNTHLY" %}
+                                                                            selected {% endif %}>Monthly
+                                                                    </option>
+                                                                    <option value="QTLY"
+                                                                            {% if submission.subt.basi_code|stringformat:"s"  == "QTLY" %}
+                                                                            selected {% endif %}>Quartely
+                                                                    </option>
+                                                                    <option value="SEMIAN"
+                                                                            {% if submission.subt.basi_code|stringformat:"s"  == "SEMIAN" %}
+                                                                            selected {% endif %}>Semi-Annual
+                                                                    </option>
+                                                                    <option value="ANNUAL"
+                                                                            {% if submission.subt.basi_code|stringformat:"s"  == "ANNUAL" %}
+                                                                            selected {% endif %}>Annual
+                                                                    </option>
+                                                                    <option value="BIEN"
+                                                                            {% if submission.subt.basi_code|stringformat:"s"  == "BIEN" %}
+                                                                            selected {% endif %}>Biennial
+                                                                    </option>
+                                                                    <option value="ONCE"
+                                                                            {% if submission.subt.basi_code|stringformat:"s"  == "ONCE" %}
+                                                                            selected {% endif %}>One Time Only
+                                                                    </option>
+                                                                    <option value="CUSTOM"
+                                                                            {% if submission.subt.basi_code|stringformat:"s"  == "CUSTOM" %}
+                                                                            selected {% endif %}>Custom
+                                                                    </option>
+                                                                </select>
+                                                            </td>
+                                                            <td><input disabled type="text"
+                                                                       name="submissiondate{{ submission.subj_id }}"
+                                                                       id="submissiondate{{ submission.subj_id }}"
+                                                                       value="{% now "m/d/y" %}"/></td>
+                                                            <td>{{ submission.subt.agen_code.agen_name }}</td>
+                                                            <td>{{ submission.govl_code.govl_desc }}</td>
+
+                                                        </tr>
+                                                    {% endfor %}
+                                                </table>
+                                            </div>
+                                            <div class="clear"></div>
+                                        </div>
+                                        <div class="clear"></div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- End SmartWizard Content --></td>
+                </tr>
+            </table>
+
+        {% endblock %}
+    </form>
+
+
+</div> <!-- /container -->
+
+{% block modal %}{% endblock modal %}
+{% block javascript %}
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.js"></script>
+
+    {% compress js %}
+        <script src="{% static 'js/project.js' %}"></script>
+        <script src="{% static 'js/jquery-ui1.12.1.js' %}"></script>
+        <script src="{% static 'js/jquery.smartWizardService.js' %}"></script>
+    {% endcompress %}
+    <script type="text/javascript" language="javascript">
+
+        function addDays(days) {
+            return new Date(new Date().getTime() + (days * 24 * 60 * 60 * 1000))
+        }
+
+        function servicebasischeck(value, object) {
+            value = value.replace('compliancecheckbox', 'compliancedropdown');
+
+            if (document.getElementById(value).disabled)
+                $("#" + value).removeAttr('disabled');
+            else
+                $("#" + value).attr("disabled", "disabled");
+
+            basis = document.getElementById(value).value;
+            value = value.replace('compliancedropdown', 'compliancedate');
+            $("#" + value).datepicker({
+                minDate: 0,
+                showButtonPanel: true,
+                changeMonth: true,
+                changeYear: true,
+                showAnim: "slide",
+                // The hidden field to receive the date
+                altField: "#" + value,
+                // The format you want
+                altFormat: "mm/dd/y",
+                // The format the user actually sees
+                dateFormat: "mm/dd/y",
+                onSelect: function (date) {
+
+                    // Your CSS changes, just in case you still need them
+                    $('a.ui-state-default').removeClass('ui-state-highlight');
+                    $(this).addClass('ui-state-highlight');
+                }
+            });
+
+            if (document.getElementById(value).disabled)
+                $("#" + value).removeAttr('disabled');
+            else
+                $("#" + value).attr("disabled", "disabled");
+
+            switch (basis) {
+                case 'DAILY':
+                    var tomorrow = addDays(1);
+                    tomorrow_dd = ("0" + tomorrow.getDate()).slice(-2);
+                    tomorrow_mm = ("0" + (tomorrow.getMonth() + 1)).slice(-2);
+                    tomorrow_yy = ("0" + (tomorrow.getYear())).slice(-2);
+                    tomorrow = tomorrow_mm + '/' + tomorrow_dd + '/' + tomorrow_yy;
+                    document.getElementById(value).value = tomorrow;
+                    break;
+
+                case 'WEEKLY':
+                    var nextweek = addDays(7);
+                    nextweek_dd = ("0" + nextweek.getDate()).slice(-2);
+                    nextweek_mm = ("0" + (nextweek.getMonth() + 1)).slice(-2);
+                    nextweek_yy = ("0" + (nextweek.getYear())).slice(-2);
+                    nextweek = nextweek_mm + '/' + nextweek_dd + '/' + nextweek_yy;
+                    document.getElementById(value).value = nextweek;
+                    break;
+
+                case 'WEEKLY':
+                    var nextweek = addDays(7);
+                    nextweek_dd = ("0" + nextweek.getDate()).slice(-2);
+                    nextweek_mm = ("0" + (nextweek.getMonth() + 1)).slice(-2);
+                    nextweek_yy = ("0" + (nextweek.getYear())).slice(-2);
+                    nextweek = nextweek_mm + '/' + nextweek_dd + '/' + nextweek_yy;
+                    document.getElementById(value).value = nextweek;
+                    break;
+
+                case 'MNTHLY':
+                    var nextmonth = addDays(30);
+                    nextmonth_dd = ("0" + nextmonth.getDate()).slice(-2);
+                    nextmonth_mm = ("0" + (nextmonth.getMonth() + 1)).slice(-2);
+                    nextmonth_yy = ("0" + (nextmonth.getYear())).slice(-2);
+                    nextmonth = nextmonth_mm + '/' + nextmonth_dd + '/' + nextmonth_yy;
+                    document.getElementById(value).value = nextmonth;
+                    break;
+
+                case 'QTLY':
+                    var nextquarter = addDays(90);
+                    nextquarter_dd = ("0" + nextquarter.getDate()).slice(-2);
+                    nextquarter_mm = ("0" + (nextquarter.getMonth() + 1)).slice(-2);
+                    nextquarter_yy = ("0" + (nextquarter.getYear())).slice(-2);
+                    nextquarter = nextquarter_mm + '/' + nextquarter_dd + '/' + nextquarter_yy;
+                    document.getElementById(value).value = nextquarter;
+                    break;
+
+                case 'SEMIAN':
+                    var nextsemian = addDays(180);
+                    nextsemian_dd = ("0" + nextsemian.getDate()).slice(-2);
+                    nextsemian_mm = ("0" + (nextsemian.getMonth() + 1)).slice(-2);
+                    nextsemian_yy = ("0" + (nextsemian.getYear())).slice(-2);
+                    nextsemian = nextsemian_mm + '/' + nextsemian_dd + '/' + nextsemian_yy;
+                    document.getElementById(value).value = nextsemian;
+                    break;
+
+                case 'ANNUAL':
+                    var nextannual = addDays(365);
+                    nextannual_dd = ("0" + nextannual.getDate()).slice(-2);
+                    nextannual_mm = ("0" + (nextannual.getMonth() + 1)).slice(-2);
+                    nextannual_yy = ("0" + (nextannual.getYear())).slice(-2);
+                    nextannual = nextannual_mm + '/' + nextannual_dd + '/' + nextannual_yy;
+                    document.getElementById(value).value = nextannual;
+                    break;
+
+                case 'BIEN':
+                    var nextbien = addDays(730);
+                    nextbien_dd = ("0" + nextbien.getDate()).slice(-2);
+                    nextbien_mm = ("0" + (nextbien.getMonth() + 1)).slice(-2);
+                    nextbien_yy = ("0" + (nextbien.getYear())).slice(-2);
+                    nextbien = nextbien_mm + '/' + nextbien_dd + '/' + nextbien_yy;
+                    document.getElementById(value).value = nextbien;
+                    break;
+
+                case 'ONCE':
+                    break;
+
+                case 'CUSTOM':
+                    break;
+
+            }
+
+        }
+
+        function servicebasischange(value, object) {
+            value = value.replace('compliancedropdown', 'compliancedate');
+            $("#" + value).removeClass('ui-state-highlight');
+            switch (object.value) {
+                case 'DAILY':
+                    var tomorrow = addDays(1);
+                    tomorrow_dd = ("0" + tomorrow.getDate()).slice(-2);
+                    tomorrow_mm = ("0" + (tomorrow.getMonth() + 1)).slice(-2);
+                    tomorrow_yy = ("0" + (tomorrow.getYear())).slice(-2);
+                    tomorrow = tomorrow_mm + '/' + tomorrow_dd + '/' + tomorrow_yy;
+                    document.getElementById(value).value = tomorrow;
+                    break;
+
+                case 'WEEKLY':
+                    var nextweek = addDays(7);
+                    nextweek_dd = ("0" + nextweek.getDate()).slice(-2);
+                    nextweek_mm = ("0" + (nextweek.getMonth() + 1)).slice(-2);
+                    nextweek_yy = ("0" + (nextweek.getYear())).slice(-2);
+                    nextweek = nextweek_mm + '/' + nextweek_dd + '/' + nextweek_yy;
+                    document.getElementById(value).value = nextweek;
+                    break;
+
+                case 'WEEKLY':
+                    var nextweek = addDays(7);
+                    nextweek_dd = ("0" + nextweek.getDate()).slice(-2);
+                    nextweek_mm = ("0" + (nextweek.getMonth() + 1)).slice(-2);
+                    nextweek_yy = ("0" + (nextweek.getYear())).slice(-2);
+                    nextweek = nextweek_mm + '/' + nextweek_dd + '/' + nextweek_yy;
+                    document.getElementById(value).value = nextweek;
+                    break;
+
+                case 'MNTHLY':
+                    var nextmonth = addDays(30);
+                    nextmonth_dd = ("0" + nextmonth.getDate()).slice(-2);
+                    nextmonth_mm = ("0" + (nextmonth.getMonth() + 1)).slice(-2);
+                    nextmonth_yy = ("0" + (nextmonth.getYear())).slice(-2);
+                    nextmonth = nextmonth_mm + '/' + nextmonth_dd + '/' + nextmonth_yy;
+                    document.getElementById(value).value = nextmonth;
+                    break;
+
+                case 'QTLY':
+                    var nextquarter = addDays(90);
+                    nextquarter_dd = ("0" + nextquarter.getDate()).slice(-2);
+                    nextquarter_mm = ("0" + (nextquarter.getMonth() + 1)).slice(-2);
+                    nextquarter_yy = ("0" + (nextquarter.getYear())).slice(-2);
+                    nextquarter = nextquarter_mm + '/' + nextquarter_dd + '/' + nextquarter_yy;
+                    document.getElementById(value).value = nextquarter;
+                    break;
+
+                case 'SEMIAN':
+                    var nextsemian = addDays(180);
+                    nextsemian_dd = ("0" + nextsemian.getDate()).slice(-2);
+                    nextsemian_mm = ("0" + (nextsemian.getMonth() + 1)).slice(-2);
+                    nextsemian_yy = ("0" + (nextsemian.getYear())).slice(-2);
+                    nextsemian = nextsemian_mm + '/' + nextsemian_dd + '/' + nextsemian_yy;
+                    document.getElementById(value).value = nextsemian;
+                    break;
+
+                case 'ANNUAL':
+                    var nextannual = addDays(365);
+                    nextannual_dd = ("0" + nextannual.getDate()).slice(-2);
+                    nextannual_mm = ("0" + (nextannual.getMonth() + 1)).slice(-2);
+                    nextannual_yy = ("0" + (nextannual.getYear())).slice(-2);
+                    nextannual = nextannual_mm + '/' + nextannual_dd + '/' + nextannual_yy;
+                    document.getElementById(value).value = nextannual;
+                    break;
+
+                case 'BIEN':
+                    var nextbien = addDays(730);
+                    nextbien_dd = ("0" + nextbien.getDate()).slice(-2);
+                    nextbien_mm = ("0" + (nextbien.getMonth() + 1)).slice(-2);
+                    nextbien_yy = ("0" + (nextbien.getYear())).slice(-2);
+                    nextbien = nextbien_mm + '/' + nextbien_dd + '/' + nextbien_yy;
+                    document.getElementById(value).value = nextbien;
+                    break;
+
+                case 'ONCE':
+                    break;
+
+                case 'CUSTOM':
+                    break;
+            }
+
+        }
+
+        function insurancebasischeck(value, object) {
+            value = value.replace('insurancecheckbox', 'insurancedropdown');
+
+            if (document.getElementById(value).disabled)
+                $("#" + value).removeAttr('disabled');
+            else
+                $("#" + value).attr("disabled", "disabled");
+
+            basis = document.getElementById(value).value;
+            value = value.replace('insurancedropdown', 'insurancedate');
+            $("#" + value).datepicker({
+                minDate: 0,
+                showButtonPanel: true,
+                changeMonth: true,
+                changeYear: true,
+                showAnim: "slide",
+                // The hidden field to receive the date
+                altField: "#" + value,
+                // The format you want
+                altFormat: "mm/dd/y",
+                // The format the user actually sees
+                dateFormat: "mm/dd/y",
+                onSelect: function (date) {
+
+                    // Your CSS changes, just in case you still need them
+                    $('a.ui-state-default').removeClass('ui-state-highlight');
+                    $(this).addClass('ui-state-highlight');
+                }
+            });
+
+            if (document.getElementById(value).disabled)
+                $("#" + value).removeAttr('disabled');
+            else
+                $("#" + value).attr("disabled", "disabled");
+
+            switch (basis) {
+                case 'DAILY':
+                    var tomorrow = addDays(1);
+                    tomorrow_dd = ("0" + tomorrow.getDate()).slice(-2);
+                    tomorrow_mm = ("0" + (tomorrow.getMonth() + 1)).slice(-2);
+                    tomorrow_yy = ("0" + (tomorrow.getYear())).slice(-2);
+                    tomorrow = tomorrow_mm + '/' + tomorrow_dd + '/' + tomorrow_yy;
+                    document.getElementById(value).value = tomorrow;
+                    break;
+
+                case 'WEEKLY':
+                    var nextweek = addDays(7);
+                    nextweek_dd = ("0" + nextweek.getDate()).slice(-2);
+                    nextweek_mm = ("0" + (nextweek.getMonth() + 1)).slice(-2);
+                    nextweek_yy = ("0" + (nextweek.getYear())).slice(-2);
+                    nextweek = nextweek_mm + '/' + nextweek_dd + '/' + nextweek_yy;
+                    document.getElementById(value).value = nextweek;
+                    break;
+
+                case 'WEEKLY':
+                    var nextweek = addDays(7);
+                    nextweek_dd = ("0" + nextweek.getDate()).slice(-2);
+                    nextweek_mm = ("0" + (nextweek.getMonth() + 1)).slice(-2);
+                    nextweek_yy = ("0" + (nextweek.getYear())).slice(-2);
+                    nextweek = nextweek_mm + '/' + nextweek_dd + '/' + nextweek_yy;
+                    document.getElementById(value).value = nextweek;
+                    break;
+
+                case 'MNTHLY':
+                    var nextmonth = addDays(30);
+                    nextmonth_dd = ("0" + nextmonth.getDate()).slice(-2);
+                    nextmonth_mm = ("0" + (nextmonth.getMonth() + 1)).slice(-2);
+                    nextmonth_yy = ("0" + (nextmonth.getYear())).slice(-2);
+                    nextmonth = nextmonth_mm + '/' + nextmonth_dd + '/' + nextmonth_yy;
+                    document.getElementById(value).value = nextmonth;
+                    break;
+
+                case 'QTLY':
+                    var nextquarter = addDays(90);
+                    nextquarter_dd = ("0" + nextquarter.getDate()).slice(-2);
+                    nextquarter_mm = ("0" + (nextquarter.getMonth() + 1)).slice(-2);
+                    nextquarter_yy = ("0" + (nextquarter.getYear())).slice(-2);
+                    nextquarter = nextquarter_mm + '/' + nextquarter_dd + '/' + nextquarter_yy;
+                    document.getElementById(value).value = nextquarter;
+                    break;
+
+                case 'SEMIAN':
+                    var nextsemian = addDays(180);
+                    nextsemian_dd = ("0" + nextsemian.getDate()).slice(-2);
+                    nextsemian_mm = ("0" + (nextsemian.getMonth() + 1)).slice(-2);
+                    nextsemian_yy = ("0" + (nextsemian.getYear())).slice(-2);
+                    nextsemian = nextsemian_mm + '/' + nextsemian_dd + '/' + nextsemian_yy;
+                    document.getElementById(value).value = nextsemian;
+                    break;
+
+                case 'ANNUAL':
+                    var nextannual = addDays(365);
+                    nextannual_dd = ("0" + nextannual.getDate()).slice(-2);
+                    nextannual_mm = ("0" + (nextannual.getMonth() + 1)).slice(-2);
+                    nextannual_yy = ("0" + (nextannual.getYear())).slice(-2);
+                    nextannual = nextannual_mm + '/' + nextannual_dd + '/' + nextannual_yy;
+                    document.getElementById(value).value = nextannual;
+                    break;
+
+                case 'BIEN':
+                    var nextbien = addDays(730);
+                    nextbien_dd = ("0" + nextbien.getDate()).slice(-2);
+                    nextbien_mm = ("0" + (nextbien.getMonth() + 1)).slice(-2);
+                    nextbien_yy = ("0" + (nextbien.getYear())).slice(-2);
+                    nextbien = nextbien_mm + '/' + nextbien_dd + '/' + nextbien_yy;
+                    document.getElementById(value).value = nextbien;
+                    break;
+
+                case 'ONCE':
+                    break;
+
+                case 'CUSTOM':
+                    break;
+
+            }
+
+        }
+
+        function insurancebasischange(value, object) {
+            value = value.replace('insurancedropdown', 'insurancedate');
+            $("#" + value).removeClass('ui-state-highlight');
+            switch (object.value) {
+                case 'DAILY':
+                    var tomorrow = addDays(1);
+                    tomorrow_dd = ("0" + tomorrow.getDate()).slice(-2);
+                    tomorrow_mm = ("0" + (tomorrow.getMonth() + 1)).slice(-2);
+                    tomorrow_yy = ("0" + (tomorrow.getYear())).slice(-2);
+                    tomorrow = tomorrow_mm + '/' + tomorrow_dd + '/' + tomorrow_yy;
+                    document.getElementById(value).value = tomorrow;
+                    break;
+
+                case 'WEEKLY':
+                    var nextweek = addDays(7);
+                    nextweek_dd = ("0" + nextweek.getDate()).slice(-2);
+                    nextweek_mm = ("0" + (nextweek.getMonth() + 1)).slice(-2);
+                    nextweek_yy = ("0" + (nextweek.getYear())).slice(-2);
+                    nextweek = nextweek_mm + '/' + nextweek_dd + '/' + nextweek_yy;
+                    document.getElementById(value).value = nextweek;
+                    break;
+
+                case 'WEEKLY':
+                    var nextweek = addDays(7);
+                    nextweek_dd = ("0" + nextweek.getDate()).slice(-2);
+                    nextweek_mm = ("0" + (nextweek.getMonth() + 1)).slice(-2);
+                    nextweek_yy = ("0" + (nextweek.getYear())).slice(-2);
+                    nextweek = nextweek_mm + '/' + nextweek_dd + '/' + nextweek_yy;
+                    document.getElementById(value).value = nextweek;
+                    break;
+
+                case 'MNTHLY':
+                    var nextmonth = addDays(30);
+                    nextmonth_dd = ("0" + nextmonth.getDate()).slice(-2);
+                    nextmonth_mm = ("0" + (nextmonth.getMonth() + 1)).slice(-2);
+                    nextmonth_yy = ("0" + (nextmonth.getYear())).slice(-2);
+                    nextmonth = nextmonth_mm + '/' + nextmonth_dd + '/' + nextmonth_yy;
+                    document.getElementById(value).value = nextmonth;
+                    break;
+
+                case 'QTLY':
+                    var nextquarter = addDays(90);
+                    nextquarter_dd = ("0" + nextquarter.getDate()).slice(-2);
+                    nextquarter_mm = ("0" + (nextquarter.getMonth() + 1)).slice(-2);
+                    nextquarter_yy = ("0" + (nextquarter.getYear())).slice(-2);
+                    nextquarter = nextquarter_mm + '/' + nextquarter_dd + '/' + nextquarter_yy;
+                    document.getElementById(value).value = nextquarter;
+                    break;
+
+                case 'SEMIAN':
+                    var nextsemian = addDays(180);
+                    nextsemian_dd = ("0" + nextsemian.getDate()).slice(-2);
+                    nextsemian_mm = ("0" + (nextsemian.getMonth() + 1)).slice(-2);
+                    nextsemian_yy = ("0" + (nextsemian.getYear())).slice(-2);
+                    nextsemian = nextsemian_mm + '/' + nextsemian_dd + '/' + nextsemian_yy;
+                    document.getElementById(value).value = nextsemian;
+                    break;
+
+                case 'ANNUAL':
+                    var nextannual = addDays(365);
+                    nextannual_dd = ("0" + nextannual.getDate()).slice(-2);
+                    nextannual_mm = ("0" + (nextannual.getMonth() + 1)).slice(-2);
+                    nextannual_yy = ("0" + (nextannual.getYear())).slice(-2);
+                    nextannual = nextannual_mm + '/' + nextannual_dd + '/' + nextannual_yy;
+                    document.getElementById(value).value = nextannual;
+                    break;
+
+                case 'BIEN':
+                    var nextbien = addDays(730);
+                    nextbien_dd = ("0" + nextbien.getDate()).slice(-2);
+                    nextbien_mm = ("0" + (nextbien.getMonth() + 1)).slice(-2);
+                    nextbien_yy = ("0" + (nextbien.getYear())).slice(-2);
+                    nextbien = nextbien_mm + '/' + nextbien_dd + '/' + nextbien_yy;
+                    document.getElementById(value).value = nextbien;
+                    break;
+
+                case 'ONCE':
+                    break;
+
+                case 'CUSTOM':
+                    break;
+            }
+
+        }
+
+        function submissionbasischeck(value, object) {
+            value = value.replace('submissioncheckbox', 'submissiondropdown');
+
+            if (document.getElementById(value).disabled)
+                $("#" + value).removeAttr('disabled');
+            else
+                $("#" + value).attr("disabled", "disabled");
+
+            basis = document.getElementById(value).value;
+            value = value.replace('submissiondropdown', 'submissiondate');
+            $("#" + value).datepicker({
+                minDate: 0,
+                showButtonPanel: true,
+                changeMonth: true,
+                changeYear: true,
+                showAnim: "slide",
+                // The hidden field to receive the date
+                altField: "#" + value,
+                // The format you want
+                altFormat: "mm/dd/y",
+                // The format the user actually sees
+                dateFormat: "mm/dd/y",
+                onSelect: function (date) {
+
+                    // Your CSS changes, just in case you still need them
+                    $('a.ui-state-default').removeClass('ui-state-highlight');
+                    $(this).addClass('ui-state-highlight');
+                }
+            });
+
+            if (document.getElementById(value).disabled)
+                $("#" + value).removeAttr('disabled');
+            else
+                $("#" + value).attr("disabled", "disabled");
+
+            switch (basis) {
+                case 'DAILY':
+                    var tomorrow = addDays(1);
+                    tomorrow_dd = ("0" + tomorrow.getDate()).slice(-2);
+                    tomorrow_mm = ("0" + (tomorrow.getMonth() + 1)).slice(-2);
+                    tomorrow_yy = ("0" + (tomorrow.getYear())).slice(-2);
+                    tomorrow = tomorrow_mm + '/' + tomorrow_dd + '/' + tomorrow_yy;
+                    document.getElementById(value).value = tomorrow;
+                    break;
+
+                case 'WEEKLY':
+                    var nextweek = addDays(7);
+                    nextweek_dd = ("0" + nextweek.getDate()).slice(-2);
+                    nextweek_mm = ("0" + (nextweek.getMonth() + 1)).slice(-2);
+                    nextweek_yy = ("0" + (nextweek.getYear())).slice(-2);
+                    nextweek = nextweek_mm + '/' + nextweek_dd + '/' + nextweek_yy;
+                    document.getElementById(value).value = nextweek;
+                    break;
+
+                case 'WEEKLY':
+                    var nextweek = addDays(7);
+                    nextweek_dd = ("0" + nextweek.getDate()).slice(-2);
+                    nextweek_mm = ("0" + (nextweek.getMonth() + 1)).slice(-2);
+                    nextweek_yy = ("0" + (nextweek.getYear())).slice(-2);
+                    nextweek = nextweek_mm + '/' + nextweek_dd + '/' + nextweek_yy;
+                    document.getElementById(value).value = nextweek;
+                    break;
+
+                case 'MNTHLY':
+                    var nextmonth = addDays(30);
+                    nextmonth_dd = ("0" + nextmonth.getDate()).slice(-2);
+                    nextmonth_mm = ("0" + (nextmonth.getMonth() + 1)).slice(-2);
+                    nextmonth_yy = ("0" + (nextmonth.getYear())).slice(-2);
+                    nextmonth = nextmonth_mm + '/' + nextmonth_dd + '/' + nextmonth_yy;
+                    document.getElementById(value).value = nextmonth;
+                    break;
+
+                case 'QTLY':
+                    var nextquarter = addDays(90);
+                    nextquarter_dd = ("0" + nextquarter.getDate()).slice(-2);
+                    nextquarter_mm = ("0" + (nextquarter.getMonth() + 1)).slice(-2);
+                    nextquarter_yy = ("0" + (nextquarter.getYear())).slice(-2);
+                    nextquarter = nextquarter_mm + '/' + nextquarter_dd + '/' + nextquarter_yy;
+                    document.getElementById(value).value = nextquarter;
+                    break;
+
+                case 'SEMIAN':
+                    var nextsemian = addDays(180);
+                    nextsemian_dd = ("0" + nextsemian.getDate()).slice(-2);
+                    nextsemian_mm = ("0" + (nextsemian.getMonth() + 1)).slice(-2);
+                    nextsemian_yy = ("0" + (nextsemian.getYear())).slice(-2);
+                    nextsemian = nextsemian_mm + '/' + nextsemian_dd + '/' + nextsemian_yy;
+                    document.getElementById(value).value = nextsemian;
+                    break;
+
+                case 'ANNUAL':
+                    var nextannual = addDays(365);
+                    nextannual_dd = ("0" + nextannual.getDate()).slice(-2);
+                    nextannual_mm = ("0" + (nextannual.getMonth() + 1)).slice(-2);
+                    nextannual_yy = ("0" + (nextannual.getYear())).slice(-2);
+                    nextannual = nextannual_mm + '/' + nextannual_dd + '/' + nextannual_yy;
+                    document.getElementById(value).value = nextannual;
+                    break;
+
+                case 'BIEN':
+                    var nextbien = addDays(730);
+                    nextbien_dd = ("0" + nextbien.getDate()).slice(-2);
+                    nextbien_mm = ("0" + (nextbien.getMonth() + 1)).slice(-2);
+                    nextbien_yy = ("0" + (nextbien.getYear())).slice(-2);
+                    nextbien = nextbien_mm + '/' + nextbien_dd + '/' + nextbien_yy;
+                    document.getElementById(value).value = nextbien;
+                    break;
+
+                case 'ONCE':
+                    break;
+
+                case 'CUSTOM':
+                    break;
+
+            }
+
+        }
+
+        function submissionbasischange(value, object) {
+            value = value.replace('submissiondropdown', 'submissiondate');
+            $("#" + value).removeClass('ui-state-highlight');
+            switch (object.value) {
+                case 'DAILY':
+                    var tomorrow = addDays(1);
+                    tomorrow_dd = ("0" + tomorrow.getDate()).slice(-2);
+                    tomorrow_mm = ("0" + (tomorrow.getMonth() + 1)).slice(-2);
+                    tomorrow_yy = ("0" + (tomorrow.getYear())).slice(-2);
+                    tomorrow = tomorrow_mm + '/' + tomorrow_dd + '/' + tomorrow_yy;
+                    document.getElementById(value).value = tomorrow;
+                    break;
+
+                case 'WEEKLY':
+                    var nextweek = addDays(7);
+                    nextweek_dd = ("0" + nextweek.getDate()).slice(-2);
+                    nextweek_mm = ("0" + (nextweek.getMonth() + 1)).slice(-2);
+                    nextweek_yy = ("0" + (nextweek.getYear())).slice(-2);
+                    nextweek = nextweek_mm + '/' + nextweek_dd + '/' + nextweek_yy;
+                    document.getElementById(value).value = nextweek;
+                    break;
+
+                case 'WEEKLY':
+                    var nextweek = addDays(7);
+                    nextweek_dd = ("0" + nextweek.getDate()).slice(-2);
+                    nextweek_mm = ("0" + (nextweek.getMonth() + 1)).slice(-2);
+                    nextweek_yy = ("0" + (nextweek.getYear())).slice(-2);
+                    nextweek = nextweek_mm + '/' + nextweek_dd + '/' + nextweek_yy;
+                    document.getElementById(value).value = nextweek;
+                    break;
+
+                case 'MNTHLY':
+                    var nextmonth = addDays(30);
+                    nextmonth_dd = ("0" + nextmonth.getDate()).slice(-2);
+                    nextmonth_mm = ("0" + (nextmonth.getMonth() + 1)).slice(-2);
+                    nextmonth_yy = ("0" + (nextmonth.getYear())).slice(-2);
+                    nextmonth = nextmonth_mm + '/' + nextmonth_dd + '/' + nextmonth_yy;
+                    document.getElementById(value).value = nextmonth;
+                    break;
+
+                case 'QTLY':
+                    var nextquarter = addDays(90);
+                    nextquarter_dd = ("0" + nextquarter.getDate()).slice(-2);
+                    nextquarter_mm = ("0" + (nextquarter.getMonth() + 1)).slice(-2);
+                    nextquarter_yy = ("0" + (nextquarter.getYear())).slice(-2);
+                    nextquarter = nextquarter_mm + '/' + nextquarter_dd + '/' + nextquarter_yy;
+                    document.getElementById(value).value = nextquarter;
+                    break;
+
+                case 'SEMIAN':
+                    var nextsemian = addDays(180);
+                    nextsemian_dd = ("0" + nextsemian.getDate()).slice(-2);
+                    nextsemian_mm = ("0" + (nextsemian.getMonth() + 1)).slice(-2);
+                    nextsemian_yy = ("0" + (nextsemian.getYear())).slice(-2);
+                    nextsemian = nextsemian_mm + '/' + nextsemian_dd + '/' + nextsemian_yy;
+                    document.getElementById(value).value = nextsemian;
+                    break;
+
+                case 'ANNUAL':
+                    var nextannual = addDays(365);
+                    nextannual_dd = ("0" + nextannual.getDate()).slice(-2);
+                    nextannual_mm = ("0" + (nextannual.getMonth() + 1)).slice(-2);
+                    nextannual_yy = ("0" + (nextannual.getYear())).slice(-2);
+                    nextannual = nextannual_mm + '/' + nextannual_dd + '/' + nextannual_yy;
+                    document.getElementById(value).value = nextannual;
+                    break;
+
+                case 'BIEN':
+                    var nextbien = addDays(730);
+                    nextbien_dd = ("0" + nextbien.getDate()).slice(-2);
+                    nextbien_mm = ("0" + (nextbien.getMonth() + 1)).slice(-2);
+                    nextbien_yy = ("0" + (nextbien.getYear())).slice(-2);
+                    nextbien = nextbien_mm + '/' + nextbien_dd + '/' + nextbien_yy;
+                    document.getElementById(value).value = nextbien;
+                    break;
+
+                case 'ONCE':
+                    break;
+
+                case 'CUSTOM':
+                    break;
+            }
+
+        }
+
+        $(document).ready(function () {
+            // Smart Wizard
+            $('#wizard').smartWizard({
+                // Properties
+                selected: 0,  // Selected Step, 0 = first step
+                keyNavigation: true, // Enable/Disable key navigation(left and right keys are used if enabled)
+                enableAllSteps: false,  // Enable/Disable all steps on first load
+                transitionEffect: 'slideleft', // Effect on navigation, none/fade/slide/slideleft
+                contentURL: null, // specifying content url enables ajax content loading
+                contentURLData: null, // override ajax query parameters
+                contentCache: true, // cache step contents, if false content is fetched always from ajax url
+                cycleSteps: false, // cycle step navigation
+                enableFinishButton: false, // makes finish button enabled always
+                hideButtonsOnDisabled: true, // when the previous/next/finish buttons are disabled, hide them instead
+                errorSteps: [],    // array of step numbers to highlighting as error steps
+                labelNext: 'Next', // label for Next button
+                labelPrevious: 'Previous', // label for Previous button
+                labelFinish: 'Done',  // label for Finish button
+                noForwardJumping: false,
+                ajaxType: 'POST',
+                // Events
+                onLeaveStep: null, // triggers when leaving a step
+                onShowStep: null,  // triggers when showing a step
+                onFinish: onFinishValidation(),  // triggers when Finish button is clicked
+                includeFinishButton: true,   // Add the finish button
+                reverseButtonsOrder: false //shows buttons ordered as: prev, next and finish
+            });
+        });
+
+        function onFinishValidation() {
+            console.log('onFinishValidation');
+
+        }
+
+
+        function ValidateSignup() {
+            var signup_is_valid = true;
+            console.log("Validating Signup :");
+            console.log(document.getElementById('id_compname').value);
+            if (document.getElementById('id_compname').value == '') {
+                console.log('setting css for id_compname');
+                $('#id_compname').addClass("inp_steps_compname  has-danger");
+                signup_is_valid = false;
+            } else {
+                $('#id_compname').removeClass("has-danger");
+            }
+
+            console.log($('#id_naicslevel5opt option:selected').length);
+            console.log('Val & Lenght ->' + $('#id_naicslevel5opt option:selected').val(), $('#id_naicslevel5opt option:selected').length);
+            if ($('#id_naicslevel5opt option:selected').val() != '' && $('#id_naicslevel5opt option:selected').val() != 'None') {
+                if ($('#id_naicslevel5opt option:selected').length != 0)
+                    $('#id_naicslevel5opt').removeClass("has-danger step1_company_naics_dropdown_required");
+                else
+                    $('#id_naicslevel5opt').addClass("step1_company_naics_dropdown  has-danger step1_company_naics_dropdown_required");
+                signup_is_valid = false;
+            }
+            else {
+                $('#id_naicslevel5opt').addClass("step1_company_naics_dropdown  has-danger step1_company_naics_dropdown_required");
+                signup_is_valid = false;
+            }
+
+            var is_languageslected = false;
+            var checkedonhandlang = document.getElementsByName("languagechecklist");
+            var checkedlanguages = 0;
+            for (var i = 0; i < checkedonhandlang.length; i++) {
+                if (checkedonhandlang[i].checked) {
+                    checkedlanguages = i;
+                    is_languageslected = true;
+                }
+            }
+            if (is_languageslected == false) {
+                for (var i = 0; i < checkedonhandlang.length; i++) {
+                    checkedonhandlang[i].style = "box-shadow: 0px 0px 7px 4px rgba(230,9,52,1)";
+                    {#            checkedonhandlang[i].addClass("has-danger")#}
+                }
+                signup_is_valid = false;
+            } else {
+                for (var i = 0; i < checkedonhandlang.length; i++) {
+                    checkedonhandlang[i].style = "";
+                }
+            }
+
+            var is_personlanguageslected = false;
+            var checkedonhandpersonlang = document.getElementsByName("personlanguagechecklist");
+            var checkedpersonlanguages = 0;
+            for (var i = 0; i < checkedonhandpersonlang.length; i++) {
+                if (checkedonhandpersonlang[i].checked) {
+                    checkedpersonlanguages = i;
+                    is_personlanguageslected = true;
+                }
+            }
+            if (is_personlanguageslected == false) {
+                for (var i = 0; i < checkedonhandpersonlang.length; i++) {
+                    console.log(checkedonhandpersonlang[i].checked);
+                    checkedonhandpersonlang[i].style = "box-shadow: 0px 0px 7px 4px rgba(230,9,52,1)";
+                    {#            checkedonhandpersonlang[i].addClass("has-danger")#}
+                }
+                signup_is_valid = false;
+            } else {
+                for (var i = 0; i < checkedonhandpersonlang.length; i++) {
+                    checkedonhandpersonlang[i].style = "";
+                }
+            }
+
+            var personroleslected = false;
+            var personroleradio = document.getElementsByName("ohplanselect");
+            var personroleradioindex = 0;
+            for (var i = 0; i < personroleradio.length; i++) {
+                if (personroleradio[i].checked) {
+                    personroleradioindex = i;
+                    personroleslected = true;
+                }
+            }
+
+            if (personroleslected == false) {
+                for (var i = 0; i < personroleradio.length; i++) {
+                    personroleradio[i].style = "box-shadow: 0px 0px 7px 4px rgba(230,9,52,1)";
+                }
+                signup_is_valid = false;
+            } else {
+                for (var i = 0; i < personroleradio.length; i++) {
+                    personroleradio[i].style = "";
+                }
+            }
+
+
+            if (document.getElementById('id_username').value == '') {
+                $('#id_username').addClass("inp_steps_username  has-danger");
+                signup_is_valid = false;
+            } else {
+                $('#id_username').removeClass("has-danger");
+            }
+
+            if (document.getElementById('id_password1').value == '') {
+                $('#id_password1').addClass("inp_steps_password  has-danger");
+                signup_is_valid = false;
+            } else {
+                $('#id_password1').removeClass("has-danger");
+            }
+
+            if (document.getElementById('id_password2').value == '') {
+                $('#id_password2').addClass("inp_steps_password  has-danger");
+                signup_is_valid = false;
+            } else {
+                $('#id_password2').removeClass("has-danger");
+            }
+
+            console.log(signup_is_valid);
+            return signup_is_valid;
+        }
+    </script>
+{% endblock javascript %}
+</body>
+</html>
+

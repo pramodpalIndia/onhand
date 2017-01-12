@@ -21,6 +21,7 @@
     {% compress css %}
     <!-- This file stores project-specific CSS -->
     <link href="{% static 'css/project.css' %}" rel="stylesheet">
+        <link href="{% static 'css/popup.css' %}" rel="stylesheet">
     {% endcompress %}
     {% endblock %}
 
@@ -70,9 +71,13 @@
     </div>
 
     <div class="container">
+{#        {% include 'account/signupservice.html' %}#}
 
       {% if messages %}
           {% for message in messages %}
+              {%  if message == 'New Service setup'  %}
+                  pramod
+              {% endif %}
               <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">{{ message }}</div>
           {% endfor %}
       {% endif %}
