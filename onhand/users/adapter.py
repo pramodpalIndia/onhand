@@ -32,13 +32,14 @@ from onhand.subscription.adapter import DefaultAccountAdapter
 from onhand.subscription.compat import importlib
 
 
-from onhand.management.models import Role, Zipcode, City, NaicsLevel5, Language
+from onhand.management.models import Role, Zipcode, City, NaicsLevel5, Language, Address
 from onhand.subscription.models import Person, Company, Subscription, CompanyLanguage, PersonLanguage, CompanyPersonRole, \
     CompanyRole, SubscriptionDetail
 from onhand.subscription.utils import url_str_to_person_pk, person_field, url_str_to_company_pk, company_field, \
     address_field, subscription_field, company_language_field, person_language_field, company_person_role_field, \
     get_current_site, subscriptiondetail_field
 from onhand.users import app_settings
+from onhand.users.models import UserPreference, User
 from onhand.users.utils import user_username, user_field, resolve_url
 from . import get_user_model
 
@@ -265,6 +266,10 @@ class AccountAdapter(DefaultAccountAdapter):
         django_login(request, user)
 
     def logout(self, request):
+        request.session.pop('account_subscription', None)
+        request.session.pop('account_company', None)
+        request.session.pop('account_county', None)
+        print('Cleared Sessions, -> User/Adapter.py :get_logout_redirect_url')
         django_logout(request)
 
     def get_login_redirect_url(self, request):
@@ -281,6 +286,29 @@ class AccountAdapter(DefaultAccountAdapter):
                           DeprecationWarning)
         else:
             url = settings.LOGIN_REDIRECT_URL
+            # account_subscription, account_company, account_county 316, 327, 1859
+
+            loggeduser= request.session['_auth_user_id'];
+
+            ''' Set account_company Session '''
+            account_company = UserPreference.objects.get(user=loggeduser, uprt_code='DFTCMP').uprf_value
+            if account_company == '':
+                account_company = CompanyPersonRole.objects.get(cprs_id=User.objects.get(user_id= loggeduser).cprs_id_id).comp_id
+            request.session['account_company'] = account_company
+            print('request.session[account_company] --> ',request.session['account_company'])
+
+            ''' Set account_subscription Session '''
+            print('Subscription.objects.get(subs_id=account_company).subs_id',Subscription.objects.get(comp_id=account_company).subs_id)
+            request.session['account_subscription'] = Subscription.objects.get(comp_id=account_company).subs_id
+            print('request.session[account_subscription] --> ', request.session['account_subscription'])
+
+            ''' Set account_county Session '''
+            address_id = Address.objects.get(addr_id=Company.objects.get(comp_id=account_company).address_id)
+            request.session['account_county'] = address_id.city.zipc_code.county_id
+            print('request.session[account_county] --> ', request.session['account_county'])
+
+            print('Updated Sessions for _auth_user_id, account_subscription,account_company, account_county -> User/Adapter.py :get_login_redirect_url')
+
         return resolve_url(url)
 
 

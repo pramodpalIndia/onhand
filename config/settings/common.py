@@ -12,6 +12,8 @@ from __future__ import absolute_import, unicode_literals
 
 import environ
 
+
+
 ROOT_DIR = environ.Path(__file__) - 3  # (onhand/config/settings/common.py - 3 = onhand/)
 APPS_DIR = ROOT_DIR.path('onhand')
 
@@ -27,27 +29,41 @@ DJANGO_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
     'jquery',
     # Useful template tags:
     # 'django.contrib.humanize',
-
+    'suit',
+    'suit_dashboard',
     # Admin
-    'django.contrib.admin',
+    # 'django.contrib.admin',
+    'django.contrib.admin.apps.SimpleAdminConfig',
+    'django_select2',
 )
 THIRD_PARTY_APPS = (
     'crispy_forms',  # Form layouts
     'allauth',  # registration
     'allauth.account',  # registration
+    'django_tables2',
+    'bootstrap3',
+    'fontawesome'
     # 'allauth.socialaccount',  # registration
 )
 
 # Apps specific for this project go here.
 LOCAL_APPS = (
     # custom users app
+    'onhand.contrib.ohauth.apps.OnHandAuthConfig',
     'onhand.products.apps.ProductsConfig',
-    'onhand.provider.apps.ProviderConfig',
+    'onhand.subscription.apps.ProviderConfig',
     'onhand.users.apps.UsersConfig',
-    'onhand.management.apps.ManagementConfig'
+    'onhand.management.apps.ManagementConfig',
+    'onhand.compliance.apps.ComplianceConfig',
+    'onhand.insurance.apps.InsuranceConfig',
+    'onhand.submission.apps.SubmissionConfig',
+    'onhand.dashboard.apps.DashboardConfig',
+    'onhand.polls.apps.PollsConfig',
+    'onhand.examples.apps.ExamplesConfig',
     # Your stuff: custom apps go here
 )
 
@@ -69,7 +85,7 @@ MIDDLEWARE = (
 # MIGRATIONS CONFIGURATION
 # ------------------------------------------------------------------------------
 MIGRATION_MODULES = {
-    'sites': 'onhand.contrib.sites.migrations'
+    'sites': 'onhand.contrib.sites.migrations',
 }
 
 # DEBUG
@@ -241,10 +257,10 @@ AUTHENTICATION_BACKENDS = (
 ACCOUNT_AUTHENTICATION_METHOD = 'username'
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
-ACCOUNT_SIGNUP_FORM_CLASS = 'onhand.provider.forms.SignupForm'
+ACCOUNT_SIGNUP_FORM_CLASS = 'onhand.subscription.forms.SignupForm'
 # ''users.forms'
 ACCOUNT_ALLOW_REGISTRATION = env.bool('DJANGO_ACCOUNT_ALLOW_REGISTRATION', True)
-ACCOUNT_ADAPTER = 'onhand.users.adapters.AccountAdapter'
+ACCOUNT_ADAPTER = 'onhand.users.adapter.AccountAdapter'
 # SOCIALACCOUNT_ADAPTER = 'onhand.users.adapters.SocialAccountAdapter'
 
 # Custom user app defaults
@@ -254,9 +270,9 @@ LOGIN_REDIRECT_URL = 'users:redirect'
 LOGIN_URL = 'account_login'
 
 # Select the correct user model
-OH_PERSON_MODEL = 'provider.person'
+OH_PERSON_MODEL = 'subscription.person'
 # Select the correct user model
-OH_COMPANY_MODEL = 'provider.company'
+OH_COMPANY_MODEL = 'subscription.company'
 # SLUGLIFIER
 AUTOSLUG_SLUGIFY_FUNCTION = 'slugify.slugify'
 
@@ -280,3 +296,68 @@ ADMIN_URL = r'^admin/'
 
 # Your common stuff: Below this line define 3rd party library settings
 # ------------------------------------------------------------------------------
+
+# Django Suit configuration example
+SUIT_CONFIG = {
+    # header
+    'ADMIN_NAME': 'Onhand',
+    'HEADER_DATE_FORMAT': 'l, j. F Y',
+    # 'HEADER_TIME_FORMAT': 'H:i',
+
+    # forms
+    'SHOW_REQUIRED_ASTERISK': True,  # Default True
+    'CONFIRM_UNSAVED_CHANGES': True, # Default True
+
+    # menu
+    'SEARCH_URL': '/admin/auth/user/',
+    'MENU_ICONS': {
+       'sites': 'icon-leaf',
+       'auth': 'icon-lock',
+    },
+    'MENU_OPEN_FIRST_CHILD': True, # Default True
+    # 'MENU_EXCLUDE': ('ohauth.group',),
+
+    'MENU': (
+
+        # Keep original label and models
+        # 'sites',
+
+
+        # '-'
+        'Authentication and Authorization',
+        {  'label': 'Compliance', 'url':'users:redirect', 'icon':'icon-leaf'},
+
+        # Rename app and set icon
+        # {'app': 'auth', 'label': 'Authorization', 'icon':'icon-lock'},
+
+        # Reorder app models
+        # { 'app': 'auth', 'models': ('user', 'group')},
+
+    # Custom app, with models
+    #     { 'app':'onhand.examples.apps.ExamplesConfig', 'icon':'icon-cog'},
+
+        # Custom app, with models
+        {'label': 'Settings', 'icon':'icon-cog', 'models': ('auth.user', 'auth.group')},
+
+        # Cross-linked models with custom name; Hide default icon
+        {'label': 'Custom', 'icon':None, 'models': (
+            'ohauth.group',
+            {'model': 'auth.user', 'label': 'Staff'}
+        )},
+
+        # Custom app, no models (child links)
+        {'label': 'Users', 'url': '/users', 'icon':'icon-user'},
+
+        # Separator
+        '-',
+
+
+        # # Custom app and model with permissions
+        {'label': 'Secure', 'permissions': 'auth.add_user', 'models': [
+            {'label': 'custom-child', 'permissions': ('auth.add_user', 'auth.add_group')}
+        ]},
+    ),
+
+    # misc
+    'LIST_PER_PAGE': 15
+}

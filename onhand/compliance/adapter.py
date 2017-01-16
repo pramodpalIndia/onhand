@@ -26,7 +26,7 @@ from onhand.subscription.models import Address, CompanyRole, Subscription
 from onhand.users import get_user_model
 from . import app_settings, get_person_model, get_company_model, get_address_model, \
     get_subscription_model, get_company_person_role_model, get_company_language_model, get_person_language_model, \
-    get_subscriptiondetail_model
+    get_subscriptiondetail_model, get_complianceservice_model
 from django.utils.translation import ugettext_lazy as _
 
 from onhand.subscription.compat import importlib
@@ -37,7 +37,7 @@ except ImportError:
 
 
 
-class DefaultAccountAdapter(object):
+class DefaultComplianceAdapter(object):
 
     # Don't bother turning this into a setting, as changing this also
     # requires changing the accompanying form error message. So if you
@@ -123,96 +123,32 @@ class DefaultAccountAdapter(object):
 
     }
 
-
-
-    def get_person_search_fields(self):
-        person = get_person_model()
-        return filter(lambda a: a and hasattr(person, a),
-                      ['first_name', 'last_name', 'email'])
-
     def __init__(self, request=None):
         self.request = request
 
-    def new_user(self, request):
+
+    def new_complianceservice(self, request):
         """
         Instantiates a new User instance.
         """
-        user = get_user_model()()
-        return user
+        complianceservice = get_complianceservice_model()()
+        return complianceservice
 
-
-    def new_person(self, request):
-        """
-        Instantiates a new User instance.
-        """
-        person = get_person_model()()
-        return person
-
-    def new_subscription(self, request):
-        """
-        Instantiates a new User instance.
-        """
-        subscription = get_subscription_model()()
-        return subscription
-
-
-    def new_subscriptiondetail(self, request):
-        """
-        Instantiates a new User instance.
-        """
-        subscriptiondetail = get_subscriptiondetail_model()()
-        return subscriptiondetail
-
-
-
-    def new_company(self, request):
-        """
-        Instantiates a new User instance.
-        """
-        company  = get_company_model()()
-        return company
-
-    def new_company_person_role(self, request):
-        """
-        Instantiates a new person role in company instance.
-        """
-        company_person_role  = get_company_person_role_model()()
-        return company_person_role
-
-    def new_address(self, request):
-        """
-        Instantiates a new User instance.
-        """
-        address  = get_address_model()()
-        return address
-
-    def new_company_language(self, request):
-        """
-        Instantiates a new User instance.
-        """
-        company_language  = get_company_language_model()()
-        return company_language
-
-    def new_person_language(self, request):
-        """
-        Instantiates a new User instance.
-        """
-        person_language  = get_person_language_model()()
-        return person_language
-
-
-    def populate_person(self, request, person):
+    def populate_complianceservice(self, request, complianceservice):
         """
         Fills in a valid username, if required and missing.  If the
         person is already present it is assumed to be valid
         (unique).
         """
-        from .utils import person_field
-        print('populate_person')
-        print(person)
-        first_name = person_field(person, 'first_name')
-        last_name = person_field(person, 'last_name')
-        email = person_field(person, 'email')
+        from .utils import complianceservice_field
+        print('populate_complianceservice')
+        print(complianceservice)
+        basi_code = complianceservice_field(complianceservice, 'basi_code')
+        srvj_id = complianceservice_field(complianceservice, 'srvj_id')
+        subs_id = complianceservice_field(complianceservice, 'subs_id')
+        csrv_alert_date = complianceservice_field(complianceservice, 'csrv_alert_date')
+        csrv_due_date = complianceservice_field(complianceservice, 'csrv_due_date')
+        csrv_note = complianceservice_field(complianceservice, 'csrv_note')
 
     def populate_company(self, request, company):
         from .utils import company_field
@@ -231,182 +167,38 @@ class DefaultAccountAdapter(object):
         from .utils import subscription_field
         subscriptionid = subscription_field(subscription, 'subs_id')
 
+    def set_basi_code(self, complianceservice, basi_code):
+        complianceservice.set_basi_code(basi_code)
+        complianceservice.save()
 
-    def set_first_name(self, person, first_name):
-        person.set_first_name(first_name)
-        person.save()
+    def set_srvj_id(self, complianceservice, srvj_id):
+        complianceservice.set_srvj_id(srvj_id)
+        complianceservice.save()
 
-    def set_last_name(self, person, last_name):
-        person.set_first_name(last_name)
-        person.save()
+    def set_subs_id(self, complianceservice, subs_id):
+        complianceservice.set_subs_id(subs_id)
+        complianceservice.save()
 
-    def set_email(self, person, email):
-        person.set_first_name(email)
-        person.save()
+    def set_csrv_alert_date(self, complianceservice, csrv_alert_date):
+        complianceservice.set_csrv_alert_date(csrv_alert_date)
+        complianceservice.save()
 
-    def set_comp_name(self, company, compname):
-        company.set_comp_name(compname)
-        company.save()
+    def set_csrv_due_date(self, complianceservice, csrv_due_date):
+        complianceservice.set_csrv_due_date(csrv_due_date)
+        complianceservice.save()
 
-    def set_address_line_1(self, address, addressline1):
-        address.set_address_line_1(addressline1)
-        address.save()
+    def set_csrv_note(self, complianceservice, csrv_note):
+        complianceservice.set_csrv_note(csrv_note)
+        complianceservice.save()
 
-    def set_address_line_2(self, address, addressline2):
-        address.set_address_line_2(addressline2)
-        address.save()
+    def clean_complianceservice(self, complianceopt):
+        print('** Compliance dropdown check : ', complianceopt)
 
-    def set_city(self, address, city):
-        address.set_city(city)
-        address.save()
-
-
-    def clean_ohplanselect(self, ohplanselect, shallow=False):
-        print("1:Validating clean_ohplanselect",ohplanselect )
-
-
-        try:
-            if(ProductBasis.objects.filter(prdb_id=ohplanselect).exists()):
-                return ohplanselect
-            else:
-                raise forms.ValidationError(
-                self.error_messages['ohplanselect_invalid'])
-        except:
+        if(complianceopt == 'None'):
             raise forms.ValidationError(
-                self.error_messages['ohplanselect_invalid'])
-
-        return ohplanselect
-
-
-    def clean_discount(self, discount, shallow=False):
-        print("1:Validating clean_discount")
-        # plan = request.GET.get('plan', None)
-        # plan = clean_ohplanselect()
-        # print(plan)
-        print(discount)
-        # print(ProductDiscount.objects.filter(disc_code=discount_code).exists())
-        # print(Discount.objects.get(disc_code=discount_code).disc_desc)
-        if discount:
-            try:
-                if (Discount.objects.filter(disc_code=discount).exists()):
-                    return discount
-                else:
-                    raise forms.ValidationError(
-                        self.error_messages['discount_invalid'])
-            except:
-                raise forms.ValidationError(
-                    self.error_messages['discount_invalid'])
-
-        return discount
-
-
-    def clean_first_name(self, first_name, shallow=False):
-        print("1:Validating clean_first_name")
-        if not first_name:
-            raise forms.ValidationError(
-                self.error_messages['firstname_required'])
-
-        if not self.name_regex.match(first_name):
-            raise forms.ValidationError(
-                self.error_messages['firstname_invalid'])
-
-        return first_name
-
-    def clean_last_name(self, last_name, shallow=False):
-        if not last_name:
-            raise forms.ValidationError(
-                self.error_messages['lastname_required'])
-
-        if not self.name_regex.match(last_name):
-            raise forms.ValidationError(
-                self.error_messages['lastname_invalid'])
-
-        return last_name
-
-    def clean_email(self, email):
-        return email
-
-    def clean_compemail(self, compemail):
-        return compemail
-
-    def clean_website(self, website):
-        return website
-
-    def clean_phone(self, phone):
-        return phone
-
-    def clean_fax(self, fax):
-        return fax
-
-    def clean_compname(self, compname):
-        if not compname:
-            raise forms.ValidationError(
-                self.error_messages['compname_required'])
-
-        if not self.name_regex.match(compname):
-            raise forms.ValidationError(
-                self.error_messages['compname_invalid'])
-
-        min_length = 4
-        if min_length and len(compname) < min_length:
-            raise forms.ValidationError(_("Company name must be a minimum of {0} "
-                                          "characters.").format(min_length))
-        # if not self.name_regex.match(compname):
-        #     raise forms.ValidationError(
-        #         self.error_messages['invalid_compname'])
-
-        return compname
-
-    def clean_addressline1(self, addressline1):
-        if not addressline1:
-            raise forms.ValidationError(
-                self.error_messages['addressline1_required'])
-
-        if not self.address_regex.match(addressline1):
-            raise forms.ValidationError(
-                self.error_messages['addressline1_invalid'])
-        min_length = 4
-
-        if min_length and len(addressline1) < min_length:
-            raise forms.ValidationError(_("Fill in correct street address"))
-
-        return addressline1
-
-    def clean_addressline2(self, addressline2):
-        if not self.address_regex.match(addressline2):
-            raise forms.ValidationError(
-                self.error_messages['addressline2_invalid'])
-        return addressline2
-
-    def clean_zipcode(self, zipcode):
-        if not zipcode:
-            raise forms.ValidationError(
-                self.error_messages['zipcode_required'])
-        min_length = 5
-        if min_length and len(zipcode.__str__()) < min_length:
-            raise forms.ValidationError(_("Enter a US {0} digit ZIP Codes ").format(min_length))
-
-        try:
-            if(Zipcode.objects.filter(zipc_code=zipcode).exists()):
-                pass
-            else:
-                print('** Zipcode ValidationErrorRaised error after Model check')
-                raise forms.ValidationError(
-                    self.error_messages['zipcode_unavailable'])
-        except KeyError:
-            print('** Zipcode ValidationErrorRaised error after KeyError exception')
-            raise forms.ValidationError(
-                self.error_messages['zipcode_unavailable'])
-        return zipcode
-
-    def clean_cityopt(self, cityopt):
-        print('** City dropdown check : ', cityopt)
-
-        if(cityopt == 'None'):
-            raise forms.ValidationError(
-                self.error_messages['city_required'])
+                self.error_messages['complianceservice_required'])
         else:
-            if (cityopt == 'add'):
+            if (complianceopt == 'add'):
                 pass
             else:
                 try:
@@ -415,189 +207,35 @@ class DefaultAccountAdapter(object):
                         pass
                     else:
                         raise forms.ValidationError(
-                            self.error_messages['city_invalid'])
+                            self.error_messages['complianceservice_invalid'])
                 except KeyError:
                     raise forms.ValidationError(
-                        self.error_messages['city_invalid'])
-        return cityopt
+                        self.error_messages['complianceservice_invalid'])
+        return complianceopt
 
-    def clean_city(self, city , check_user_city_value):
-        print("** City user addeed textbox check required: %s  Value -> (%s)" % (check_user_city_value, city))
-        if check_user_city_value:
-            if not self.name_regex.match(city):
+    def clean_factorvalue(self, ohplanselect, shallow=False):
+        return ohplanselect
+
+
+    def clean_frequency(self, frequencyopt, shallow=False):
+        if (frequencyopt == 'None'):
+            raise forms.ValidationError(
+                self.error_messages['frequency_required'])
+        return frequencyopt
+
+
+    def clean_nextservicedate(self, nextservicedate, shallow=False):
+        print("1:Validating clean_first_name")
+        if not nextservicedate:
+            raise forms.ValidationError(
+                self.error_messages['nextservicedate_required'])
+        else:
+            nextservicedate = datetime.strptime(nextservicedate, '%m/%d/%Y')
+            if datetime.now() <= nextservicedate:
                 raise forms.ValidationError(
-                    self.error_messages['city_invalid'])
-            if not city:
-                raise forms.ValidationError(
-                self.error_messages['city_invalid'])
-        return city
+                    self.error_messages['nextservicedate_invalid'])
+        return nextservicedate
 
-
-
-
-    def clean_county(self, county):
-        if not county:
-            raise forms.ValidationError(
-                self.error_messages['county_required'])
-
-        if not self.name_regex.match(county):
-            raise forms.ValidationError(
-                self.error_messages['county_invalid'])
-
-        try:
-            if(County.objects.filter(name=county).exists()):
-                pass
-            else:
-                print('** county ValidationErrorRaised error after Model check')
-                raise forms.ValidationError(
-                    self.error_messages['county_invalid'])
-        except KeyError:
-            print('** county ValidationErrorRaised error after KeyError exception')
-            raise forms.ValidationError(
-                self.error_messages['county_invalid'])
-        return county
-
-    def clean_state(self, state):
-        if not state:
-            raise forms.ValidationError(
-                self.error_messages['state_required'])
-
-        if not self.name_regex.match(state):
-            raise forms.ValidationError(
-                self.error_messages['state_invalid'])
-
-        try:
-            if(State.objects.filter(name=state).exists()):
-                pass
-            else:
-                print('** county ValidationErrorRaised error after Model check')
-                raise forms.ValidationError(
-                    self.error_messages['state_invalid'])
-        except KeyError:
-            print('** Zipcode ValidationErrorRaised error after KeyError exception')
-            raise forms.ValidationError(
-                self.error_messages['state_invalid'])
-
-        return state
-
-
-
-
-
-    def clean_cardnumber(self, cardnumber):
-        if not cardnumber:
-            raise forms.ValidationError(
-                self.error_messages['cardnumber_required'])
-        print(cardnumber)
-        if not self.Credit_Card_Numbers_regex.match(str(cardnumber)):
-            raise forms.ValidationError(
-                self.error_messages['cardnumber_invalid'])
-        return cardnumber
-
-    def clean_cardcvv(self, cardcvv):
-        if not cardcvv:
-            raise forms.ValidationError(
-                self.error_messages['cardcvv_required'])
-
-        if not self.Credit_Card_CVV_regex.match(str(cardcvv)):
-            raise forms.ValidationError(
-                self.error_messages['cardcvv_invalid'])
-        return cardcvv
-
-    def clean_naicslevel1opt(self,naicslevel1opt):
-        return naicslevel1opt
-
-    def clean_naicslevel2opt(self,naicslevel2opt):
-        return naicslevel2opt
-
-
-    def clean_naicslevel3opt(self,naicslevel3opt):
-        return naicslevel3opt
-
-    def clean_naicslevel4opt(self,naicslevel4opt):
-        return naicslevel4opt
-
-    def clean_naicslevel5opt(self,naicslevel5opt):
-        return naicslevel5opt
-
-    def clean_languagechecklist(self,languagechecklist):
-        return languagechecklist
-
-    def clean_personlanguagechecklist(self,personlanguagechecklist):
-        return personlanguagechecklist
-
-    def clean_personroles(self,personroles):
-        return personroles
-
-    def clean_username(self, username, shallow=False):
-        """
-        Validates the username. You can hook into this if you want to
-        (dynamically) restrict what usernames can be chosen.
-        """
-        if not self.username_regex.match(username):
-            raise forms.ValidationError(
-                self.error_messages['invalid_username'])
-
-        # TODO: Add regexp support to USERNAME_BLACKLIST
-        username_blacklist_lower = [ub.lower()
-                                    for ub in app_settings.USERNAME_BLACKLIST]
-        if username.lower() in username_blacklist_lower:
-            raise forms.ValidationError(
-                self.error_messages['username_blacklisted'])
-        # Skipping database lookups when shallow is True, needed for unique
-        # username generation.
-        if not shallow:
-            username_field = app_settings.USER_MODEL_USERNAME_FIELD
-            assert username_field
-            user_model = get_user_model()
-            try:
-                query = {username_field + '__iexact': username}
-                user_model.objects.get(**query)
-            except user_model.DoesNotExist:
-                return username
-            error_message = user_model._meta.get_field(
-                username_field).error_messages.get('unique')
-            if not error_message:
-                error_message = self.error_messages['username_taken']
-            raise forms.ValidationError(error_message)
-        return username
-
-    def clean_password(self, password, user=None):
-        """
-        Validates a password. You can hook into this if you want to
-        restric the allowed password choices.
-        """
-        min_length = app_settings.PASSWORD_MIN_LENGTH
-        if min_length and len(password) < min_length:
-            raise forms.ValidationError(_("Password must be a minimum of {0} "
-                                          "characters.").format(min_length))
-        validate_password(password, user)
-        return password
-
-
-    def clean_secquestion1(self,secquestion1):
-        return secquestion1
-
-    def clean_secanswer1(self,secanswer1):
-        return secanswer1
-
-    def clean_secquestion2(self,secquestion2):
-        return secquestion2
-
-    def clean_secanswer2(self,secanswer2):
-        return secanswer2
-
-    def clean_secquestion3(self,secquestion3):
-        return secquestion3
-
-    def clean_secanswer3(self,secanswer3):
-        return secanswer3
-
-    def clean_secquestion4(self,secquestion4):
-        return secquestion4
-
-    def clean_secanswer4(self,secanswer4):
-        return secanswer4
 
     def save_address(self, request, address, form, commit=True):
         from .utils import address_field

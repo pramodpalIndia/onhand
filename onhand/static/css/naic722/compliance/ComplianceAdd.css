@@ -147,19 +147,14 @@ position: relative;
 	font: normal 12px 'Open Sans', sans-serif;
 }
 .swMain ul.anchor li a.selected {
-	color: #F8F8F8;
-	/*background: #EA8511;*/  /* EA8511 */
-background: rgb(0, 0, 0);
-	/*background: rgba(0, 0, 0, 0.29);*/
-	    border: 1px solid #f8fafb;
-      width: 488px;
-	cursor: text;
-  /*width: 312px;*/
-  /* -moz-box-shadow: 5px 5px 8px #888;
-
-  -webkit-box-shadow: 5px 5px 8px #888;
-
-  box-shadow: 5px 5px 8px #888;*/
+	color: #000000;
+    /* background: #EA8511; */
+    background: #ffffff;
+    /* background: rgba(0, 0, 0, 0.29); */
+    border: 1px solid #f8fafb;
+    width: 488px;
+    cursor: text;
+    /* width: 312px; */
 
 }
 .swMain ul.anchor li a.selected:hover {
@@ -203,9 +198,37 @@ background: rgb(0, 0, 0);
 .swMain ul.anchor li a.error:hover {
 	color: #000 !important;
 }
+
+swMain .buttonCancel::after {
+	font-family: fontawesome;
+	/*content: "\f00d";*/
+	font-weight: normal;
+	margin-left: 4px;
+}
+.swMain .buttonCancel {
+  display: block;
+    float: right;
+    margin: 1px 5px 0px 0px;
+    padding: 7px;
+    text-decoration: none;
+    text-align: center;
+    font: bold 13px Verdana, Arial, Helvetica, sans-serif;
+    width: 150px;
+    color: #fff;
+    outline-style: none;
+    background-color: #2e4d6f;
+    border: 1px solid #fff;
+    border-radius: 8px;
+  moz-border-radius  : 8px;
+
+  -webkit-border-radius: 8px;
+
+}
+
+
 .swMain .buttonNext::after {
 	font-family: fontawesome;
-	content: "\f0c7";
+	/*content: "\f0c7";*/
 	font-weight: normal;
 	margin-left: 4px;
 }
@@ -228,6 +251,7 @@ background: rgb(0, 0, 0);
   -webkit-border-radius: 8px;
 
 }
+
 .swMain .buttonDisabled {
 	color: #F8F8F8 !important;
 	background-color: #25505D !important;
@@ -898,7 +922,7 @@ background: rgb(0, 0, 0);
 {
 	width:250px;
 }
-.step1_service
+.Div_service
 {
 
 	    background: #ffffff;

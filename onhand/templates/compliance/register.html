@@ -20,6 +20,9 @@
             <link href="{% static 'css/naic722/compliance/ComplianceAdd.css' %}" rel="stylesheet">
             <link href="{% static 'css/welcometheme.css' %}" rel="stylesheet">
             <link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet">
+            <link href="{% static 'css/jquery-ui1.12.1.min.css' %}" rel="stylesheet">
+            <link href="{% static 'css/jquery-ui1.12.1.theme.min.css' %}" rel="stylesheet">
+            <link href="{% static 'css/jquery-ui1.12.1.structure.min.css' %}" rel="stylesheet">
         {% endcompress %}
     {% endblock %}
 
@@ -49,541 +52,193 @@
                 <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
             {% endif %}
 {#            {% crispy example_form %}#}
-
-             <table align="center" border="0" cellpadding="0" cellspacing="0" style="margin:auto;">
-                <tr>
-                    <td><!-- Smart Wizard -->
-
-                        <div id="wizard" class="swMain">
-                            <ul>
-                                <li><a href="#step-1">
-                                    <label class="stepNumber"></label>
-                                    <span class="stepDesc"> <small>Add New</small><br/>
-                                Service </span> </a></li>
-                                <li><a href="#step-2">
-                                    <label class="stepNumber"></label>
-                                    <span class="stepDesc"><small>Add Action</small> <br/>
-                                New Service  </span> </a></li>
-{#                                #}
-{#                                <li><a href="#step-3">#}
-{#                                    <label class="stepNumber"></label>#}
-{#                                    <span class="stepDesc"> <small>Step 3 :</small><br/>#}
-{#                                Service Setup </span> </a></li>#}
-{#                                #}
-                            </ul>
-                            <div id="step-1" style="height:70vh;">
-                                {#                        <h2 class="StepTitle">Company Details</h2>#}
-                                <div class="form_wapper_m">
-                                    <div class="step1_service">
-                                        <div class="form_wapper">
-                                            <div class="row_step2_left">
-                                                <div class="label_name">
-                                                    <h5><label class=" label_name required control-label">{{ form.complianceservice.label }}​ </label>
-                                                    </h5>
-                                                </div>
-                                                <div class="dropdown">
-                                                    {% for field in form %}
-                                                        {% if field == form.complianceservice %}
-                                                            {% if field.errors %}
-                                                                {{ form.complianceservice | add_attributes:"inp_steps_compname  has-danger" }}
-                                                                <span class="oh-alert-error apphelp-block">{% for error in  field.errors %}
-                                                                    {{ error }}<br/>{% endfor %}</span>
-                                                            {% else %}
-                                                                {{ field }}
-                                                            {% endif %}
-                                                        {% endif %}
-                                                    {% endfor %}
-                                                </div>
-                                                <div class="clear"></div>
-                                            </div>
-                                            <div class="row_step2_left">
-                                                <div class="label_name">
-                                                    <h5>{{ form.frequency.label }}</h5>
-                                                </div>
-                                                <div class="f_inp_bx">
-                                                    {% for field in form %}
-                                                        {% if field == form.frequency %}
-                                                            {% if field.errors %}
-                                                                {{ form.frequency | add_attributes:"inp_steps_email  has-danger" }}
-                                                                <span class="oh-alert-error apphelp-block">{% for error in  field.errors %}
-                                                                    {{ error }}<br/>{% endfor %}</span>
-                                                            {% else %}
-                                                                {{ field }}
-                                                            {% endif %}
-                                                        {% endif %}
-                                                    {% endfor %}
-                                                    <span class="apphelp-block">
-                                                <strong></strong>
-                                            </span>
-                                                </div>
-                                                <div class="clear"></div>
-                                            </div>
-                                            <div class="row_step2_left">
-                                                <div class="label_name">
-                                                    <h5>{{ form.lastservicedate.label }}</h5>
-                                                </div>
-                                                <div class="f_inp_bx">
-                                                    {% for field in form %}
-                                                        {% if field == form.lastservicedate %}
-                                                            {% if field.errors %}
-                                                                {{ form.lastservicedate | add_attributes:"inp_steps_website  has-danger" }}
-                                                                <span class="oh-alert-error apphelp-block">{% for error in  field.errors %}
-                                                                    {{ error }}<br/>{% endfor %}</span>
-                                                            {% else %}
-                                                                {{ field }}
-                                                            {% endif %}
-                                                        {% endif %}
-                                                    {% endfor %}
-                                                </div>
-                                                <div class="clear"></div>
-                                            </div>
-                                            <div class="row_step2_left">
-                                                <div class="label_name">
-                                                    <h5>{{ form.servicenote.label }}</h5>
-                                                </div>
-                                                <div class="f_inp_bx">
-                                                    {% for field in form %}
-                                                        {% if field == form.servicenote %}
-                                                            {% if field.errors %}
-                                                                {{ form.servicenote | add_attributes:"inp_steps_phone  has-danger" }}
-                                                            {% else %}
-                                                                {{ field }}
-                                                            {% endif %}
-                                                        {% endif %}
-                                                        {% if field == form.fax %}
-                                                            {% if field.errors %}
-                                                                {{ form.fax | add_attributes:"inp_steps_fax  has-danger" }}
-                                                            {% else %}
-                                                                {{ field }}
-                                                            {% endif %}
-
-                                                        {% endif %}
-                                                    {% endfor %}
-
-                                                </div>
-                                                <div class="clear"></div>
-                                            </div>
-                                        </div>
-                                        <div class="form_wapper">
-                                            <div class="row_step2_left">
-                                                <div class="label_name">
-                                                    <h5 style="text-align: right">Jurisdiction: &nbsp;</h5>
-                                                </div>
-                                                <div class="label_name">
-                                                    <h5 id="labeljurisdiction"></h5>
-                                                </div>
-                                                <div class="clear"></div>
-                                            </div>
-                                            <div class="row_step2_left">
-                                                <div class="label_name">
-                                                    <h5>{{ form.addressline2.label }}</h5>
-                                                </div>
-                                                <div class="f_inp_bx">
-                                                    {{ form.addressline2 }}
-                                                    <span class="apphelp-block">
-                                                <strong></strong>
-                                            </span>
-                                                </div>
-                                                <div class="clear"></div>
-                                            </div>
-                                            <div class="row_step2_left">
-                                                <div class="label_name">
-                                                    <h5>{{ form.zipcode.label }}</h5>
-                                                </div>
-                                                <div class="f_inp_bx">
-                                                    {% for field in form %}
-                                                        {% if field == form.zipcode %}
-                                                            {% if field.errors %}
-                                                                {{ form.zipcode | add_attributes:"inp_steps_zipcode  has-danger" }}
-                                                            {% else %}
-                                                                {{ field }}
-                                                            {% endif %}
-                                                        {% endif %}
-                                                        {% if field == form.cityopt %}
-                                                            <div class="inp_steps__city_dropdown_div"
-                                                                 id="id_city_div_dropdown" name="city_div_dropdown"
-                                                                 style="display: inline-table">
-                                                                {{ cityopt }}
-                                                                {% if field.errors %}
-                                                                    {{ form.cityopt | add_attributes:"inp_steps_city_opt  has-danger" }}
-                                                                {% else %}
-                                                                    {{ field }}
-                                                                {% endif %}
-                                                            </div>
-                                                        {% endif %}
-                                                    {% endfor %}
-                                                    <div class="inp_steps_city_div" id="id_city_div" name="city_div"
-                                                         style="display: none"><input type="text" id="id_city"
-                                                                                      name="city"
-                                                                                      class="inp_steps_City"
-                                                                                      style="display: inline"
-                                                                                      placeholder="Enter city"></div>
-                                                    {% for field in form %}
-                                                        {% if field == form.zipcode %}
-                                                            {% if field.errors %}
-                                                                <span class="oh-alert-error apphelp-block">{% for error in  field.errors %}
-                                                                    {{ error }}<br/>{% endfor %}</span>
-                                                            {% endif %}
-                                                        {% endif %}
-                                                    {% endfor %}
-                                                </div>
-                                                <div class="clear"></div>
-                                            </div>
-                                            <div class="row_step2_left">
-                                                <div class="label_name">
-                                                    <h5>{{ form.county.label }}</h5>
-                                                </div>
-                                                <div class="f_inp_bx">
-                                                    {{ form.county }}
-                                                    {{ form.state }}
-                                                    <span class="apphelp-block">
-                                                <strong></strong>
-                                            </span>
-                                                </div>
-                                                <div class="clear"></div>
-                                            </div>
-                                        </div>
-                                    <div class="form_wapper">
-                                            <div class="row_step2_left">
-                                                <div class="label_name">
-                                                    <h5>Factor</h5>
-                                                </div>
-                                                <div class="f_inp_bx">
-                                                    {% for field in form %}
-                                                        {% if field == form.factorvalue %}
-                                                            {% if field.errors %}
-                                                                {{ form.factorvalue | add_attributes:"inp_steps_addressline1  has-danger" }}
-                                                                <span class="oh-alert-error apphelp-block">{% for error in  field.errors %}
-                                                                    {{ error }}<br/>{% endfor %}</span>
-                                                            {% else %}
-                                                                {{ field }}
-                                                            {% endif %}
-                                                        {% endif %}
-                                                    {% endfor %}
-                                                </div>
-                                                <div class="clear"></div>
-                                            </div>
-                                            <div class="row_step2_left">
-                                                <div class="label_name">
-                                                    <h5>{{ form.addressline2.label }}</h5>
-                                                </div>
-                                                <div class="f_inp_bx">
-                                                    {{ form.addressline2 }}
-                                                    <span class="apphelp-block">
-                                                <strong></strong>
-                                            </span>
-                                                </div>
-                                                <div class="clear"></div>
-                                            </div>
-                                            <div class="row_step2_left">
-                                                <div class="label_name">
-                                                    <h5>{{ form.zipcode.label }}</h5>
-                                                </div>
-                                                <div class="f_inp_bx">
-                                                    {% for field in form %}
-                                                        {% if field == form.zipcode %}
-                                                            {% if field.errors %}
-                                                                {{ form.zipcode | add_attributes:"inp_steps_zipcode  has-danger" }}
-                                                            {% else %}
-                                                                {{ field }}
-                                                            {% endif %}
-                                                        {% endif %}
-                                                        {% if field == form.cityopt %}
-                                                            <div class="inp_steps__city_dropdown_div"
-                                                                 id="id_city_div_dropdown" name="city_div_dropdown"
-                                                                 style="display: inline-table">
-                                                                {{ cityopt }}
-                                                                {% if field.errors %}
-                                                                    {{ form.cityopt | add_attributes:"inp_steps_city_opt  has-danger" }}
-                                                                {% else %}
-                                                                    {{ field }}
-                                                                {% endif %}
-                                                            </div>
-                                                        {% endif %}
-                                                    {% endfor %}
-                                                    <div class="inp_steps_city_div" id="id_city_div" name="city_div"
-                                                         style="display: none"><input type="text" id="id_city"
-                                                                                      name="city"
-                                                                                      class="inp_steps_City"
-                                                                                      style="display: inline"
-                                                                                      placeholder="Enter city"></div>
-                                                    {% for field in form %}
-                                                        {% if field == form.zipcode %}
-                                                            {% if field.errors %}
-                                                                <span class="oh-alert-error apphelp-block">{% for error in  field.errors %}
-                                                                    {{ error }}<br/>{% endfor %}</span>
-                                                            {% endif %}
-                                                        {% endif %}
-                                                    {% endfor %}
-                                                </div>
-                                                <div class="clear"></div>
-                                            </div>
-                                            <div class="row_step2_left">
-                                                <div class="label_name">
-                                                    <h5>{{ form.county.label }}</h5>
-                                                </div>
-                                                <div class="f_inp_bx">
-                                                    {{ form.county }}
-                                                    {{ form.state }}
-                                                    <span class="apphelp-block">
-                                                <strong></strong>
-                                            </span>
-                                                </div>
-                                                <div class="clear"></div>
-                                            </div>
-                                        </div>
-
-                                        <div class="clear"></div>
-                                    </div>
-                                    <div class="clear"></div>
-
-                                </div>
-                                <div class="clear"></div>
-                            </div>
-                            <div id="step-2" style="height:70vh;">
-                                {#                        <h2 class="StepTitle">Step 2 Logon details</h2>#}
-                                <div class="form_wapper_m">
-                                    <div class="step2_user_languages">
-                                        <div class="step2_user_languages_form_wapper">
-
-                                            <div class="step2_user_languages_row ">
-                                                <div class="step2_user_languages_spoke_title">
-                                                    <label class="required control-label">Languages you speak</label>
-                                                </div>
-                                                <div class="f_inp_bx">
-                                                    {% for field in form %}
-                                                        {% if field == form.personlanguagechecklist %}
-                                                            {% if field.errors %}
-                                                                {{ form.personlanguagechecklist }}
-                                                                <span class="apphelp-block">{% for error in  field.errors %}
-                                                                    {{ error }}<br/>{% endfor %}</span>
-                                                            {% else %}
-                                                                {{ field }}
-                                                            {% endif %}
-                                                        {% endif %}
-                                                    {% endfor %}
-                                                </div>
-                                                <div class="clear"></div>
-                                            </div>
-                                        </div>
-
-                                        <div class="clear"></div>
-                                    </div>
-                                    <div class="clear"></div>
-                                    <div class="step2_user_role">
-                                        <div class="step2_user_role_form_wapper">
-
-                                            <div class="step2_user_role_row ">
-                                                <div class="step2_user_role_title">
-                                                    <label class="required control-label">Your role in the
-                                                        company</label>
-                                                </div>
-                                                <div class="f_inp_bx">
-                                        <span class="step2_user_role_items">
-
-                                         {% for field in form %}
-                                             {% if field == form.personroles %}
-                                                 {% if field.errors %}
-                                                     {% for choice in form.personroles %}
-                                                         <span class="ohplanbasis">{{ choice.tag }}&nbsp;{{ choice.choice_label }}&nbsp;&nbsp;&nbsp;&nbsp; </span>
-                                                     {% endfor %}
-                                                     <span class="apphelp-block">{% for error in  field.errors %}
-                                                         {{ error }}<br/>{% endfor %}</span>
-                                                 {% else %}
-                                                     {% for choice in form.personroles %}
-                                                         <span class="ohplanbasis">{{ choice.tag }}&nbsp;{{ choice.choice_label }}&nbsp;&nbsp;&nbsp;&nbsp; </span>
-                                                     {% endfor %}
-                                                 {% endif %}
-                                             {% endif %}
-                                         {% endfor %}
-                                        </span>
-                                                </div>
-                                                <div class="clear"></div>
-                                            </div>
-                                        </div>
-
-                                        <div class="clear"></div>
-                                    </div>
-
-                                    <div class="step2_user_login">
-                                        <div class="step2_user_login_form_wapper">
-                                            <div class="step2_user_login_row ">
-                                                <div id="Login_container">
-                                                    <div id="Login_container_username">
-                                                <span class="step2_user_login_title">  <label
-                                                        class="required control-label">Login credentials </label></span>
-                                                        <div class="row_step2_login_username">
-                                                            <div class="inp_steps_lanbel_login">
-                                                                <h5>{{ form.username.label }}</h5>
-                                                            </div>
-                                                            <div class="f_inp_bx">
-                                                                {% for field in form %}
-                                                                    {% if field == form.username %}
-                                                                        {% if field.errors %}
-                                                                            {{ form.username | add_attributes:"inp_steps_username  has-danger" }}
-                                                                            <span class="oh-alert-error apphelp-block">{% for error in  field.errors %}
-                                                                                {{ error }}{% endfor %}</span>
-                                                                        {% else %}
-                                                                            {{ field }}
-                                                                        {% endif %}
-                                                                    {% endif %}
-                                                                {% endfor %}
-                                                            </div>
-                                                            <div class="clear"></div>
-                                                        </div>
-                                                        <div class="row_step2_left">
-                                                            <div class="inp_steps_lanbel_login">
-                                                                <h5>{{ form.password1.label }}</h5>
-                                                            </div>
-                                                            <div class="f_inp_bx">
-                                                                {% for field in form %}
-                                                                    {% if field == form.password1 %}
-                                                                        {% if field.errors %}
-                                                                            {{ form.password1 | add_attributes:"inp_steps_password  has-danger" }}
-                                                                            <span class="oh-alert-error apphelp-block">{% for error in  field.errors %}
-                                                                                {{ error }}{% endfor %}</span>
-                                                                        {% else %}
-                                                                            {{ field }}
-                                                                        {% endif %}
-                                                                    {% endif %}
-                                                                {% endfor %}
-                                                                </span>
-                                                            </div>
-                                                            <div class="clear"></div>
-                                                        </div>
-                                                        <div class="row_step2_left">
-                                                            <div class="inp_steps_lanbel_login">
-                                                                <h5>{{ form.password2.label }}</h5>
-                                                            </div>
-                                                            <div class="f_inp_bx">
-                                                                {% for field in form %}
-                                                                    {% if field == form.password2 %}
-                                                                        {% if field.errors %}
-                                                                            {{ form.password2 | add_attributes:"inp_steps_password  has-danger" }}
-                                                                            <span class="oh-alert-error apphelp-block">{% for error in  field.errors %}
-                                                                                {{ error }}{% endfor %}</span>
-                                                                        {% else %}
-                                                                            {{ field }}
-                                                                        {% endif %}
-                                                                    {% endif %}
-                                                                {% endfor %}
-                                                                <strong></strong>
-                                                                </span>
-                                                            </div>
-                                                            <div class="clear"></div>
-                                                        </div>
-
-                                                    </div>
-                                                    <span class="step2_user_login_title"> Security questions recommended for extra security</span>
-                                                    <div id="Login_container_questions">
-                                                        <div class="step2_user_login_questions_row_right">
-                                                            <div class="step2_user_login_questions_row_right_label">
-                                                                Security Question 1 :
-                                                                {{ form.secquestion1 }}
-                                                                {{ form.secanswer1 }}
-                                                            </div>
-                                                            <div class="clear"></div>
-                                                        </div>
-                                                        <div class="step2_user_login_questions_row_right">
-                                                            <div class="step2_user_login_questions_row_right_label">
-                                                                Security Question 2 :
-                                                                {{ form.secquestion2 }}
-                                                                {{ form.secanswer2 }}
-                                                            </div>
-                                                            <div class="clear"></div>
-                                                        </div>
-                                                        <div class="step2_user_login_questions_row_right">
-                                                            <div class="step2_user_login_questions_row_right_label">
-                                                                Security Question 3 :
-                                                                {{ form.secquestion3 }}
-                                                                {{ form.secanswer3 }}
-                                                            </div>
-
-                                                            <div class="clear"></div>
-                                                        </div>
-                                                        <div class="step2_user_login_questions_row_right">
-                                                            <div class="step2_user_login_questions_row_right_label">
-                                                                Security Question 4 :
-                                                                {{ form.secquestion4 }}
-                                                                {{ form.secanswer4 }}
-                                                            </div>
-                                                            <div class="clear"></div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="clear"></div>
-                                    </div>
-                                </div>
-                                <div class="clear"></div>
-                            </div>
-{#                            <div id="step-3" style="height:480px;">#}
-                                {#                        <h2 class="StepTitle">Step 2 Logon details</h2>#}
-{#                                <div class="form_wapper_m">#}
-{#                                    <div class="step2_user_languages">#}
-{#                                        <div class="step2_user_languages_form_wapper">#}
-{##}
-{#                                            <div class="step2_user_languages_row ">#}
-{#                                                <div class="step2_user_languages_spoke_title">#}
-{#                                                    Select your compliance services, government submissions and#}
-{#                                                    insurance policy requirements#}
-{#                                                </div>#}
-{#                                                {% render_table defaultservicetable %}#}
-{#                                                <table class="responstable">#}
-{##}
-{#                                                    <tr>#}
-{#                                                        <th>Select</th>#}
-{#                                                        <th data-th="Plans"><span>Type</span></th>#}
-{#                                                        <th>Description</th>#}
-{#                                                        <th>Frequency</th>#}
-{#                                                        <th>Renewal date</th>#}
-{#                                                        <th>Agency</th>#}
-{#                                                        <th>Goverment level</th>#}
-{#                                                    </tr>#}
-{##}
-{#                                                    <tr>#}
-{#                                                        <td><input type="checkbox"/></td>#}
-{#                                                        <td>Service</td>#}
-{#                                                        <td>RPZ Test</td>#}
-{#                                                        <td>Annual</td>#}
-{#                                                        <td>2016-11-17</td>#}
-{#                                                        <td>NYC Bulidings</td>#}
-{#                                                        <td>USA</td>#}
-{#                                                    </tr>#}
-{#                                                    <tr>#}
-{#                                                        <td><input type="checkbox"/></td>#}
-{#                                                        <td>Service</td>#}
-{#                                                        <td>Carting</td>#}
-{#                                                        <td>Weekly</td>#}
-{#                                                        <td>2016-11-17</td>#}
-{#                                                        <td>NYC Consumer Affairs</td>#}
-{#                                                        <td>New York City</td>#}
-{#                                                    </tr>#}
-{#                                                    <tr>#}
-{#                                                        <td><input type="checkbox"/></td>#}
-{#                                                        <td>Insurance</td>#}
-{#                                                        <td>Flood inurance</td>#}
-{#                                                        <td>Annual</td>#}
-{#                                                        <td>2016-11-17</td>#}
-{#                                                        <td>NYC Finance Dept</td>#}
-{#                                                        <td>NYC State</td>#}
-{#                                                    </tr>#}
-{##}
-{#                                                </table>#}
-{#                                                <div class="clear"></div>#}
-{#                                            </div>#}
-{#                                        </div>#}
-{#                                        <div class="clear"></div>#}
-{#                                    </div>#}
-{##}
-{#                                </div>#}
-{#                            </div>#}
-                        </div>
-
-                        <!-- End SmartWizard Content --></td>
-                </tr>
-            </table>
+								<table align="center" border="0" cellpadding="0" cellspacing="0" style="margin:auto;">
+									<tbody>
+										<tr>
+											<td>
+												<!-- Smart Wizard -->
+												<div id="wizard" class="swMain">
+													<ul class="anchor">
+														<li>
+															<a class="selected" href="#step-1" isdone="1" style="width:966px; left:0; top:3px;" rel="1">
+																<label class=" selected"></label>
+																<span class="stepDesc">
+																	Add New Service
+																</span>
+															</a>
+														</li>
+													</ul>
+													<div class="stepContainer" style="height: 70vh;">
+														<div id="step-1" class="content" style="height: 70vh; display: block;">
+															<div class="form_wapper_m" style="height:68vh;">
+																<div class="Div_service">
+																	<div class="form_wapper">
+																		<div class="row_step2_left">
+																			<div class="label_name">
+																				<h5>
+																					<label class=" label_name required control-label">{{ form.complianceservice.label }}
+																					</label>
+																				</h5>
+																			</div>
+																			<div class="dropdown">
+																				{{ form.complianceservice }}
+																			</div>
+																			<div class="clear"></div>
+																		</div>
+																		<div class="row_step2_left">
+																			<div class="label_name">
+																				<h5 class="required control-label" style="position:relative; left:1px; top:63px;">{{ form.frequency.label }}</h5>
+																			</div>
+																			<div class="f_inp_bx">
+                                                                                {{ form.frequency }}
+																				<span class="apphelp-block">
+																					<strong></strong>
+																				</span>
+																			</div>
+																			<div class="clear"></div>
+																		</div>
+																		<div class="row_step2_left">
+																			<div class="label_name">
+																				<h5 style="position:relative; left:1px; top:87px;">Last Service Date</h5>
+																				<h5 class="required control-label" style="position:relative; left:368px; top:62px;">Next Due date</h5>
+																			</div>
+																			<div class="f_inp_bx">
+																				<div id="id_lastservicedate_pickers" class="input-group date">
+                                                                                    {{ form.lastservicedate }}
+{#																					<input id="id_lastservicedate" class="form-control" type="text" name="lastservicedate" required style="position:relative; left:134px; top:25px; width:78px;" />#}
+{#																					<input id="id_nextservicedate" class="form-control" type="text" name="nextservicedate" required style="position:relative; left:388px; top:25px; width:78px;" />#}
+                                                                                    {{ form.nextservicedate }}
+                                                                                    <span class="input-group-addon">
+																						<i class="fa fa-calendar" style="position:relative; left:45px; top:31px; height:15px;"></i>
+																						<i class="fa fa-calendar" style="position:relative; left:379px; top:31px; width:22px; height:15px;"></i></span>
+																				</div>
+																			</div>
+																			<div class="clear"></div>
+																		</div>
+																		<div class="row_step2_left">
+																			<div class="label_name">
+																				<h5 style="position:relative; left:135px; top:34px; width:241px;">Service note</h5>
+																			</div>
+																			<div class="f_inp_bx">
+																				<input id="id_servicenote" class="form-control" type="text" name="servicenote" required style="position:relative; left:135px; top:20px; width:440px; height:120px;" />
+																			</div>
+																			<div class="clear"></div>
+																		</div>
+																	</div>
+																	<div class="form_wapper" >
+																		<div class="row_step2_left">
+																			<div class="label_name">
+																				<h5 style="text-align: right">Jurisdiction: &nbsp;
+																				</h5>
+																				<h5 id="jurisdiction" style="position:relative; left:134px; top:-27px; text-align:left;">-</h5>
+																				<h5 id="servicedesc" style="height:48px; width:160px; position:relative; left:-179px; top:-32px; text-align:justify;">-</h5>
+																				<h5 id="agency" style="position:relative; left:135px; top:-92px; width:233px; text-align:left;">-</h5>
+																				<h5 style="position:relative; left:54px; top:-121px; text-align:left;">Agency:</h5>
+																			</div>
+																			<div class="label_name">
+																				<h5 id="labeljurisdiction"></h5>
+																			</div>
+																			<div class="clear"></div>
+																		</div>
+																		<div class="row_step2_left">
+																			<div class="label_name">
+																				<h5></h5>
+																			</div>
+																			<div class="f_inp_bx">
+																				<span class="apphelp-block">
+																					<strong></strong>
+																				</span>
+																			</div>
+																			<div class="clear"></div>
+																		</div>
+																		<div class="row_step2_left">
+																			<div class="label_name">
+																				<h5></h5>
+																			</div>
+																			<div class="f_inp_bx">
+																				<div id="id_city_div" class="inp_steps_city_div" style="display: none" name="city_div">
+																					<input id="id_city" class="inp_steps_City" type="text" name="city" placeholder="Enter city" style="display: inline" /></div>
+																			</div>
+																			<div class="clear"></div>
+																		</div>
+																		<div class="row_step2_left">
+																			<div class="label_name">
+																				<h5></h5>
+																			</div>
+																			<div class="f_inp_bx">
+																				<span class="apphelp-block">
+																					<strong></strong>
+																				</span>
+																			</div>
+																			<div class="clear"></div>
+																		</div>
+																	</div>
+																	<div class="form_wapper">
+																		<div class="row_step2_left">
+																			<div class="label_name">
+																				<h5 style="position:relative; left:10px; top:3px; width:53px;">Factor :</h5>
+																				<h5 id="factor" style="position:relative; left:64px; top:-24px;">-</h5>
+																			</div>
+																			<div class="f_inp_bx">
+																				<input id="id_factorvalue" class="form-control" type="text" name="factorvalue" required style="width:33px; position:relative; left:52px; top:5px;" />
+																			</div>
+																			<div class="clear"></div>
+																		</div>
+																		<div class="row_step2_left">
+																			<div class="label_name">
+																				<h5></h5>
+																			</div>
+																			<div class="f_inp_bx">
+																				<span class="apphelp-block">
+																					<strong></strong>
+																				</span>
+																			</div>
+																			<div class="clear"></div>
+																		</div>
+																		<div class="row_step2_left">
+																			<div class="label_name">
+																				<h5></h5>
+																			</div>
+																			<div class="f_inp_bx">
+																				<div id="id_city_div" class="inp_steps_city_div" style="display: none" name="city_div">
+																					<input id="id_city" class="inp_steps_City" type="text" name="city" placeholder="Enter city" style="display: inline" /></div>
+																			</div>
+																			<div class="clear"></div>
+																		</div>
+																		<div class="row_step2_left">
+																			<div class="label_name">
+																				<h5></h5>
+																			</div>
+																			<div class="f_inp_bx">
+																				<span class="apphelp-block">
+																					<strong></strong>
+																				</span>
+																			</div>
+																			<div class="clear"></div>
+																		</div>
+																	</div>
+																	<div class="clear"></div>
+																</div>
+																<div class="clear"></div>
+															</div>
+															<div class="clear"></div>
+														</div>
+													</div>
+													<div class="actionBar">
+														<div class="msgBox">
+															<div class="content"></div>
+															<a class="close" href="#">X</a>
+														</div>
+														<div class="loader">Loading</div>
+														<a class="buttonNext" href="#" onmouseover="return ValidateNewService();">Create Service</a>
+														<a class="buttonNext" href="/" style="position:relative; left:-658px; top:2px; width:98px;">Cancel</a>
+													</div>
+												</div>
+												<!-- End SmartWizard Content -->
+											</td>
+										</tr>
+									</tbody>
+								</table>
 
         </form>
 
@@ -591,42 +246,344 @@
 {% endblock %}
 
 {% block extrajs %}
-    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-3.1.1.min.js"></script>
 
     {% compress js %}
 {#        <script src="{% static 'js/project.js' %}"></script>#}
-        <script src="{% static 'js/naic722/compliance/complainceadd.js' %}"></script>
+{#        <script src="{% static 'js/naic722/compliance/complainceadd.js' %}"></script>#}
+        <script src="{% static 'js/jquery-ui1.12.1.js' %}"></script>
     {% endcompress %}
 
 <script type="text/javascript" language="javascript">
 
+function isDate(txtDate)
+{
+    var currVal = txtDate;
+    if(currVal == '')
+        return false;
+
+    var rxDatePattern = /^(\d{1,2})(\/|-)(\d{1,2})(\/|-)(\d{2})$/; //Declare Regex
+    var dtArray = currVal.match(rxDatePattern); // is format OK?
+
+    if (dtArray == null)
+        return false;
+
+    //Checks for mm/dd/yyyy format.
+    dtMonth = dtArray[1];
+    dtDay= dtArray[3];
+    dtYear = dtArray[5];
+
+    if (dtMonth < 1 || dtMonth > 12)
+        return false;
+    else if (dtDay < 1 || dtDay> 31)
+        return false;
+    else if ((dtMonth==4 || dtMonth==6 || dtMonth==9 || dtMonth==11) && dtDay ==31)
+        return false;
+    else if (dtMonth == 2)
+    {
+        var isleap = (dtYear % 4 == 0 && (dtYear % 100 != 0 || dtYear % 400 == 0));
+        if (dtDay> 29 || (dtDay ==29 && !isleap))
+                return false;
+    }
+    return true;
+}
+
+
+
+$('#id_complianceservice').on('change', function() {
+
+    $('#id_complianceservice').removeClass("has-danger");
+    $('#id_frequency').removeClass("has-danger");
+    $('#id_nextservicedate').removeClass("has-danger");
+    console.log($("#id_complianceservice option:selected").val());
+
+{#    console.log($('#jurisdiction').text);#}
+if($("#id_complianceservice option:selected").val() != '')
+    {
+        $('#jurisdiction').text('-');
+        $('#servicedesc').text('-');
+        $('#agency').text('-');
+        $('#factor').text('-');
+        $("#id_frequency")[0].selectedIndex = 1;
+        document.getElementById('id_lastservicedate').value ='';
+
+        $.ajax({
+            url: 'ajax_complianceservice_details',
+            data: {
+                'complianceserviceselected': $("#id_complianceservice option:selected").val(),
+            },
+            dataType: 'json',
+            success: function (response_data) {
+                console.log(response_data.result);
+                if (response_data.result == 'success' ) {
+
+                    $("div.f_inp_bx select").val(response_data['frequency']);
+                    $('#jurisdiction').text(response_data['jurisdiction']);
+                    $('#servicedesc').text(response_data['compliance_desc']);
+                    $('#agency').text(response_data['agency']);
+                    $('#factor').text(response_data['factor']);
+                    document.getElementById('id_lastservicedate').value =response_data['lastservicedate'];
+                    switch ($("#id_frequency option:selected").val()) {
+                case 'DAILY':
+                    var tomorrow = addDays(1);
+                    tomorrow_dd = ("0" + tomorrow.getDate()).slice(-2);
+                    tomorrow_mm = ("0" + (tomorrow.getMonth() + 1)).slice(-2);
+                    tomorrow_yy = ("0" + (tomorrow.getYear())).slice(-2);
+                    tomorrow = tomorrow_mm + '/' + tomorrow_dd + '/' + tomorrow_yy;
+                    document.getElementById('id_nextservicedate').value = tomorrow;
+                    break;
+
+                case 'WEEKLY':
+                    var nextweek = addDays(7);
+                    nextweek_dd = ("0" + nextweek.getDate()).slice(-2);
+                    nextweek_mm = ("0" + (nextweek.getMonth() + 1)).slice(-2);
+                    nextweek_yy = ("0" + (nextweek.getYear())).slice(-2);
+                    nextweek = nextweek_mm + '/' + nextweek_dd + '/' + nextweek_yy;
+                    document.getElementById('id_nextservicedate').value = nextweek;
+                    break;
+
+                case 'WEEKLY':
+                    var nextweek = addDays(7);
+                    nextweek_dd = ("0" + nextweek.getDate()).slice(-2);
+                    nextweek_mm = ("0" + (nextweek.getMonth() + 1)).slice(-2);
+                    nextweek_yy = ("0" + (nextweek.getYear())).slice(-2);
+                    nextweek = nextweek_mm + '/' + nextweek_dd + '/' + nextweek_yy;
+                    document.getElementById('id_nextservicedate').value = nextweek;
+                    break;
+
+                case 'MNTHLY':
+                    var nextmonth = addDays(30);
+                    nextmonth_dd = ("0" + nextmonth.getDate()).slice(-2);
+                    nextmonth_mm = ("0" + (nextmonth.getMonth() + 1)).slice(-2);
+                    nextmonth_yy = ("0" + (nextmonth.getYear())).slice(-2);
+                    nextmonth = nextmonth_mm + '/' + nextmonth_dd + '/' + nextmonth_yy;
+                    document.getElementById('id_nextservicedate').value = nextmonth;
+                    break;
+
+                case 'QTLY':
+                    var nextquarter = addDays(90);
+                    nextquarter_dd = ("0" + nextquarter.getDate()).slice(-2);
+                    nextquarter_mm = ("0" + (nextquarter.getMonth() + 1)).slice(-2);
+                    nextquarter_yy = ("0" + (nextquarter.getYear())).slice(-2);
+                    nextquarter = nextquarter_mm + '/' + nextquarter_dd + '/' + nextquarter_yy;
+                    document.getElementById('id_nextservicedate').value = nextquarter;
+                    break;
+
+                case 'SEMIAN':
+                    var nextsemian = addDays(180);
+                    nextsemian_dd = ("0" + nextsemian.getDate()).slice(-2);
+                    nextsemian_mm = ("0" + (nextsemian.getMonth() + 1)).slice(-2);
+                    nextsemian_yy = ("0" + (nextsemian.getYear())).slice(-2);
+                    nextsemian = nextsemian_mm + '/' + nextsemian_dd + '/' + nextsemian_yy;
+                    document.getElementById('id_nextservicedate').value = nextsemian;
+                    break;
+
+                case 'ANNUAL':
+                    var nextannual = addDays(365);
+                    nextannual_dd = ("0" + nextannual.getDate()).slice(-2);
+                    nextannual_mm = ("0" + (nextannual.getMonth() + 1)).slice(-2);
+                    nextannual_yy = ("0" + (nextannual.getYear())).slice(-2);
+                    nextannual = nextannual_mm + '/' + nextannual_dd + '/' + nextannual_yy;
+                    document.getElementById('id_nextservicedate').value = nextannual;
+                    break;
+
+                case 'BIEN':
+                    var nextbien = addDays(730);
+                    nextbien_dd = ("0" + nextbien.getDate()).slice(-2);
+                    nextbien_mm = ("0" + (nextbien.getMonth() + 1)).slice(-2);
+                    nextbien_yy = ("0" + (nextbien.getYear())).slice(-2);
+                    nextbien = nextbien_mm + '/' + nextbien_dd + '/' + nextbien_yy;
+                    document.getElementById('id_nextservicedate').value = nextbien;
+                    break;
+
+                case 'ONCE':
+                    break;
+
+                case 'CUSTOM':
+                    break;
+
+            }}
+
+            }
+         });
+    }
+    else{
+        $('#id_complianceservice').addClass("inp_card_info_city_dropdown  has-danger");
+         $('#jurisdiction').text('-');
+        $('#servicedesc').text('-');
+        $('#agency').text('-');
+        $('#factor').text('-');
+        $("#id_frequency")[0].selectedIndex = 0;
+        document.getElementById('id_lastservicedate').value ='';
+    }
+
+});
+
+$('#id_frequency').on('change', function() {
+
+    $('#id_frequency').removeClass("has-danger");
+    console.log($("#id_frequency option:selected").val());
+
+{#    console.log($('#jurisdiction').text);#}
+if($("#id_frequency option:selected").val() != '')
+    {
+          switch ($("#id_frequency option:selected").val()) {
+                case 'DAILY':
+                    var tomorrow = addDays(1);
+                    tomorrow_dd = ("0" + tomorrow.getDate()).slice(-2);
+                    tomorrow_mm = ("0" + (tomorrow.getMonth() + 1)).slice(-2);
+                    tomorrow_yy = ("0" + (tomorrow.getYear())).slice(-2);
+                    tomorrow = tomorrow_mm + '/' + tomorrow_dd + '/' + tomorrow_yy;
+                    document.getElementById('id_nextservicedate').value = tomorrow;
+                    break;
+
+                case 'WEEKLY':
+                    var nextweek = addDays(7);
+                    nextweek_dd = ("0" + nextweek.getDate()).slice(-2);
+                    nextweek_mm = ("0" + (nextweek.getMonth() + 1)).slice(-2);
+                    nextweek_yy = ("0" + (nextweek.getYear())).slice(-2);
+                    nextweek = nextweek_mm + '/' + nextweek_dd + '/' + nextweek_yy;
+                    document.getElementById('id_nextservicedate').value = nextweek;
+                    break;
+
+                case 'WEEKLY':
+                    var nextweek = addDays(7);
+                    nextweek_dd = ("0" + nextweek.getDate()).slice(-2);
+                    nextweek_mm = ("0" + (nextweek.getMonth() + 1)).slice(-2);
+                    nextweek_yy = ("0" + (nextweek.getYear())).slice(-2);
+                    nextweek = nextweek_mm + '/' + nextweek_dd + '/' + nextweek_yy;
+                    document.getElementById('id_nextservicedate').value = nextweek;
+                    break;
+
+                case 'MNTHLY':
+                    var nextmonth = addDays(30);
+                    nextmonth_dd = ("0" + nextmonth.getDate()).slice(-2);
+                    nextmonth_mm = ("0" + (nextmonth.getMonth() + 1)).slice(-2);
+                    nextmonth_yy = ("0" + (nextmonth.getYear())).slice(-2);
+                    nextmonth = nextmonth_mm + '/' + nextmonth_dd + '/' + nextmonth_yy;
+                    document.getElementById('id_nextservicedate').value = nextmonth;
+                    break;
+
+                case 'QTLY':
+                    var nextquarter = addDays(90);
+                    nextquarter_dd = ("0" + nextquarter.getDate()).slice(-2);
+                    nextquarter_mm = ("0" + (nextquarter.getMonth() + 1)).slice(-2);
+                    nextquarter_yy = ("0" + (nextquarter.getYear())).slice(-2);
+                    nextquarter = nextquarter_mm + '/' + nextquarter_dd + '/' + nextquarter_yy;
+                    document.getElementById('id_nextservicedate').value = nextquarter;
+                    break;
+
+                case 'SEMIAN':
+                    var nextsemian = addDays(180);
+                    nextsemian_dd = ("0" + nextsemian.getDate()).slice(-2);
+                    nextsemian_mm = ("0" + (nextsemian.getMonth() + 1)).slice(-2);
+                    nextsemian_yy = ("0" + (nextsemian.getYear())).slice(-2);
+                    nextsemian = nextsemian_mm + '/' + nextsemian_dd + '/' + nextsemian_yy;
+                    document.getElementById('id_nextservicedate').value = nextsemian;
+                    break;
+
+                case 'ANNUAL':
+                    var nextannual = addDays(365);
+                    nextannual_dd = ("0" + nextannual.getDate()).slice(-2);
+                    nextannual_mm = ("0" + (nextannual.getMonth() + 1)).slice(-2);
+                    nextannual_yy = ("0" + (nextannual.getYear())).slice(-2);
+                    nextannual = nextannual_mm + '/' + nextannual_dd + '/' + nextannual_yy;
+                    document.getElementById('id_nextservicedate').value = nextannual;
+                    break;
+
+                case 'BIEN':
+                    var nextbien = addDays(730);
+                    nextbien_dd = ("0" + nextbien.getDate()).slice(-2);
+                    nextbien_mm = ("0" + (nextbien.getMonth() + 1)).slice(-2);
+                    nextbien_yy = ("0" + (nextbien.getYear())).slice(-2);
+                    nextbien = nextbien_mm + '/' + nextbien_dd + '/' + nextbien_yy;
+                    document.getElementById('id_nextservicedate').value = nextbien;
+                    break;
+
+                case 'ONCE':
+                    break;
+
+                case 'CUSTOM':
+                    break;
+
+            }
+    }else{
+        if($("#id_complianceservice option:selected").val() != '')
+            $('#id_complianceservice').addClass("inp_card_info_city_dropdown  has-danger");
+
+        $('#id_frequency').addClass("inp_card_info_city_dropdown  has-danger");
+}
+
+});
+
    $(document).ready(function () {
-            // Smart Wizard
-            $('#wizard').smartWizard({
-                // Properties
-                selected: 0,  // Selected Step, 0 = first step
-                keyNavigation: true, // Enable/Disable key navigation(left and right keys are used if enabled)
-                enableAllSteps: false,  // Enable/Disable all steps on first load
-                transitionEffect: 'fade', // Effect on navigation, none/fade/slide/slideleft
-                contentURL: null, // specifying content url enables ajax content loading
-                contentURLData: null, // override ajax query parameters
-                contentCache: true, // cache step contents, if false content is fetched always from ajax url
-                cycleSteps: true, // cycle step navigation
-                enableFinishButton: false, // makes finish button enabled always
-                hideButtonsOnDisabled: true, // when the previous/next/finish buttons are disabled, hide them instead
-                errorSteps: [],    // array of step numbers to highlighting as error steps
-                labelNext: 'Create Service', // label for Next button
-                labelPrevious: 'Previous', // label for Previous button
-                labelFinish: 'Save Sevice Action',  // label for Finish button
-                noForwardJumping: true,
-                ajaxType: 'POST',
-                // Events
-                onLeaveStep: null, // triggers when leaving a step
-                onShowStep: null,  // triggers when showing a step
-                onFinish: onFinishValidation(),  // triggers when Finish button is clicked
-                includeFinishButton: true,   // Add the finish button
-                reverseButtonsOrder: false //shows buttons ordered as: prev, next and finish
+
+{#       $("#id_lastservicedate").datepicker({#}
+{#                minDate: 0,#}
+{#                showButtonPanel: true,#}
+{#                changeMonth: true,#}
+{#                changeYear: true,#}
+{#                showAnim: "slide",#}
+{#                // The hidden field to receive the date#}
+{#                altField: "#id_lastservicedate" ,#}
+{#                // The format you want#}
+{#                altFormat: "mm/dd/y",#}
+{#                // The format the user actually sees#}
+{#                dateFormat: "mm/dd/y",#}
+{#                onSelect: function (date) {#}
+{##}
+{#                    // Your CSS changes, just in case you still need them#}
+{#                    $('a.ui-state-default').removeClass('ui-state-highlight');#}
+{#                    $(this).addClass('ui-state-highlight');#}
+{#                }#}
+{#            });#}
+
+            $("#id_nextservicedate").datepicker({
+                minDate: 0,
+                showButtonPanel: true,
+                changeMonth: true,
+                changeYear: true,
+                showAnim: "slide",
+                // The hidden field to receive the date
+                altField: "#id_nextservicedate" ,
+                // The format you want
+                altFormat: "mm/dd/y",
+                // The format the user actually sees
+                dateFormat: "mm/dd/y",
+                onSelect: function (date) {
+
+                    // Your CSS changes, just in case you still need them
+                    $('a.ui-state-default').removeClass('ui-state-highlight');
+                    $(this).addClass('ui-state-highlight');
+                }
             });
+
+            // Smart Wizard
+{#            $('#wizard').smartWizard({#}
+{#                // Properties#}
+{#                selected: 0,  // Selected Step, 0 = first step#}
+{#                keyNavigation: true, // Enable/Disable key navigation(left and right keys are used if enabled)#}
+{#                enableAllSteps: false,  // Enable/Disable all steps on first load#}
+{#                transitionEffect: 'fade', // Effect on navigation, none/fade/slide/slideleft#}
+{#                contentURL: null, // specifying content url enables ajax content loading#}
+{#                contentURLData: null, // override ajax query parameters#}
+{#                contentCache: true, // cache step contents, if false content is fetched always from ajax url#}
+{#                cycleSteps: true, // cycle step navigation#}
+{#                enableFinishButton: false, // makes finish button enabled always#}
+{#                hideButtonsOnDisabled: true, // when the previous/next/finish buttons are disabled, hide them instead#}
+{#                errorSteps: [],    // array of step numbers to highlighting as error steps#}
+{#                labelNext: 'Create Service', // label for Next button#}
+{#                labelPrevious: 'Previous', // label for Previous button#}
+{#                labelFinish: 'Save Sevice Action',  // label for Finish button#}
+{#                noForwardJumping: true,#}
+{#                ajaxType: 'POST',#}
+{#                // Events#}
+{#                onLeaveStep: null, // triggers when leaving a step#}
+{#                onShowStep: null,  // triggers when showing a step#}
+{#                onFinish: onFinishValidation(),  // triggers when Finish button is clicked#}
+{#                includeFinishButton: true,   // Add the finish button#}
+{#                reverseButtonsOrder: false //shows buttons ordered as: prev, next and finish#}
+{#            });#}
 
             $("#id_zipcode").keyup();
         });
@@ -642,9 +599,45 @@
 
         }
 
-function ValidateSignup() {
-            var signup_is_valid = true;
-            console.log("Validating Signup :");
+function ValidateNewService() {
+            var service_is_valid = true;
+            console.log("ValidateNewService :");
+
+            if($("#id_complianceservice option:selected").val() == '')
+            {
+                $('#id_complianceservice').addClass("inp_card_info_city_dropdown  has-danger");
+                service_is_valid =false;
+            }
+            else{
+                $('#id_complianceservice').removeClass("has-danger");
+            }
+            if($("#id_frequency option:selected").val() == '')
+            {
+
+                $('#id_frequency').addClass("inp_card_info_city_dropdown  has-danger");
+                service_is_valid =false;
+            }
+            else{
+                $('#id_frequency').removeClass("has-danger");
+            }
+            console.log(document.getElementById('id_nextservicedate').value);
+            if(document.getElementById('id_nextservicedate').value == '')
+            {
+
+
+                    $('#id_nextservicedate').addClass("form-control hasDatepicker  has-danger");
+                    service_is_valid =false;
+
+            }
+            else{
+
+                 if(isDate(document.getElementById('id_nextservicedate').value) == false)
+                {
+                    $('#id_nextservicedate').addClass("form-control hasDatepicker  has-danger");
+                    service_is_valid =false;
+                }
+                $('#id_nextservicedate').removeClass("has-danger");
+            }
 {#            console.log(document.getElementById('id_compname').value);#}
 {#            if (document.getElementById('id_compname').value == '') {#}
 {#                console.log('setting css for id_compname');#}
@@ -756,16 +749,9 @@ function ValidateSignup() {
 {##}
 {##}
 {#            console.log(signup_is_valid);#}
-{#            return signup_is_valid;#}
-    return false;
+            return service_is_valid;
         }
 
-
-$("#id_complianceservice").on('change', function() {
-
-    console.log($.trim($(this).select.val()));
-
-        });
 {#$( function() {#}
 {#    $( "#servicetabs" ).tabs();#}
 {#  } );#}
