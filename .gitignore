@@ -3,6 +3,7 @@
 .AppleDouble
 .LSOverride
 
+secrets.json
 # Pycharm
 .idea/*
 # User-specific stuff:
@@ -276,3 +277,4 @@ jspm_packages
 
 # Output of 'npm pack'
 *.tgz
+/secrets.json
