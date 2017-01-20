@@ -1,6 +1,6 @@
 {% extends "suit_dashboard/base.html" %}
 {% load i18n admin_static %}
-
+{% load staticfiles i18n compress%}
 {% load crispy_forms_tags %}
 {% load humanize %}
 
@@ -21,7 +21,7 @@
 
 
    <!-- Content -->
-                        <div id="content" class="{% block coltype %}colM{% endblock %} row-fluid" style="height: 100vh">
+
 {##}
 {#                            {% block pretitle %}{% endblock %}#}
 {#                            {% block content_title %}{% if title %}#}
@@ -101,7 +101,13 @@
 {#            <div class="form-group">#}
 {#                <input type="submit" value="Submit" class="btn btn-primary" />#}
 {#            </div>#}
+                                <div id="dialogschedulepop" style="height: 568px;width: 634px;">
+                                    {#    #Update schedule#}
+{#                                <p>Fix the schedule:</p>#}
+                                </div>
+
                                 <form method="post" >
+
 {#                                <form method="get" class="form-inline form-search pull-right">#}
                                 <div id="content" class="colM row-fluid">
     <div class="row dashboard-row8">
@@ -259,7 +265,9 @@
 
                                 </form>
 
+
                             {% endblock %}
+
 {##}
 {##}
 {##}
@@ -484,6 +492,7 @@
 {#                                </div>#}
 {#                            </div>#}
                         </div>
+<div id="content" class="{% block coltype %}colM{% endblock %} row-fluid" style="height: 100vh">
 {##}
 {#                        <!-- End SmartWizard Content --></td>#}
 {#                </tr>#}
@@ -517,3 +526,63 @@
 {#        });#}
 {#    </script>#}
 {#{% endblock javascript %}#}
+
+{% block extrajs %}
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-3.1.1.min.js"></script>
+
+    {% compress js %}
+{#        <script src="{% static 'js/project.js' %}"></script>#}
+{#        <script src="{% static 'js/naic722/compliance/complainceadd.js' %}"></script>#}
+        <script src="{% static 'js/jquery-ui1.12.1.js' %}"></script>
+    {% endcompress %}
+
+<script type="text/javascript" language="javascript">
+
+{#$(function(){#}
+{#  $('.js-popup-link').click(function(e){#}
+{#    e.preventDefault();#}
+{#    $('#popup').dialog({modal: true}).dialog('open').load(this.href)#}
+{#  })#}
+
+{#function openDialog(){#}
+{#    alert('Ive beencalled to open dialog');#}
+{#    $('#dialogschedule').dialog('open');#}
+{#    $('.js-popup-link').click(function(e){#}
+{#    e.preventDefault();#}
+{#    $('#dialogschedulepop').dialog({modal: true}).dialog('open').load(this.href)#}
+{#  })#}
+
+
+function schedulepopup(url) {
+  $.ajax({
+    url: url,
+    success: function(data) {console.log('url', url)
+      $("#dialogschedulepop").load(url).dialog({modal:true}).dialog('open');
+    }
+  })
+  return false;
+}
+
+$( "#dialogschedulepop" ).dialog({
+    minHeight: 568,
+    minWidth: 631,
+    resizable: false,
+    autoOpen: false,
+    buttons: {
+        "Save Schedule": function() {
+            $.ajax({
+{#                 #ajax call for delete#}
+{#                 #with url pointing to your delete function#}
+            });
+            $( this ).dialog( "close" );
+        },
+        "Cancel": function() {
+            $( this ).dialog( "close" );
+        }
+    }
+ });
+
+
+
+</script>
+{% endblock %}

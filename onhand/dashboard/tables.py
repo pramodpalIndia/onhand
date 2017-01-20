@@ -96,6 +96,14 @@ maxlength="9" value="{{ record.csrv_due_date|date:"m/d/y" }}" type="text" onclic
 {% endif %}
 """
 
+schedule_template = """
+ {% if record.due_status != 'completed'  %}
+    <a href="" onclick="return schedulepopup('/app/schedule/?type={{record.Service }}&service={{ record.csrv_id }}&scdtyp=new&csrv_due_date={{record.csrv_due_date |date:"m/d/y" }}&csac_price_last={{record.csac_price_last}}&csac_service_date_last={{record.csac_service_date_last |date:"m/d/y" }}&off_from_avg={{record.off_from_avg}}')" class="dismiss" onclick='javascript:openDialog()' title="Clear Alert">
+    <i class="fa fa-clock-o fa-2x text-danger" style="color: #72a525"></i>
+</a>
+ {% endif %}
+
+"""
 action_date_template = """
 {% if record.csac_service_date == None  %}
 <a href="#" class="dismiss" title="Clear Alert" }}"
@@ -143,10 +151,10 @@ lastaction_date_template = """
 """
 
 value_template = """
-{% if record.csac_service_date  == None %}
+{% if record.csac_service_date_last %}
 <a href="#" class="dismiss" title="Clear Alert">
-{% if record.csac_price_last  <= 0  %} <i class="fa fa-thumbs-o-up fa-2x" style="color: #72a525"></i> {% endif %}
-{% if record.csac_price_last  > 0  %} <i class="fa fa-thumbs-o-down fa-2x" style="color: red"></i> {% endif %}
+{% if record.off_from_avg  <= 0  %} <i class="fa fa-thumbs-o-up fa-2x" style="color: #72a525"></i> {% endif %}
+{% if record.off_from_avg  > 0  %} <i class="fa fa-thumbs-o-down fa-2x" style="color: red"></i> {% endif %}
 </a>
 {% endif %}
 """
@@ -163,6 +171,7 @@ class SubscribedServicesTable(tables.Table):
     # csrv_due_date = tables.DateColumn(format='m/d/Y' , accessor='csrv_due_date', orderable=False, verbose_name=('Due / Renewal date'))
     csrv_due_date = tables.TemplateColumn(due_date_template, orderable=False, verbose_name=('Due / Renewal date'))
     # csac_date = tables.DateColumn(format='m/d/Y', accessor='csac_date', orderable=False, verbose_name=('Action date'))
+    schedule_action = tables.TemplateColumn(schedule_template, orderable=False, verbose_name="Scheduled?")
     csac_date = tables.TemplateColumn(action_date_template, orderable=False, verbose_name=('Action date'))
     # csac_price = tables.Column(accessor='csac_price', orderable=False, verbose_name=('Amount Paid'))
     csac_price = tables.TemplateColumn(amountpaid_template, orderable=False, verbose_name="(Last) Paid ")

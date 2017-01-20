@@ -12,6 +12,7 @@ from django import forms
 from django.utils.html import conditional_escape
 from django.utils.safestring import mark_safe
 
+from onhand.compliance import get_complianceservice_model, get_complianceservicefactor_model
 from onhand.subscription import adapter, get_subscription_model, get_company_person_role_model, get_company_language_model, get_person_language_model, \
     get_subscriptiondetail_model, get_secret
 from onhand.subscription import app_settings
@@ -58,7 +59,7 @@ except ImportError:
 from .exceptions import ImmediateHttpResponse
 # from .utils import get_request_param
 
-from . import signals, get_person_model, get_company_model, get_address_model, get_user_model
+# from . import signals, get_person_model, get_company_model, get_address_model, get_user_model
 from .adapter import get_adapter
 
 def set_form_field_order(form, fields_order):
@@ -140,45 +141,60 @@ def complianceservice_field(complianceservice, field, *args):
             # Setter
             v = args[0]
             if v:
-                Person = get_person_model()
+                complianceservice = get_complianceservice_model()
                 # v = v[0:Person._meta.get_field(field).max_length]
             setattr(complianceservice, field, v)
         else:
             # Getter
             return getattr(complianceservice, field)
 
-
-def person_field(person, field, *args):
+def complianceservicefactor_field(complianceservicefactor, field, *args):
     """
     Gets or sets (optional) user model fields. No-op if fields do not exist.
     """
-    if field and hasattr(person, field):
+    if field and hasattr(complianceservicefactor, field):
         if args:
             # Setter
             v = args[0]
             if v:
-                Person = get_person_model()
+                complianceservice = get_complianceservicefactor_model()
                 # v = v[0:Person._meta.get_field(field).max_length]
-            setattr(person, field, v)
+            setattr(complianceservicefactor, field, v)
         else:
             # Getter
-            return getattr(person, field)
+            return getattr(complianceservicefactor, field)
 
-def company_field(company, field, *args):
-    """
-    Gets or sets (optional) user model fields. No-op if fields do not exist.
-    """
-    if field and hasattr(company, field):
-        if args:
-            # Setter
-            v = args[0]
-            if v:
-                Company = get_company_model()
-                # v = v[0:Company._meta.get_field(field).max_length]
-            setattr(company, field, v)
-        else:
-            # Getter
-            return getattr(company, field)
+# def person_field(person, field, *args):
+#     """
+#     Gets or sets (optional) user model fields. No-op if fields do not exist.
+#     """
+#     if field and hasattr(person, field):
+#         if args:
+#             # Setter
+#             v = args[0]
+#             if v:
+#                 Person = get_person_model()
+#                 # v = v[0:Person._meta.get_field(field).max_length]
+#             setattr(person, field, v)
+#         else:
+#             # Getter
+#             return getattr(person, field)
+
+# def company_field(company, field, *args):
+#     """
+#     Gets or sets (optional) user model fields. No-op if fields do not exist.
+#     """
+#     if field and hasattr(company, field):
+#         if args:
+#             # Setter
+#             v = args[0]
+#             if v:
+#                 Company = get_company_model()
+#                 # v = v[0:Company._meta.get_field(field).max_length]
+#             setattr(company, field, v)
+#         else:
+#             # Getter
+#             return getattr(company, field)
 
 def company_person_role_field(company_person_role, field, *args):
     """
@@ -260,21 +276,21 @@ def subscriptiondetail_field(subscriptiondetail, field, *args):
             # Getter
             return getattr(subscriptiondetail, field)
 
-def address_field(address, field, *args):
-    """
-    Gets or sets (optional) user model fields. No-op if fields do not exist.
-    """
-    if field and hasattr(address, field):
-        if args:
-            # Setter
-            v = args[0]
-            if v:
-                Address = get_address_model()
-                v = v[0:Address._meta.get_field(field).max_length]
-            setattr(address, field, v)
-        else:
-            # Getter
-            return getattr(address, field)
+# def address_field(address, field, *args):
+#     """
+#     Gets or sets (optional) user model fields. No-op if fields do not exist.
+#     """
+#     if field and hasattr(address, field):
+#         if args:
+#             # Setter
+#             v = args[0]
+#             if v:
+#                 Address = get_address_model()
+#                 v = v[0:Address._meta.get_field(field).max_length]
+#             setattr(address, field, v)
+#         else:
+#             # Getter
+#             return getattr(address, field)
 
 def plan_display(plan):
     for plan in recurly.Plan.all():
@@ -485,10 +501,10 @@ def provider_get_subscriptiondetails_from_customer_profile( profileId):
 def complete_signup_prelim_registration(request, person, company, address,ohsubscription, ohsubscriptiondetail, provider_subscription_api_id, company_person_role, signal_kwargs=None):
     if signal_kwargs is None:
         signal_kwargs = {}
-    signals.user_signed_up.send(sender=person.__class__,
-                                request=request,
-                                person=person,
-                                **signal_kwargs)
+    # signals.user_signed_up.send(sender=person.__class__,
+    #                             request=request,
+    #                             person=person,
+    #                             **signal_kwargs)
     adapter = get_adapter(request)
 
     print('complete_signup_prelim person , company, address ,ohsubscription, provider_subscription_api_id, company_person_role',person,company, address ,ohsubscription, provider_subscription_api_id, company_person_role )
@@ -505,170 +521,95 @@ def complete_signup_prelim_registration(request, person, company, address,ohsubs
 def complete_signup_prelim_user(request, user, signal_kwargs=None):
     if signal_kwargs is None:
         signal_kwargs = {}
-    signals.user_signed_up.send(sender=user.__class__,
-                                request=request,
-                                user=user,
-                                **signal_kwargs)
+    # signals.user_signed_up.send(sender=user.__class__,
+    #                             request=request,
+    #                             user=user,
+    #                             **signal_kwargs)
     adapter = get_adapter(request)
     print('complete_signup_prelim_user(request, user, signal_kwargs=None):',user)
     adapter.stash_user(request, str(user.id))
 
     return adapter.respond_user_registered(request)
 
-def url_str_to_person_pk(s):
-    Person = get_person_model()
-    print('Person = get_person_model()' , Person)
-    # TODO: Ugh, isn't there a cleaner way to determine whether or not
-    # the PK is a str-like field?
-    if getattr(Person._meta.pk, 'rel', None):
-        pk_field = Person._meta.pk.rel.to._meta.pk
-        print('Person._meta.pk.rel.to._meta.pk', pk_field)
-    else:
-        pk_field = Person._meta.pk
-    if (hasattr(models, 'UUIDField') and issubclass(
-            type(pk_field), models.UUIDField)):
-        print('hasattr -> return s', s)
-        return str(s)
-    try:
-        pk_field.to_python('a')
-        pk = s
-    except ValidationError:
-        pk = base36_to_int(str(s))
-    return pk
+# def url_str_to_person_pk(s):
+#     Person = get_person_model()
+#     print('Person = get_person_model()' , Person)
+#     # TODO: Ugh, isn't there a cleaner way to determine whether or not
+#     # the PK is a str-like field?
+#     if getattr(Person._meta.pk, 'rel', None):
+#         pk_field = Person._meta.pk.rel.to._meta.pk
+#         print('Person._meta.pk.rel.to._meta.pk', pk_field)
+#     else:
+#         pk_field = Person._meta.pk
+#     if (hasattr(models, 'UUIDField') and issubclass(
+#             type(pk_field), models.UUIDField)):
+#         print('hasattr -> return s', s)
+#         return str(s)
+#     try:
+#         pk_field.to_python('a')
+#         pk = s
+#     except ValidationError:
+#         pk = base36_to_int(str(s))
+#     return pk
+#
+# def url_str_to_address_pk(s):
+#     Address = get_address_model()
+#     print('Person = get_person_model()' , Address)
+#     # TODO: Ugh, isn't there a cleaner way to determine whether or not
+#     # the PK is a str-like field?
+#     if getattr(Address._meta.pk, 'rel', None):
+#         pk_field = Address._meta.pk.rel.to._meta.pk
+#         print('Person._meta.pk.rel.to._meta.pk', pk_field)
+#     else:
+#         pk_field = Address._meta.pk
+#     if (hasattr(models, 'UUIDField') and issubclass(
+#             type(pk_field), models.UUIDField)):
+#         print('hasattr -> return s', s)
+#         return str(s)
+#     try:
+#         pk_field.to_python('a')
+#         pk = s
+#     except ValidationError:
+#         pk = base36_to_int(str(s))
+#     return pk
+#
+# def person_pk_to_url_str(person):
+#     """
+#     This should return a string.
+#     """
+#     Person = get_person_model()
+#     if (hasattr(models, 'UUIDField') and issubclass(
+#             type(Person._meta.pk), models.UUIDField)):
+#         if isinstance(person.pk, six.string_types):
+#             return person.pk
+#         return person.pk.hex
+#
+#     ret = person.pk
+#     if isinstance(ret, six.integer_types):
+#         ret = int_to_base36(person.pk)
+#     return str(ret)
+#
+# def url_str_to_company_pk(s):
+#     Company = get_company_model()
+#     print('Person = get_person_model()' , Company)
+#     # TODO: Ugh, isn't there a cleaner way to determine whether or not
+#     # the PK is a str-like field?
+#     if getattr(Company._meta.pk, 'rel', None):
+#         pk_field = Company._meta.pk.rel.to._meta.pk
+#         print('Company._meta.pk.rel.to._meta.pk', pk_field)
+#     else:
+#         pk_field = Company._meta.pk
+#     if (hasattr(models, 'UUIDField') and issubclass(
+#             type(pk_field), models.UUIDField)):
+#         print('hasattr -> return s', s)
+#         return str(s)
+#     try:
+#         pk_field.to_python('a')
+#         pk = s
+#     except ValidationError:
+#         pk = base36_to_int(str(s))
+#     return pk
 
-def url_str_to_address_pk(s):
-    Address = get_address_model()
-    print('Person = get_person_model()' , Address)
-    # TODO: Ugh, isn't there a cleaner way to determine whether or not
-    # the PK is a str-like field?
-    if getattr(Address._meta.pk, 'rel', None):
-        pk_field = Address._meta.pk.rel.to._meta.pk
-        print('Person._meta.pk.rel.to._meta.pk', pk_field)
-    else:
-        pk_field = Address._meta.pk
-    if (hasattr(models, 'UUIDField') and issubclass(
-            type(pk_field), models.UUIDField)):
-        print('hasattr -> return s', s)
-        return str(s)
-    try:
-        pk_field.to_python('a')
-        pk = s
-    except ValidationError:
-        pk = base36_to_int(str(s))
-    return pk
-
-def person_pk_to_url_str(person):
-    """
-    This should return a string.
-    """
-    Person = get_person_model()
-    if (hasattr(models, 'UUIDField') and issubclass(
-            type(Person._meta.pk), models.UUIDField)):
-        if isinstance(person.pk, six.string_types):
-            return person.pk
-        return person.pk.hex
-
-    ret = person.pk
-    if isinstance(ret, six.integer_types):
-        ret = int_to_base36(person.pk)
-    return str(ret)
-
-def url_str_to_company_pk(s):
-    Company = get_company_model()
-    print('Person = get_person_model()' , Company)
-    # TODO: Ugh, isn't there a cleaner way to determine whether or not
-    # the PK is a str-like field?
-    if getattr(Company._meta.pk, 'rel', None):
-        pk_field = Company._meta.pk.rel.to._meta.pk
-        print('Company._meta.pk.rel.to._meta.pk', pk_field)
-    else:
-        pk_field = Company._meta.pk
-    if (hasattr(models, 'UUIDField') and issubclass(
-            type(pk_field), models.UUIDField)):
-        print('hasattr -> return s', s)
-        return str(s)
-    try:
-        pk_field.to_python('a')
-        pk = s
-    except ValidationError:
-        pk = base36_to_int(str(s))
-    return pk
-
-class ColumnCheckboxSelectMultiple(forms.CheckboxSelectMultiple):
-    """
-    Widget that renders multiple-select checkboxes in columns.
-    Constructor takes number of columns and css class to apply
-    to the <ul> elements that make up the columns.
-    """
-
-    def __init__(self, columns=2, css_class=None, **kwargs):
-        super(self.__class__, self).__init__(**kwargs)
-        self.columns = columns
-        self.css_class = css_class
-
-    def render(self, name, value, attrs=None, choices=()):
-        if value is None: value = []
-        has_id = attrs and 'id' in attrs
-        final_attrs = self.build_attrs(attrs, name=name)
-        choices_enum = list(enumerate(chain(self.choices, choices)))
-
-        # This is the part that splits the choices into columns.
-        # Slices vertically.  Could be changed to slice horizontally, etc.
-        column_sizes = columnize(len(choices_enum), self.columns)
-        columns = []
-        for column_size in column_sizes:
-            columns.append(choices_enum[:column_size])
-            choices_enum = choices_enum[column_size:]
-        output = []
-        for column in columns:
-            if self.css_class:
-                output.append(u' class="%s" ' % self.css_class)
-            else:
-                output.append(u'')
-            # Normalize to strings
-            str_values = set([(v) for v in value])
-            for i, (option_value, option_label) in column:
-                # If an ID attribute was given, add a numeric index as a suffix,
-                # so that the checkboxes don't all have the same ID attribute.
-                if has_id:
-                    final_attrs = dict(final_attrs, id='%s_%s' % (
-                        attrs['id'], i))
-                    label_for = u' for="%s"  style="margin-right: 20px;"' % final_attrs['id']
-                else:
-                    label_for = ''
-
-                cb = forms.CheckboxInput(
-                    final_attrs, check_test=lambda value: value in str_values)
-                # option_value = option_value)
-                rendered_cb = cb.render(name, option_value)
-                option_label = conditional_escape(option_label)
-                output.append(u'<label%s>%s %s</label>' % (
-                    label_for, rendered_cb, option_label))
-            output.append(u'')
-        return mark_safe(u'\n'.join(output))
-
-
-def columnize(items, columns):
-    """
-    Return a list containing numbers of elements per column if `items` items
-    are to be divided into `columns` columns.
-
-    >>> columnize(10, 1)
-    [10]
-    >>> columnize(10, 2)
-    [5, 5]
-    >>> columnize(10, 3)
-    [4, 3, 3]
-    >>> columnize(3, 4)
-    [1, 1, 1, 0]
-    """
-    elts_per_column = []
-    for col in range(columns):
-        col_size = int(math.ceil(float(items) / columns))
-        elts_per_column.append(col_size)
-        items -= col_size
-        columns -= 1
-    return elts_per_column
 
 
 def resolve_url(to):

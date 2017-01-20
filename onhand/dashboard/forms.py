@@ -5,6 +5,7 @@ from django import forms
 from django.contrib.admin.options import BaseModelAdmin
 from django.core.urlresolvers import reverse
 from django.core import exceptions
+from django.http import HttpResponseRedirect
 from django.utils.translation import pgettext, ugettext_lazy as _, ugettext
 from django.core import validators
 from django.contrib.auth.tokens import default_token_generator
@@ -49,6 +50,41 @@ from suit.widgets import SuitDateWidget, SuitSplitDateTimeWidget, \
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, ButtonHolder, Submit, Field, MultiField, Div
 from bootstrap4_datetime.widgets import DateTimePicker
+
+
+class ScheduleForm(forms.Form):
+
+    factorvalue = forms.CharField(required=False,
+                                  widget=forms.TextInput(attrs={"class": "form-control"}))
+    def __init__(self, *args, **kwargs):
+        # self.plan = Product.objects.all()
+        print("ScheduleForm")
+        super(ScheduleForm, self).__init__(*args, **kwargs)
+
+
+    def clean(self):
+        print("1:ScheduleForm clean")
+        super(ScheduleForm, self).clean()
+        return self.cleaned_data
+
+    def save(self, request, redirect_url=None):
+        print("ScheduleForm save")
+        adapter = get_adapter(request)
+
+
+        """
+        Create seperate address for each Person and Company;
+        Reason: Address can be changed for each instances
+        """
+        # complianceservice = adapter.new_complianceservice(request)
+        # complianceservice = adapter.save_complianceservice(request, complianceservice, self)
+        #
+        # compliancefactor = adapter.new_complianceservicefactor(request)
+        # compliancefactor = adapter.save_complianceservicefactor(request, compliancefactor, complianceservice, self)
+
+        ret =HttpResponseRedirect(reverse('home'))
+
+        return ret
 
 
 class CommonLayout(Layout):

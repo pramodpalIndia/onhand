@@ -46,7 +46,7 @@
 {% block head_title %}{% trans "Service | New" %}{% endblock %}
 {% block inner %}
     {% block content %}
-        <form class="ComplianceForm" autocomplete="off" id="compliance_addnew_form" method="post" action="{% url 'compliance:compliance_addnew' %} ">
+        <form novalidate class="ComplianceForm" autocomplete="off" id="compliance_addnew_form" method="post" action="{% url 'compliance:compliance_addnew' %} ">
             {% csrf_token %}
             {% if redirect_field_value %}
                 <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
@@ -81,7 +81,18 @@
 																				</h5>
 																			</div>
 																			<div class="dropdown">
-																				{{ form.complianceservice }}
+{#																				{{ form. }}#}
+                                                                                {% for field in form %}
+                                                                                    {% if field == form.complianceservice %}
+                                                                                        {% if field.errors %}
+                                                                                            {{ form.complianceservice | add_attributes:"inp_card_info_city_dropdown  has-danger" }}
+                                                                                            <span class="oh-alert-error">{% for error in  field.errors %}
+                                                                                                {{ error }}<br/>{% endfor %}</span>
+                                                                                        {% else %}
+                                                                                            {{ field }}
+                                                                                        {% endif %}
+                                                                                    {% endif %}
+                                                                                {% endfor %}
 																			</div>
 																			<div class="clear"></div>
 																		</div>
@@ -90,7 +101,18 @@
 																				<h5 class="required control-label" style="position:relative; left:1px; top:63px;">{{ form.frequency.label }}</h5>
 																			</div>
 																			<div class="f_inp_bx">
-                                                                                {{ form.frequency }}
+                                                                                {% for field in form %}
+                                                                                    {% if field == form.frequency %}
+                                                                                        {% if field.errors %}
+                                                                                            {{ form.frequency | add_attributes:"inp_card_info_city_dropdown  has-danger" }}
+                                                                                            <span class="oh-alert-error">{% for error in  field.errors %}
+                                                                                                {{ error }}<br/>{% endfor %}</span>
+                                                                                        {% else %}
+                                                                                            {{ field }}
+                                                                                        {% endif %}
+                                                                                    {% endif %}
+                                                                                {% endfor %}
+
 																				<span class="apphelp-block">
 																					<strong></strong>
 																				</span>
@@ -107,7 +129,17 @@
                                                                                     {{ form.lastservicedate }}
 {#																					<input id="id_lastservicedate" class="form-control" type="text" name="lastservicedate" required style="position:relative; left:134px; top:25px; width:78px;" />#}
 {#																					<input id="id_nextservicedate" class="form-control" type="text" name="nextservicedate" required style="position:relative; left:388px; top:25px; width:78px;" />#}
-                                                                                    {{ form.nextservicedate }}
+                                                                                    {% for field in form %}
+                                                                                    {% if field == form.nextservicedate %}
+                                                                                        {% if field.errors %}
+                                                                                            {{ form.nextservicedate | add_attributes:"inp_card_info_firstname hasDatepicker form-control has-danger" }}
+                                                                                            <span class="oh-alert-error">{% for error in  field.errors %}
+                                                                                                {{ error }}<br/>{% endfor %}</span>
+                                                                                        {% else %}
+                                                                                            {{ field }}
+                                                                                        {% endif %}
+                                                                                    {% endif %}
+                                                                                {% endfor %}
                                                                                     <span class="input-group-addon">
 																						<i class="fa fa-calendar" style="position:relative; left:45px; top:31px; height:15px;"></i>
 																						<i class="fa fa-calendar" style="position:relative; left:379px; top:31px; width:22px; height:15px;"></i></span>
@@ -120,7 +152,18 @@
 																				<h5 style="position:relative; left:135px; top:34px; width:241px;">Service note</h5>
 																			</div>
 																			<div class="f_inp_bx">
-																				<input id="id_servicenote" class="form-control" type="text" name="servicenote" required style="position:relative; left:135px; top:20px; width:440px; height:120px;" />
+{#																				<input id="id_servicenote" class="form-control" type="text" name="servicenote"  style="position:relative; left:135px; top:20px; width:440px; height:120px;" />#}
+                                                                                {% for field in form %}
+                                                                                    {% if field == form.servicenote %}
+                                                                                        {% if field.errors %}
+                                                                                            {{ form.servicenote | add_attributes:"form-control has-danger" }}
+                                                                                            <span class="oh-alert-error">{% for error in  field.errors %}
+                                                                                                {{ error }}<br/>{% endfor %}</span>
+                                                                                        {% else %}
+                                                                                            {{ field }}
+                                                                                        {% endif %}
+                                                                                    {% endif %}
+                                                                                {% endfor %}
 																			</div>
 																			<div class="clear"></div>
 																		</div>
@@ -230,7 +273,9 @@
 															<a class="close" href="#">X</a>
 														</div>
 														<div class="loader">Loading</div>
-														<a class="buttonNext" href="#" onmouseover="return ValidateNewService();">Create Service</a>
+{#														<a class="buttonNext"  type="Submit" onmouseover="return ValidateNewService();">Create Service</a>#}
+                                                        <button id="registration_submit" class="buttonNext"
+                                        type="submit" onmouseover="return ValidateNewService();">{% trans "Create Service" %} &raquo;</button>
 														<a class="buttonNext" href="/" style="position:relative; left:-658px; top:2px; width:98px;">Cancel</a>
 													</div>
 												</div>
@@ -255,6 +300,20 @@
     {% endcompress %}
 
 <script type="text/javascript" language="javascript">
+
+function addDays(days) {
+    if ($("#id_complianceservice option:selected").val() != '') {
+        if (document.getElementById('id_lastservicedate').value != '') {
+            console.log('Im in');
+            console.log(document.getElementById('id_lastservicedate').value);
+            var nextduedate = new Date(document.getElementById('id_lastservicedate').value);
+            var lastservicedate = new Date(nextduedate.getTime() + (days * 24 * 60 * 60 * 1000));
+            return lastservicedate;
+        }
+        return new Date(new Date().getTime() + (days * 24 * 60 * 60 * 1000));
+    }
+}
+
 
 function isDate(txtDate)
 {
@@ -322,6 +381,11 @@ if($("#id_complianceservice option:selected").val() != '')
                     $('#servicedesc').text(response_data['compliance_desc']);
                     $('#agency').text(response_data['agency']);
                     $('#factor').text(response_data['factor']);
+                    if(response_data['factor']=='-')
+                       $('#id_factorvalue').hide();
+                    else
+                        $('#id_factorvalue').show();
+                    console.log('=response_data[lastservicedate];', response_data['lastservicedate']);
                     document.getElementById('id_lastservicedate').value =response_data['lastservicedate'];
                     switch ($("#id_frequency option:selected").val()) {
                 case 'DAILY':
@@ -623,8 +687,6 @@ function ValidateNewService() {
             console.log(document.getElementById('id_nextservicedate').value);
             if(document.getElementById('id_nextservicedate').value == '')
             {
-
-
                     $('#id_nextservicedate').addClass("form-control hasDatepicker  has-danger");
                     service_is_valid =false;
 

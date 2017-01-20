@@ -6,6 +6,7 @@ import warnings
 from django import forms
 from django.core import exceptions
 from django.core.exceptions import ValidationError
+from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.utils.translation import pgettext, ugettext_lazy as _, ugettext
 
@@ -183,11 +184,10 @@ class LanguageChoicefield(forms.ModelMultipleChoiceField):
 
 class BaseComplianceRegisterForm(forms.Form):
 
-    complianceservice = forms.ModelChoiceField(queryset=ServiceJurisdiction.objects.filter(srvj_id__in= V_Service_jurisdiction.objects.filter(cont_id=1859).values('srvj_id')),
-                                               required=False, initial='None', disabled=False,
+    complianceservice = forms.ModelChoiceField(queryset=None,required=False, initial='None', disabled=False,
                                                label='Service',
                                                widget=forms.Select(attrs={'class': "inp_card_info_city_dropdown"}))
-    factorvalue = forms.CharField(
+    factorvalue = forms.CharField(required=False,
         widget=forms.TextInput(attrs={"class": "form-control"}))
 
     frequency = forms.ModelChoiceField(queryset=Basis.objects.all(),
@@ -198,22 +198,18 @@ class BaseComplianceRegisterForm(forms.Form):
     lastservicedate = forms.CharField(label="Last Service Date", required=False,disabled=True,widget=forms.TextInput(
                                                                attrs={ 'class':"inp_card_info_firstname",'style':"position:relative; left:134px; top:25px; width:78px;"}))
 
-    nextservicedate = forms.CharField(label="Next Service Date", widget=forms.TextInput(
+
+    nextservicedate = forms.CharField(label="Next Service Date", required=True, widget=forms.TextInput(
         attrs={'class': "inp_card_info_firstname", 'style': "position:relative; left:388px; top:25px; width:78px;"}))
 
-    servicenote = forms.CharField(label="Compliance Service note", widget=forms.TextInput(attrs={"class": "form-control"}))
+
+    servicenote = forms.CharField(required=False,label="Compliance Service note", widget=forms.TextInput(attrs={'class': "form-control", 'style': "position:relative; left:135px; top:20px; width:440px; height:120px;"}))
 
 
     def __init__(self, request,*args, **kwargs):
-        print("BaseComplianceRegisterForm ")
-        self.complianceservice_required = kwargs.pop('complianceservice_required',True)
-        self.factorvalue_required = kwargs.pop('factorvalue_required',False)
-        self.frequency_required = kwargs.pop('frequency_required', True)
-        self.nextservicedate_required = kwargs.pop('nextservicedate_required', True)
-        self.servicenote_required = kwargs.pop('servicenote_required', False)
+        print("BaseComplianceRegisterForm , request.session['account_county'] ",request.session['account_county'])
         super(BaseComplianceRegisterForm, self).__init__(*args, **kwargs)
-
-        # print(tuple((o.city_id, str(o.name)) for o in City.objects.filter(zipc_code=BaseRegisterForm.clean_zipcode(RegisterForm))))
+        self.fields['complianceservice'].queryset = ServiceJurisdiction.objects.filter(srvj_id__in= V_Service_jurisdiction.objects.filter(cont_id=request.session['account_county']).values('srvj_id'))
 
     def clean_complianceservice(self):
         print("Validate complianceservice")
@@ -233,10 +229,24 @@ class BaseComplianceRegisterForm(forms.Form):
         value = get_adapter().clean_frequency(value)
         return value
 
+    def clean_lastservicedate(self):
+        print("Validate lastservicedate")
+        value = self.cleaned_data["lastservicedate"]
+        value = get_adapter().clean_lastservicedate(value)
+        return value
+
     def clean_nextservicedate(self):
+        print("Validate nextservicedate")
         value = self.cleaned_data["nextservicedate"]
         value = get_adapter().clean_nextservicedate(value)
         return value
+
+    def clean_servicenote(self):
+        print("Validate servicenote")
+        value = self.cleaned_data["servicenote"]
+        value = get_adapter().clean_servicenote(value)
+        return value
+
 
     def clean(self):
         print("2:BaseComplianceRegisterForm clean")
@@ -269,5 +279,9 @@ class ComplianceForm(BaseComplianceRegisterForm):
         complianceservice = adapter.new_complianceservice(request)
         complianceservice = adapter.save_complianceservice(request, complianceservice, self)
 
-        ret = reverse("account_signup")
+        compliancefactor = adapter.new_complianceservicefactor(request)
+        compliancefactor = adapter.save_complianceservicefactor(request, compliancefactor, complianceservice, self)
+
+        ret =HttpResponseRedirect(reverse('home'))
+
         return ret

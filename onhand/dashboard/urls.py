@@ -29,6 +29,7 @@ urlpatterns = [
     url(r'^dismiss-alert/$', views.customer_management_dismiss_alert,
         name='dismiss-alert'),
     url(r'^ajax_completion_filter$', filter_completed_items_list, name="getfilteredservicelist"),
+    url(r'^schedule/$', views.popupschedule, name="scheduleservice"),
     # url(
     #     regex=r'^~update/$',
     #     view=views.UserUpdateView.as_view(),
