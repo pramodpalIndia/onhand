@@ -1,0 +1,210 @@
+{% load i18n admin_static %}
+{% load staticfiles i18n compress %}
+{% load humanize %}
+
+{% block extrastyle %}
+    <link href="{% static 'css/font-awesome.css' %}" rel="stylesheet" media="all">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/naic722/dashboard/schedulepopup.css' %}" media="all">
+{% endblock %}
+
+<i id="oh_scd_serv113" class="fa fa-user-o   fa-3x oh_scd_servkeeComponent oh_scd_servkeeIcon rotate360"
+   style="color: #073763"></i>
+<span id="oh_scd_serv24" class="oh_scd_servkeeComponent oh_scd_servkeeLabel">Add New Vendor</span>
+<div id="oh_scd_serv1" class="oh_scd_servkeeComponent oh_scd_servkeeHrule"></div>
+
+<span id="oh_scd_serv40" class="oh_scd_servkeeComponent oh_scd_servkeeLabel ">Service</span>
+<span id="oh_scd_serv41" class="oh_scd_servkeeComponent oh_scd_servkeeLabel ">RPZ Test</span>
+
+<div id="oh_scd_serv86" class="oh_scd_servkeeComponent oh_scd_servkeeParagraph ohrequired control-label" cellspacing="0" cellpadding="0">Service
+    provider :<br/></div>
+<input type="text" required autofocus id="vendorname" name="vendorname" placeholder="Service provider company" value="" class="oh_scd_servkeeComponent oh_scd_servkeeTextinput input-vendorname"/>
+
+<div id="oh_scd_serv90" class="oh_scd_servkeeComponent oh_scd_servkeeParagraph" cellspacing="0" cellpadding="0">Contact
+    / Department:<br/></div>
+<input id="oh_scd_serv91" required type="text" placeholder="Dept./Contact person name" value="" class="oh_scd_servkeeComponent oh_scd_servkeeTextinput"/>
+
+
+<div id="oh_scd_serv89" class="oh_scd_servkeeComponent oh_scd_servkeeParagraph" cellspacing="0" cellpadding="0">Phone
+    no:<br/></div>
+<input id="oh_scd_serv88" required type="text" placeholder="phone number" value="" class="oh_scd_servkeeComponent oh_scd_servkeeTextinput"/>
+
+<i id="oh_scd_serv95" class="fa fa-phone fa-2x oh_scd_servkeeComponent oh_scd_servkeeIcon rotate360"
+   style="color: #080041"></i>
+
+<div id="oh_scd_serv93" class="oh_scd_servkeeComponent oh_scd_servkeeParagraph" cellspacing="0" cellpadding="0">Email
+    :<br/></div>
+<input id="oh_scd_serv92" required type="text" placeholder="Email Address"  value="" class="oh_scd_servkeeComponent oh_scd_servkeeTextinput"/>
+<i id="oh_scd_serv96" class="fa fa-envelope-o fa-2x oh_scd_servkeeComponent oh_scd_servkeeIcon rotate360"
+   style="color: #080041"></i>
+
+<div style="margin-top:490px;text-align: right;">
+        <button type="button" id="createvendor" name="createvendor" class="ui-button ui-corner-all ui-widget" style="font-size: 14px; margin-left: 4px;">Create Vendor</button>
+        <button type="button" id="cancelvendor" name="cancelvendor" class="ui-button ui-corner-all ui-widget" style="font-size: 14px; margin-left: 4px;">Cancel</button>
+</div>
+{#{% block extrajs %}#}
+{#        <script type="text/javascript" language="javascript">#}
+{##}
+{#            function schedulepopup(url) {#}
+{#                $.ajax({#}
+{#                    url: url,#}
+{#                    success: function (data) {#}
+{#                        console.log('url', url)#}
+{#                        $("#dialogschedulepop").load(url).dialog({modal: true}).dialog('open');#}
+{#                    }#}
+{#                })#}
+{#                return false;#}
+{#            }#}
+{##}
+{#            $("#dialogschedulepop").dialog({#}
+{#                minHeight: 568,#}
+{#                minWidth: 631,#}
+{#                resizable: false,#}
+{#                autoOpen: false,#}
+{#                buttons: {#}
+{#                    "Save Schedule": function () {#}
+{#                        $.ajax({#}
+                            {#                 #ajax call for delete#}
+                            {#                 #with url pointing to your delete function#}
+{#                        });#}
+{#                        $(this).dialog("close");#}
+{#                    },#}
+{#                    "Cancel": function () {#}
+{#                        $(this).dialog("close");#}
+{#                    }#}
+{#                }#}
+{#            });#}
+{##}
+{##}
+{#        </script>#}
+{#    {% endblock %}#}
+
+{% block extrajs %}
+        <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-3.1.1.min.js"></script>
+
+        {% compress js %}
+            {#        <script src="{% static 'js/project.js' %}"></script>#}
+            {#        <script src="{% static 'js/naic722/compliance/complainceadd.js' %}"></script>#}
+            <script src="{% static 'js/jquery-ui1.12.1.js' %}"></script>
+        {% endcompress %}
+
+        <script type="text/javascript" language="javascript">
+
+$('#createvendor').click(function() {
+
+    console.log('AJAX- Create Vendor');
+                          var form_valid = true;
+                          console.log(document.getElementById('vendorname').value);
+                          if(document.getElementById('vendorname').value == ''){
+                              form_valid =false;
+                              $('#vendorname').addClass("oh_scd_servkeeComponent oh_scd_servkeeTextinput vendorname  has-danger");
+                          }else{
+                              $('#vendorname').removeClass("has-danger");
+                          }
+
+                          if(form_valid == true){
+                              $.ajax({
+                              });
+                               window.parent.$("#dialogschedulepopnewvendor").dialog( "close" );
+    window.parent.$('#scddiv').show();
+    window.parent.$('.ui-button.ui-corner-all.ui-widget.ui-button-icon-only.ui-dialog-titlebar-close').css('display', 'none');
+
+                          }
+
+    });
+
+    $('#cancelvendor').click(function() {
+         if ( window.parent.$("#dialogschedulepopnewvendor").dialog("isOpen") == true) {
+              window.parent.$("#dialogschedulepopnewvendor").dialog("close");
+         }
+        window.parent.$('#scddiv').show();
+       window.parent.$('.ui-button.ui-corner-all.ui-widget.ui-button-icon-only.ui-dialog-titlebar-close').css('display', 'none');
+
+{#         window.parent.$("#dialogschedulepop").dialog('close');#}
+    });
+
+            {#$(function(){#}
+            {#  $('.js-popup-link').click(function(e){#}
+            {#    e.preventDefault();#}
+            {#    $('#popup').dialog({modal: true}).dialog('open').load(this.href)#}
+            {#  })#}
+
+            {#function openDialog(){#}
+            {#    alert('Ive beencalled to open dialog');#}
+            {#    $('#dialogschedule').dialog('open');#}
+            {#    $('.js-popup-link').click(function(e){#}
+            {#    e.preventDefault();#}
+            {#    $('#dialogschedulepop').dialog({modal: true}).dialog('open').load(this.href)#}
+            {#  })#}
+
+{#            $(document).ready(function () {#}
+{##}
+{#        });#}
+
+
+
+
+{#            function schedulepopupnewvendor(url) {#}
+{#                $.ajax({#}
+{#                    url: url,#}
+{#                    success: function (data) {#}
+{#                        console.log('url', url)#}
+{#                        $("#dialogschedulepopnewvendor").load(url).dialog({modal: true}).dialog('open');#}
+{#                    }#}
+{#                })#}
+{#                return false;#}
+{#            }#}
+
+{#             dialogvendor = $("#dialogschedulepopnewvendor").dialog({#}
+{#                  modal : true,#}
+{#                  minHeight: 568,#}
+{#                  minWidth: 631,#}
+{#                  resizable: false,#}
+{#                  draggable: false,#}
+{#                  autoOpen: false,#}
+{#                  dialogClass: "no-close",#}
+{#                open: function(ev, ui){#}
+{#                      $('#scheduleIframe').src = 'http://www.w3schools.com';#}
+{#                     $('#scheduleIframe').attr('src','http://www.jQuery.com');#}
+{#                  },#}
+{#                  buttons: {#}
+{#                      "Create Vendor": function () {#}
+{#                          $.ajax({#}
+                              {#                 #ajax call for delete#}
+                              {#                 #with url pointing to your delete function#}
+{#                          });#}
+{#                          $(this).dialog("close");#}
+{#                      },#}
+{#                      Cancel: function () {#}
+                          {#                        $(this).dialog("close");#}
+{#                          dialog.dialog( "close" );#}
+{#                      }#}
+{#                  },#}
+{#                close: function() {#}
+{#                    form[ 0 ].reset();#}
+{#                    allFields.removeClass( "ui-state-error" );#}
+{#                  }#}
+{#              });#}
+
+{#            $("#dialogschedulepopnewvendor").dialog({#}
+{#                minHeight: 568,#}
+{#                minWidth: 631,#}
+{#                resizable: false,#}
+{#                draggable: false,#}
+{#                autoOpen: false,#}
+{#                buttons: {#}
+{#                    "Create Vendor": function () {#}
+{#                        $.ajax({#}
+                            {#                 #ajax call for delete#}
+                            {#                 #with url pointing to your delete function#}
+{#                        });#}
+{#                        $(this).dialog("close");#}
+{#                    },#}
+{#                    "Cancel": function () {#}
+{#                        $(this).dialog("close");#}
+{#                    }#}
+{#                }#}
+{#            });#}
+
+
+        </script>
+    {% endblock %}

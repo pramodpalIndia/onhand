@@ -1,3 +1,14 @@
+/*.no-close .ui-dialog-titlebar-close {*/
+  /*display: none;*/
+/*}*/
+
+/*.ui-dialog-titlebar .ui-corner-all .ui-widget-header .ui-helper-clearfix{*/
+  /*display: none;*/
+/*}*/
+
+.ui-dialog .ui-dialog-titlebar{
+  display: none;
+}
 #oh_scd_servkeeCanvas {
 		position:absolute;
 		left:0px;
@@ -44,7 +55,7 @@
 	width:156.20000000000002px;
 	height:24px;
 	z-index:3;
-	font-size: 16px;
+	font-size: 22px;
 	font-style:normal;
 	font-weight:bold;
 	text-decoration:none;
@@ -81,8 +92,8 @@
 }
 
 #oh_scd_serv39{
-	left:272px;
-	top:357px;
+	left:261px;
+	top:353px;
 	width:24px;
 	height:24px;
 	font-size:24px;
@@ -178,7 +189,7 @@
 
 #oh_scd_serv47{
 /*{#	left:588px;#}*/
-	right: 15px;
+	right: 1px;
     top: 99px;
     width: 24px;
     height: 24px;
@@ -238,6 +249,13 @@
 }
 
 
+.ohrequired.control-label:before {
+  content:"*";
+  color:red;
+  cursor: none;
+  font-weight: bold;
+}
+
 #oh_scd_serv86{
 	left:29px;
 	top:160px;
@@ -254,6 +272,17 @@
 }
 
 #oh_scd_serv87{
+	left:173px;
+	top:155px;
+	width:192px;
+	z-index:18;
+	font-size: 14px;
+	font-style:normal;
+	font-weight:normal;
+	text-decoration:none;
+}
+
+.input-vendorname{
 	left:173px;
 	top:155px;
 	width:192px;
@@ -508,8 +537,8 @@
 }
 
 #oh_scd_serv113{
-	left:197px;
-	top:2px;
+	left:178px;
+	top:6px;
 	width:32px;
 	height:32px;
 	font-size:32px;
@@ -530,4 +559,19 @@
 	font-weight:normal;
 	text-decoration:none;
 	text-align:left;
+}
+
+
+.has-danger
+{
+  background-position: center right .625rem;
+  background-repeat: no-repeat;
+  border-color: #d9534f;
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23d9534f' viewBox='-2 -2 7 7'%3E%3Cpath stroke='%23d9534f' d='M0 0l3 3m0-3L0 3'/%3E%3Ccircle r='.5'/%3E%3Ccircle cx='3' r='.5'/%3E%3Ccircle cy='3' r='.5'/%3E%3Ccircle cx='3' cy='3' r='.5'/%3E%3C/svg%3E");
+  border: 1px solid rgba(252, 5, 5, 1.15);
+  border-radius: .25rem;
+}
+
+.oh-alert-error {
+    color: #ffef00;
 }

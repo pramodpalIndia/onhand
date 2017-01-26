@@ -1,588 +1,339 @@
 {% extends "suit_dashboard/base.html" %}
 {% load i18n admin_static %}
-{% load staticfiles i18n compress%}
+{% load staticfiles i18n compress %}
 {% load crispy_forms_tags %}
 {% load humanize %}
 
 {% block title %}
-  Onhand
+    Onhand
 {% endblock %}
 
 {% block dashboard_css %}
-{#  <link href="{% static 'dashboard/your_main.css' %}" rel="stylesheet" media="all">#}
+    {#  <link href="{% static 'dashboard/your_main.css' %}" rel="stylesheet" media="all">#}
     <link href="{% static 'css/font-awesome.css' %}" rel="stylesheet" media="all">
     <link href="{% static 'css/onhanddashboard.css' %}" rel="stylesheet" media="all">
-{#    <link href="{% static 'bootstrap4/css/bootstrap.css' %}" rel="stylesheet" media="all">#}
-{#    <link href="{% static 'bootstrap4/css/bootstrap-flex.css' %}" rel="stylesheet" media="all">#}
-{#    <link href="{% static 'bootstrap4/css/bootstrap-grid.css' %}" rel="stylesheet" media="all">#}
-{#    <link href="{% static 'bootstrap4/css/bootstrap-reboot.css' %}" rel="stylesheet" media="all">#}
-{#    <link href="{% static '/' %}" rel="stylesheet" media="all">#}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/naic722/dashboard/schedulepopup.css' %}" media="all">
+    {#    <link href="{% static 'bootstrap4/css/bootstrap.css' %}" rel="stylesheet" media="all">#}
+    {#    <link href="{% static 'bootstrap4/css/bootstrap-flex.css' %}" rel="stylesheet" media="all">#}
+    {#    <link href="{% static 'bootstrap4/css/bootstrap-grid.css' %}" rel="stylesheet" media="all">#}
+    {#    <link href="{% static 'bootstrap4/css/bootstrap-reboot.css' %}" rel="stylesheet" media="all">#}
+    {#    <link href="{% static '/' %}" rel="stylesheet" media="all">#}
 {% endblock %}
+<!-- Content -->
 
+{% block content %}
 
-   <!-- Content -->
+    <form method="post">
 
-{##}
-{#                            {% block pretitle %}{% endblock %}#}
-{#                            {% block content_title %}{% if title %}#}
-{#                                <h2 class="content-title">{{ title }}</h2>#}
-{##}
-{#                            {% endif %}{% endblock %}#}
-                        {#                                {% block object-tools %}{% endblock %}#}
-{#                                {{ content }}#}
-{##}
-                            {% block content %}
-{#                                {{ form.firstname }}#}
-{#                                <div class="row">#}
-{#                                <div class="col-md-1 dbox dboxallitems">All Items</div>#}
-{#                                    <div class="col-md-1 dbox dboxservices">Services</div>#}
-{#                                    <div class="col-md-1 dbox dboxinsurance">Insurance</div>#}
-{#                                    <div class="col-md-1 dbox dboxfiling">Filings & Permits</div>#}
-{#                                    <div class="col-md-1 dbox dboxviolation">Violations & Suits</div>#}
-{#                                    <div class="col-md-1 dbox dboxcurrent">Current</div>#}
-{#                                    <div class="col-md-1 dbox dboxattention">Coming Due</div>#}
-{#                                    <div class="col-md-1 dbox dboxpastdue">Past Due</div>#}
-{#                                    <div class="col-md-1 dbox dboxallitems">All Items</div>#}
-{#                                    <div class="col-md-1 dbox dboxallitems">All Items</div>#}
-{#                                    <div class="col-md-1 dbox dboxallitems">All Items</div>#}
-{#                                <div class="col-md-1 dbox dboxallitems">All Items</div>#}
-{#                                <div class="col-md-1 dbox dboxservices">Services/div>#}
-{#                                <div class="col-md-1 dbox dboxinsurance">Insurance</div>#}
-{#                                <div class="col-md-1 dbox dboxfiling">Filings & Permits</div>#}
-{#                                <div class="col-md-1 dbox dboxviolation">Violations & Suits</div>#}
-{#                                <div class="col-md-1 dbox dboxcurrent">Current</div>#}
-{#                                <div class="col-md-1 dbox dboxattention">Coming Due/div>#}
-{#                                    <div class="col-md-1 dbox dboxpastdue">Past Due</div>#}
-{#                                </div>#}
-
-                                {#                            {{ form.as_table }}#}
-
-{#                                </div>#}
-
-{#                                                                {% crispy example_form %}#}
-
-{#                                <div class="container">#}
-{#    <div class="row">#}
-{#        <div class='col-sm-6'>#}
-{#            <div class="form-group">#}
-{#                <div class='input-group date' id='datetimepicker1'>#}
-{#                    <input type='text' class="form-control" />#}
-{#                    <span class="input-group-addon">#}
-{#                        <span class="glyphicon glyphicon-calendar"></span>#}
-{#                    </span>#}
-{#                </div>#}
-{#            </div>#}
-{#        </div>#}
-{#        <script type="text/javascript">#}
-{#            $(function () {#}
-{#                $('#datetimepicker1').datetimepicker();#}
-{#            });#}
-{#        </script>#}
-{#    </div>#}
-{#</div>#}
-{##}
-{#                                {% for field in form.visible_fields %}#}
-{#            <div id="div_{{ field.html_name }}"#}
-{#                 class="form-group{% if field.errors %} has-error{% endif %}">#}
-{#                {{ field.label_tag }}#}
-{#                {{ field }}#}
-{#                <div class="text-muted pull-right">#}
-{#                    <small>{{ field.help_text }}</small>#}
-{#                </div>#}
-{#                <div class="help-block">#}
-{#                    {{ field.errors }}#}
-{#                </div>#}
-{#            </div>#}
-{#            {% endfor %}#}
-{#            {% for hidden in form.hidden_fields %}#}
-{#                {{ hidden }}#}
-{#            {% endfor %}#}
-{#            {% csrf_token %}#}
-{#            <div class="form-group">#}
-{#                <input type="submit" value="Submit" class="btn btn-primary" />#}
-{#            </div>#}
-                                <div id="dialogschedulepop" style="height: 568px;width: 634px;">
-                                    {#    #Update schedule#}
-{#                                <p>Fix the schedule:</p>#}
-                                </div>
-
-                                <form method="post" >
-
-{#                                <form method="get" class="form-inline form-search pull-right">#}
-                                <div id="content" class="colM row-fluid">
-    <div class="row dashboard-row8">
-        <div class="dashboard-col-1">
-            <div class="dboxallitems" id="dboxallitems">
-                <input type="checkbox" name="countGroup" value="dboxallitems" id="checkboxdboxallitems"  />
-                <h3 class="box-title">{{ subscription_count_all }}</h3>
-                <p class="box-description" id="">
-                    <strong> All Items</strong>
-                </p>
+        <div id="content" class="colM row-fluid">
+            <div class="row dashboard-row8">
+                <div class="dashboard-col-1">
+                    <div class="dboxallitems" id="dboxallitems">
+                        <input type="checkbox" name="countGroup" value="dboxallitems" id="checkboxdboxallitems"/>
+                        <h3 class="box-title">{{ subscription_count_all }}</h3>
+                        <p class="box-description" id="">
+                            <strong> All Items</strong>
+                        </p>
+                    </div>
+                </div>
+                <div class="dashboard-col-1">
+                    <div class="dboxservices">
+                        <h3 class="box-title">{{ service_count_total }}</h3>
+                        <p class="box-description">
+                            <strong> Services</strong>
+                        </p>
+                    </div>
+                </div>
+                <div class="dashboard-col-1">
+                    <div class="dboxinsurance">
+                        <h3 class="box-title">0</h3>
+                        <p class="box-description">
+                            <strong> Insurance</strong>
+                        </p>
+                    </div>
+                </div>
+                <div class="dashboard-col-1">
+                    <div class="dboxfiling">
+                        <h3 class="box-title">0</h3>
+                        <p class="box-description">
+                            <strong> Filings &amp; Permits</strong>
+                        </p>
+                    </div>
+                </div>
+                <div class="dashboard-col-1">
+                    <div class="dboxviolation">
+                        <h3 class="box-title">0</h3>
+                        <p class="box-description">
+                            <strong> Violations &amp; Suits</strong>
+                        </p>
+                    </div>
+                </div>
+                <div class="dashboard-col-1">
+                    {#            <div class="dboxcurrent">#}
+                    <div class="dboxcurrentdue " id="dboxcurrentdue">
+                        <input type="checkbox" name="countGroup" value="dboxcurrentdue" id="checkboxdboxcurrentdue"/>
+                        <h3 class="box-title">{{ subscription_count_current }}</h3>
+                        <p class="box-description">
+                            <strong> Current</strong>
+                        </p>
+                    </div>
+                </div>
+                <div class="dashboard-col-1">
+                    <div class="dboxcomingdue " id="dboxcomingdue">
+                        <input type="checkbox" name="countGroup" value="dboxcomingdue" id="checkboxdboxcomingdue"/>
+                        <h3 class="box-title">{{ subscription_count_coming_due }}</h3>
+                        <p class="box-description">
+                            <strong> Coming Due</strong>
+                        </p>
+                    </div>
+                </div>
+                <div class="dashboard-col-1">
+                    <div class="dboxpastdue " id="dboxpastdue">
+                        <input type="checkbox" name="countGroup" value="dboxpastdue" id="checkboxdboxpastdue"/>
+                        <h3 class="box-title">{{ subscription_count_past_due }}</h3>
+                        <p class="box-description">
+                            <strong> Past Due</strong>
+                        </p>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="dashboard-col-1">
-            <div class="dboxservices">
-                <h3 class="box-title">{{ service_count_total }}</h3>
-                <p class="box-description">
-                    <strong> Services</strong>
-                </p>
+            <div class="row dashboard-row1">
+                <div class="dashboard-col-1">
+                </div>
             </div>
-        </div>
-        <div class="dashboard-col-1">
-            <div class="dboxinsurance">
-                <h3 class="box-title">0</h3>
-                <p class="box-description">
-                    <strong> Insurance</strong>
-                </p>
-            </div>
-        </div>
-        <div class="dashboard-col-1">
-            <div class="dboxfiling">
-                <h3 class="box-title">0</h3>
-                <p class="box-description">
-                    <strong> Filings &amp; Permits</strong>
-                </p>
-            </div>
-        </div>
-        <div class="dashboard-col-1">
-            <div class="dboxviolation">
-                <h3 class="box-title">0</h3>
-                <p class="box-description">
-                    <strong> Violations &amp; Suits</strong>
-                </p>
-            </div>
-        </div>
-        <div class="dashboard-col-1">
-{#            <div class="dboxcurrent">#}
-            <div class="dboxcurrentdue " id="dboxcurrentdue">
-                <input type="checkbox" name="countGroup" value="dboxcurrentdue" id="checkboxdboxcurrentdue"  />
-                <h3 class="box-title">{{ subscription_count_current }}</h3>
-                <p class="box-description">
-                    <strong> Current</strong>
-                </p>
-            </div>
-        </div>
-        <div class="dashboard-col-1">
-            <div class="dboxcomingdue " id="dboxcomingdue">
-                <input type="checkbox" name="countGroup" value="dboxcomingdue" id="checkboxdboxcomingdue"  />
-                <h3 class="box-title">{{ subscription_count_coming_due }}</h3>
-                <p class="box-description">
-                    <strong> Coming Due</strong>
-                </p>
-            </div>
-        </div>
-        <div class="dashboard-col-1">
-            <div class="dboxpastdue " id="dboxpastdue">
-                <input type="checkbox" name="countGroup" value="dboxpastdue" id="checkboxdboxpastdue"  />
-{#                <label class="whatever" for="checkboxdboxpastdue"></label>#}
-                <h3 class="box-title">{{ subscription_count_past_due }}</h3>
-                <p class="box-description">
-                    <strong> Past Due</strong>
-                </p>
-            </div>
-        </div>
-    </div>
-    <div class="row dashboard-row1">
-        <div class="dashboard-col-1">
-{#            <div class="dbox">#}
-{#            </div>#}
-        </div>
-    </div>
-    <div class="row dashboard-row2">
-        <div class="dashboard-col-1">
             <div class="row dashboard-row2">
-                <div class="dashboard-col-title">
-                    <div class="dboxfiltertitle">
-                        <h3 class="box-title">Showing :</h3>
-                    </div>
-                </div>
-                <div class="dashboard-col-2">
-                    <div class="dboxshowfilters">
-                        <h3 class="box-title" id="filterselected">All Items</h3>
-                    </div>
-                </div>
-                <div class="dashboard-col-3">
-                    <div class="dboxfiltertitle">
-                         <input id="checkbox_completeditems" name="checkbox_completeditems" type="checkbox">
-{#                        <input checked="checked" id="checkbox_recurringItems" name="checkbox_recurringItems" type="checkbox">#}
-                    </div>
-                </div>
-                <div class="dashboard-col-4">
-                    <div class="dboxshowfilters">
-                        <h3 class="box-title">Completed Items</h3>
-{#                        <h3 class="box-title">Recurring Items</h3>#}
-                    </div>
-                </div>
-                <div class="dashboard-col-5">
-                    <div class="dboxfiltertitle">
-{#                        <input checked="checked" id="checkbox_nonrecurringItems" name="checkbox_nonrecurringItems" type="checkbox">#}
-                    </div>
-                </div>
-                <div class="dashboard-col-6">
-                    <div class="dboxshowfilters">
-{#                        <h3 class="box-title">Non-Recurring Items</h3>#}
-                    </div>
-                </div>
-                <div class="dashboard-col-7">
-                    <div class="dboxshowfilters">
-{#                        <input id="checkbox_completeditems" name="checkbox_completeditems" type="checkbox">#}
-                    </div>
-                </div>
-                <div class="dashboard-col-8">
-                    <div class="dboxshowfilters">
-{#                        <h3 class="box-title">Completed Items</h3>#}
-                    </div>
-                </div>
-                <div class="dashboard-col-9">
-                    <div class="dboxshowfilters">
-                        <h3 class="box-title"></h3>
-                    </div>
-                </div>
-                <div class="dashboard-col-10">
-                    <div class="dboxshowfilters">
-                        <h3 class="box-title"></h3>
-                    </div>
-                </div>
-                <div class="dashboard-col-11">
-                    <div class="dboxshowfilters">
-                         <h3 class="box-title"><i class="fa fa-print fa-2x" style="color: green" aria-hidden="true"></i></h3>
-                    </div>
-                </div>
-                               <div class="dashboard-col-12">
-                    <div class="dboxshowfilters">
-                        <h3 class="box-title"><i class="fa fa-file-excel-o fa-2x" style="color: green" aria-hidden="true"></i></h3>
-                    </div>
-                </div>
-
-            </div>
-{#            <h3 class="box-title"><i class="fa fa-print fa-2x" style="color: green" aria-hidden="true"></i></h3>#}
-{#              <h3 class="box-title"><i class="fa fa-file-excel-o fa-2x" style="color: green" aria-hidden="true"></i></h3>#}
-        </div>
-    </div>
-</div>
-{#                                {% crispy example_form %}#}
-                        {% include 'dashboard/dashboard_table_body.html' %}
-
-                                </form>
-
-
-                            {% endblock %}
-
-{##}
-{##}
-{##}
-{#                        {{ form }}#}
-{##}
-{#                        <table align="center" border="0" cellpadding="0" cellspacing="0" style="margin:auto;background-color: white">#}
-{#                <tr>#}
-{#                    <td><!-- Smart Wizard -->#}
-{##}
-{#                        <div id="wizard" class="swMain">#}
-{##}
-{#                            <div id="step-1" style="height:480px;">#}
-{#                                <div class="form_wapper_m">#}
-{#                                    <div class="step1_services">#}
-{#                                        <div class="step1_services_form_wapper">#}
-{#                                            {% render_table defaultservicetable %}#}
-{#                                            <table class="responstableheader">#}
-{##}
-{#                                                <tr>#}
-{#                                                    <th>Select</th>#}
-{#                                                    <th data-th="Plans"><span style="width: 49px;">Type</span></th>#}
-{#                                                    <th style="width: 187px">Description</th>#}
-{#                                                    <th style="width: 124px">Frequency</th>#}
-{#                                                    <th style="width: 143px">Due/Renewal date</th>#}
-{#                                                    <th style="width: 175px">Agency</th>#}
-{#                                                    <th style="width: 94px">Goverment level</th>#}
-{#                                                </tr>#}
-{#                                            </table>#}
-{#                                            <div style="overflow-y: scroll;height: 382px;">#}
-{#                                                <table class="responstable">#}
-{#                                                    {% for service in ServiceJurisdiction %}#}
-{#                                                        <tr>#}
-{#                                                            <td><input type="checkbox" name="complianceselect"#}
-{#                                                                       id="complianceselect{{ service.srvj_id }}"#}
-{#                                                                       value="{{ service.srvj_id }}"#}
-{#                                                                       onchange="servicebasischeck('compliancecheckbox{{ service.srvj_id }}',this)"/>#}
-{#                                                            </td>#}
-{#                                                            <td>Service</td>#}
-{#                                                            <td>{{ service.ctyp.ctyp_desc }}</td>#}
-{#                                                            <td>#}
-{#                                                                <select disabled#}
-{#                                                                        id="compliancedropdown{{ service.srvj_id }}"#}
-{#                                                                        name="compliancedropdown{{ service.srvj_id }}"#}
-{#                                                                        onchange="servicebasischange('compliancedropdown{{ service.srvj_id }}',this)">#}
-{#                                                                    <option value="DAILY"#}
-{#                                                                            {% if service.ctyp.basi_code|stringformat:"s"  == "DAILY" %}#}
-{#                                                                            selected {% endif %}>Daily#}
-{#                                                                    </option>#}
-{#                                                                    <option value="WEEKLY"#}
-{#                                                                            {% if service.ctyp.basi_code|stringformat:"s"  == "WEEKLY" %}#}
-{#                                                                            selected {% endif %}>Weekly#}
-{#                                                                    </option>#}
-{#                                                                    <option value="MNTHLY"#}
-{#                                                                            {% if service.ctyp.basi_code|stringformat:"s"  == "MNTHLY" %}#}
-{#                                                                            selected {% endif %}>Monthly#}
-{#                                                                    </option>#}
-{#                                                                    <option value="QTLY"#}
-{#                                                                            {% if service.ctyp.basi_code|stringformat:"s"  == "QTLY" %}#}
-{#                                                                            selected {% endif %}>Quartely#}
-{#                                                                    </option>#}
-{#                                                                    <option value="SEMIAN"#}
-{#                                                                            {% if service.ctyp.basi_code|stringformat:"s"  == "SEMIAN" %}#}
-{#                                                                            selected {% endif %}>Semi-Annual#}
-{#                                                                    </option>#}
-{#                                                                    <option value="ANNUAL"#}
-{#                                                                            {% if service.ctyp.basi_code|stringformat:"s"  == "ANNUAL" %}#}
-{#                                                                            selected {% endif %}>Annual#}
-{#                                                                    </option>#}
-{#                                                                    <option value="BIEN"#}
-{#                                                                            {% if service.ctyp.basi_code|stringformat:"s"  == "BIEN" %}#}
-{#                                                                            selected {% endif %}>Biennial#}
-{#                                                                    </option>#}
-{#                                                                    <option value="ONCE"#}
-{#                                                                            {% if service.ctyp.basi_code|stringformat:"s"  == "ONCE" %}#}
-{#                                                                            selected {% endif %}>One Time Only#}
-{#                                                                    </option>#}
-{#                                                                    <option value="CUSTOM"#}
-{#                                                                            {% if service.ctyp.basi_code|stringformat:"s"  == "CUSTOM" %}#}
-{#                                                                            selected {% endif %}>Custom#}
-{#                                                                    </option>#}
-{#                                                                </select>#}
-{#                                                            </td>#}
-{#                                                            <td><input disabled type="text"#}
-{#                                                                       name="compliancedate{{ service.srvj_id }}"#}
-{#                                                                       id="compliancedate{{ service.srvj_id }}"#}
-{#                                                                       value="{% now "m/d/y" %}"/></td>#}
-{#                                                            <td>{{ service.ctyp.agen_code.agen_name }}</td>#}
-{#                                                            <td>{{ service.govl_code.govl_desc }}</td>#}
-{##}
-{#                                                        </tr>#}
-{#                                                    {% endfor %}#}
-{##}
-{#                                                    {% for insurance in InsuranceJurisdiction %}#}
-{#                                                        <tr>#}
-{#                                                            <td><input type="checkbox" name="insuranceselect"#}
-{#                                                                       id="insuranceselect{{ insurance.insj_id }}"#}
-{#                                                                       value="{{ insurance.insj_id }}"#}
-{#                                                                       onchange="insurancebasischeck('insurancecheckbox{{ insurance.insj_id }}',this)"/>#}
-{#                                                            </td>#}
-{#                                                            <td>Insurance</td>#}
-{#                                                            <td>{{ insurance.inty.inty_desc }}</td>#}
-{#                                                            <td>#}
-{#                                                                <select disabled#}
-{#                                                                        id="insurancedropdown{{ insurance.insj_id }}"#}
-{#                                                                        name="insurancedropdown{{ insurance.insj_id }}"#}
-{#                                                                        onchange="insurancebasischange('insurancedropdown{{ insurance.insj_id }}',this)">#}
-{#                                                                    <option value="DAILY"#}
-{#                                                                            {% if insurance.inty.basi_code|stringformat:"s"  == "DAILY" %}#}
-{#                                                                            selected {% endif %}>Daily#}
-{#                                                                    </option>#}
-{#                                                                    <option value="WEEKLY"#}
-{#                                                                            {% if insurance.inty.basi_code|stringformat:"s"  == "WEEKLY" %}#}
-{#                                                                            selected {% endif %}>Weekly#}
-{#                                                                    </option>#}
-{#                                                                    <option value="MNTHLY"#}
-{#                                                                            {% if insurance.inty.basi_code|stringformat:"s"  == "MNTHLY" %}#}
-{#                                                                            selected {% endif %}>Monthly#}
-{#                                                                    </option>#}
-{#                                                                    <option value="QTLY"#}
-{#                                                                            {% if insurance.inty.basi_code|stringformat:"s"  == "QTLY" %}#}
-{#                                                                            selected {% endif %}>Quartely#}
-{#                                                                    </option>#}
-{#                                                                    <option value="SEMIAN"#}
-{#                                                                            {% if insurance.inty.basi_code|stringformat:"s"  == "SEMIAN" %}#}
-{#                                                                            selected {% endif %}>Semi-Annual#}
-{#                                                                    </option>#}
-{#                                                                    <option value="ANNUAL"#}
-{#                                                                            {% if insurance.inty.basi_code|stringformat:"s"  == "ANNUAL" %}#}
-{#                                                                            selected {% endif %}>Annual#}
-{#                                                                    </option>#}
-{#                                                                    <option value="BIEN"#}
-{#                                                                            {% if insurance.inty.basi_code|stringformat:"s"  == "BIEN" %}#}
-{#                                                                            selected {% endif %}>Biennial#}
-{#                                                                    </option>#}
-{#                                                                    <option value="ONCE"#}
-{#                                                                            {% if insurance.inty.basi_code|stringformat:"s"  == "ONCE" %}#}
-{#                                                                            selected {% endif %}>One Time Only#}
-{#                                                                    </option>#}
-{#                                                                    <option value="CUSTOM"#}
-{#                                                                            {% if insurance.inty.basi_code|stringformat:"s"  == "CUSTOM" %}#}
-{#                                                                            selected {% endif %}>Custom#}
-{#                                                                    </option>#}
-{#                                                                </select>#}
-{#                                                            </td>#}
-{#                                                            <td><input disabled type="text"#}
-{#                                                                       name="insurancedate{{ insurance.insj_id }}"#}
-{#                                                                       id="insurancedate{{ insurance.insj_id }}"#}
-{#                                                                       value="{% now "m/d/y" %}"/></td>#}
-{#                                                            <td>{{ insurance.inty.agen_code.agen_name }}</td>#}
-{#                                                            <td>{{ insurance.govl_code.govl_desc }}</td>#}
-{##}
-{#                                                        </tr>#}
-{#                                                    {% endfor %}#}
-{#                                                    {% for submission in SubmissionJurisdiction %}#}
-{#                                                        <tr>#}
-{#                                                            <td><input type="checkbox" name="submissionselect"#}
-{#                                                                       id="submissionselect{{ submission.subj_id }}"#}
-{#                                                                       value="{{ submission.subj_id }}"#}
-{#                                                                       onchange="submissionbasischeck('submissioncheckbox{{ submission.subj_id }}',this)"/>#}
-{#                                                            </td>#}
-{#                                                            <td>Filings, Licensing & Permits</td>#}
-{#                                                            <td>{{ submission.subt.subt_desc }}</td>#}
-{#                                                            <td>#}
-{#                                                                <select disabled#}
-{#                                                                        id="submissiondropdown{{ submission.subj_id }}"#}
-{#                                                                        name="submissiondropdown{{ submission.subj_id }}"#}
-{#                                                                        onchange="submissionbasischange('submissiondropdown{{ submission.subj_id }}',this)">#}
-{#                                                                    <option value="DAILY"#}
-{#                                                                            {% if submission.subt.basi_code|stringformat:"s"  == "DAILY" %}#}
-{#                                                                            selected {% endif %}>Daily#}
-{#                                                                    </option>#}
-{#                                                                    <option value="WEEKLY"#}
-{#                                                                            {% if submission.subt.basi_code|stringformat:"s"  == "WEEKLY" %}#}
-{#                                                                            selected {% endif %}>Weekly#}
-{#                                                                    </option>#}
-{#                                                                    <option value="MNTHLY"#}
-{#                                                                            {% if submission.subt.basi_code|stringformat:"s"  == "MNTHLY" %}#}
-{#                                                                            selected {% endif %}>Monthly#}
-{#                                                                    </option>#}
-{#                                                                    <option value="QTLY"#}
-{#                                                                            {% if submission.subt.basi_code|stringformat:"s"  == "QTLY" %}#}
-{#                                                                            selected {% endif %}>Quartely#}
-{#                                                                    </option>#}
-{#                                                                    <option value="SEMIAN"#}
-{#                                                                            {% if submission.subt.basi_code|stringformat:"s"  == "SEMIAN" %}#}
-{#                                                                            selected {% endif %}>Semi-Annual#}
-{#                                                                    </option>#}
-{#                                                                    <option value="ANNUAL"#}
-{#                                                                            {% if submission.subt.basi_code|stringformat:"s"  == "ANNUAL" %}#}
-{#                                                                            selected {% endif %}>Annual#}
-{#                                                                    </option>#}
-{#                                                                    <option value="BIEN"#}
-{#                                                                            {% if submission.subt.basi_code|stringformat:"s"  == "BIEN" %}#}
-{#                                                                            selected {% endif %}>Biennial#}
-{#                                                                    </option>#}
-{#                                                                    <option value="ONCE"#}
-{#                                                                            {% if submission.subt.basi_code|stringformat:"s"  == "ONCE" %}#}
-{#                                                                            selected {% endif %}>One Time Only#}
-{#                                                                    </option>#}
-{#                                                                    <option value="CUSTOM"#}
-{#                                                                            {% if submission.subt.basi_code|stringformat:"s"  == "CUSTOM" %}#}
-{#                                                                            selected {% endif %}>Custom#}
-{#                                                                    </option>#}
-{#                                                                </select>#}
-{#                                                            </td>#}
-{#                                                            <td><input disabled type="text"#}
-{#                                                                       name="submissiondate{{ submission.subj_id }}"#}
-{#                                                                       id="submissiondate{{ submission.subj_id }}"#}
-{#                                                                       value="{% now "m/d/y" %}"/></td>#}
-{#                                                            <td>{{ submission.subt.agen_code.agen_name }}</td>#}
-{#                                                            <td>{{ submission.govl_code.govl_desc }}</td>#}
-{##}
-{#                                                        </tr>#}
-{#                                                    {% endfor %}#}
-{#                                                </table>#}
-{#                                            </div>#}
-{#                                            <div class="clear"></div>#}
-{#                                        </div>#}
-{#                                        <div class="clear"></div>#}
-{#                                    </div>#}
-{##}
-{#                                </div>#}
-{#                            </div>#}
+                <div class="dashboard-col-1">
+                    <div class="row dashboard-row2">
+                        <div class="dashboard-col-title">
+                            <div class="dboxfiltertitle">
+                                <h3 class="box-title">Showing :</h3>
+                            </div>
                         </div>
-<div id="content" class="{% block coltype %}colM{% endblock %} row-fluid" style="height: 100vh">
+                        <div class="dashboard-col-2">
+                            <div class="dboxshowfilters">
+                                <h3 class="box-title" id="filterselected">All Items</h3>
+                            </div>
+                        </div>
+                        <div class="dashboard-col-3">
+                            <div class="dboxfiltertitle">
+                                <input id="checkbox_completeditems" name="checkbox_completeditems" type="checkbox">
+
+                            </div>
+                        </div>
+                        <div class="dashboard-col-4">
+                            <div class="dboxshowfilters">
+                                <h3 class="box-title">Completed Items</h3>
+                            </div>
+                        </div>
+                        <div class="dashboard-col-5">
+                            <div class="dboxfiltertitle">
+
+                            </div>
+                        </div>
+                        <div class="dashboard-col-6">
+                            <div class="dboxshowfilters">
+                            </div>
+                        </div>
+                        <div class="dashboard-col-7">
+                            <div class="dboxshowfilters">
+
+                            </div>
+                        </div>
+                        <div class="dashboard-col-8">
+                            <div class="dboxshowfilters">
+                            </div>
+                        </div>
+                        <div class="dashboard-col-9">
+                            <div class="dboxshowfilters">
+                                <h3 class="box-title"></h3>
+                            </div>
+                        </div>
+                        <div class="dashboard-col-10">
+                            <div class="dboxshowfilters">
+                                <h3 class="box-title"></h3>
+                            </div>
+                        </div>
+                        <div class="dashboard-col-11">
+                            <div class="dboxshowfilters">
+                                <h3 class="box-title"><i class="fa fa-print fa-2x" style="color: green"
+                                                         aria-hidden="true"></i></h3>
+                            </div>
+                        </div>
+                        <div class="dashboard-col-12">
+                            <div class="dboxshowfilters">
+                                <h3 class="box-title"><i class="fa fa-file-excel-o fa-2x" style="color: green"
+                                                         aria-hidden="true"></i></h3>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% include 'dashboard/dashboard_table_body.html' %}
+
+    </form>
+
+<div id="dialogschedulepop">
+{# <iframe id="scheduleIframe" src=""></iframe>#}
+ <iframe id="scheduleIframe"  src="" width="" height = "" style="border: none"></iframe>
+{#    <iframe id="newvendorIframe"  src="" width="" height = "" ></iframe>#}
+</div>
+
+
+{#    <div id="dialog-form" title="Create new user">#}
+{#      <p class="validateTips">All form fields are required.</p>#}
+{#      <form>#}
+{#    <fieldset>#}
+{#      <label for="name">Name</label>#}
+{#      <input type="text" name="name" id="name" value="Jane Smith" class="text ui-widget-content ui-corner-all">#}
+{#      <label for="email">Email</label>#}
+{#      <input type="text" name="email" id="email" value="jane@smith.com" class="text ui-widget-content ui-corner-all">#}
+{#      <label for="password">Password</label>#}
+{#      <input type="password" name="password" id="password" value="xxxxxxx" class="text ui-widget-content ui-corner-all">#}
 {##}
-{#                        <!-- End SmartWizard Content --></td>#}
-{#                </tr>#}
-{#            </table>#}
-{#                            {% block sidebar_content %}#}
-{#                                {% block sidebar %}{% endblock %}#}
-{#                            {% endblock %}#}
-{##}
-{#                        </div>#}
-
-
-                        <!-- END Content -->
-{# Load local Highcharts, default from Highcharts' CDN #}
-{#{% block dashboard_highcharts_js %}#}
-{#  <script src="{% static "path/to/your/highcharts/highcharts.js" %}"></script>#}
-{#  <script src="{% static "path/to/your/highcharts/highcharts-more.js" %}"></script>#}
-{#{% endblock %}#}
-{##}
-{##}
-{#{% block javascript %}#}
-{#    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.js"></script>#}
-{##}
-{#    <script type="text/javascript" language="javascript">#}
-{##}
-{#        $("#alertsa.dismiss").on('click', function() {#}
-{#          alert("Deleting")#}
-{#        });#}
-{##}
-{#        $('#a.dismiss').on('click', function () {#}
-{#            alert("Deleting")#}
-{#        });#}
-{#    </script>#}
-{#{% endblock javascript %}#}
-
-{% block extrajs %}
-    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-3.1.1.min.js"></script>
-
-    {% compress js %}
-{#        <script src="{% static 'js/project.js' %}"></script>#}
-{#        <script src="{% static 'js/naic722/compliance/complainceadd.js' %}"></script>#}
-        <script src="{% static 'js/jquery-ui1.12.1.js' %}"></script>
-    {% endcompress %}
-
-<script type="text/javascript" language="javascript">
-
-{#$(function(){#}
-{#  $('.js-popup-link').click(function(e){#}
-{#    e.preventDefault();#}
-{#    $('#popup').dialog({modal: true}).dialog('open').load(this.href)#}
-{#  })#}
-
-{#function openDialog(){#}
-{#    alert('Ive beencalled to open dialog');#}
-{#    $('#dialogschedule').dialog('open');#}
-{#    $('.js-popup-link').click(function(e){#}
-{#    e.preventDefault();#}
-{#    $('#dialogschedulepop').dialog({modal: true}).dialog('open').load(this.href)#}
-{#  })#}
-
-
-function schedulepopup(url) {
-  $.ajax({
-    url: url,
-    success: function(data) {console.log('url', url)
-      $("#dialogschedulepop").load(url).dialog({modal:true}).dialog('open');
-    }
-  })
-  return false;
-}
-
-$( "#dialogschedulepop" ).dialog({
-    minHeight: 568,
-    minWidth: 631,
-    resizable: false,
-    autoOpen: false,
-    buttons: {
-        "Save Schedule": function() {
-            $.ajax({
-{#                 #ajax call for delete#}
-{#                 #with url pointing to your delete function#}
-            });
-            $( this ).dialog( "close" );
-        },
-        "Cancel": function() {
-            $( this ).dialog( "close" );
-        }
-    }
- });
-
-
-
-</script>
+{#      <!-- Allow form submission with keyboard without duplicating the dialog button -->#}
+{#      <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">#}
+{#    </fieldset>#}
+{#  </form>#}
+{#    </div>#}
+{#    <button id="create-user">Create new user</button>#}
 {% endblock %}
+
+
+
+
+<div id="content" class="{% block coltype %}colM{% endblock %} row-fluid" style="height: 100vh">
+
+
+    <!-- END Content -->
+
+
+    {% block extrajs %}
+        <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-3.1.1.min.js"></script>
+
+        {% compress js %}
+            {#        <script src="{% static 'js/project.js' %}"></script>#}
+            {#        <script src="{% static 'js/naic722/compliance/complainceadd.js' %}"></script>#}
+            <script src="{% static 'js/jquery-ui1.12.1.js' %}"></script>
+        {% endcompress %}
+
+        <script type="text/javascript" language="javascript">
+
+{#            $(function() {#}
+{#                $('.js-popup-link').click(function (e) {#}
+{#                    e.preventDefault();#}
+{#                    $('#popup').dialog({modal: true}).dialog('open').load(this.href)#}
+{#                })#}
+{#            }#}
+            {#function openDialog(){#}
+            {#    alert('Ive beencalled to open dialog');#}
+            {#    $('#dialogschedule').dialog('open');#}
+            {#    $('.js-popup-link').click(function(e){#}
+            {#    e.preventDefault();#}
+            {#    $('#dialogschedulepop').dialog({modal: true}).dialog('open').load(this.href)#}
+            {#  })#}
+
+{#            $.ui.dialog.prototype._focusTabbable = $.noop;#}
+
+{#        $(document).ready(function () {#}
+{#        $("#dialogschedulepop").dialog({#}
+{#                  modal : true,#}
+{#                  minHeight: 568,#}
+{#                  minWidth: 634,#}
+{#                  resizable: false,#}
+{#                  draggable: false,#}
+{#                  autoOpen: false,#}
+{#                  dialogClass: "no-close",#}
+{#                  buttons: {#}
+{#                      "Save Schedule": function () {#}
+{#                          $.ajax({#}
+                              {#                 #ajax call for delete#}
+                              {#                 #with url pointing to your delete function#}
+{#                          });#}
+{#                          $(this).dialog("close");#}
+{#                      },#}
+{#                      "Cancel": function () {#}
+                          {#                        $(this).dialog("close");#}
+{#                          $(this).dialog("close");#}
+{#                      }#}
+{#                  }#}
+{#              });#}
+{##}
+{##}
+{##}
+{#        });#}
+
+
+            function schedulepopup(url) {
+                $.ajax({
+                    url: url,
+                    success: function (data) {
+                        console.log('url', url);
+                         $("#scheduleIframe").attr("src", url);
+                         $("#scheduleIframe").attr("width", 615);
+                         $("#scheduleIframe").attr("height", 530);
+                         $("#scheduleIframe").attr("style", "border:None;");
+                        $("#dialogschedulepop").dialog( "open" );
+{#                        open: function(event, ui) {#}
+{#                           $('#divInDialog').load('test.html', function() {#}
+{#                             alert('Load was performed.');#}
+{#                           });#}
+{#                          }#}
+
+{#                        $("#dialogschedulepop").load(url).dialog({modal: true}).dialog('open');#}
+                    }
+                });
+                return false;
+            }
+
+
+$( function() {
+    $("#dialogschedulepop").dialog({
+                  modal : true,
+                  minHeight: 530,
+                  minWidth: 631,
+                  resizable: false,
+                  draggable: false,
+                  autoOpen: false,
+                dialogClass: "no-close",
+{#                  buttons:{#}
+{#                      "MyButton" : {#}
+{#                       text: "OK",#}
+{#                        id: "okbtnid",#}
+{#                        click: function(){#}
+{#                        var bValid = true;#}
+{#                        alert('ok called');#}
+{#                        }#}
+{#                            } ,#}
+{#                      "Save Schedule": function () {#}
+{##}
+{#                          alert('Save Schedule called');#}
+{#                          $.ajax({#}
+{##}
+                              {#                 #ajax call for delete#}
+                              {#                 #with url pointing to your delete function#}
+{#                          });#}
+{#                          $(this).dialog("close");#}
+{#                      },#}
+{#                      Cancel: function () {#}
+                          {#                        $(this).dialog("close");#}
+{#                          dialog.dialog( "close" );#}
+{#                      }#}
+{#                  },#}
+{#                close: function() {#}
+{#                                              dialog.dialog( "close" );#}
+{#                    form[ 0 ].reset();#}
+{#                    allFields.removeClass( "ui-state-error" );#}
+{#                  },#}
+{#                dialogClass: 'dialogschedulepopclass'#}
+              });
+  } );
+
+
+
+        </script>
+    {% endblock %}
+</div>
+

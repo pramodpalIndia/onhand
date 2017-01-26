@@ -33,13 +33,13 @@ import django_tables2 as tables
 from onhand.management.models import  GovernmentLevel, v_SubscribedServicesTable
 
 view_template = """
-<a href="#" class="dismiss" title="Clear Alert">
+<a href="#" class="dismiss" title="">
     <i class="fa fa-eye fa-2x text-danger" style="color: #72a525"></i>
 </a>
 """
 
 delete_template = """
-<a href="#" class="dismiss" title="Clear Alert">
+<a href="#" class="dismiss" title="">
     <i class="fa fa-trash-o fa-2x" style="color: red"></i>
 </a>
 """
@@ -56,7 +56,7 @@ delete_template = """
 #  </select>
 
 basi_template = """
-{% if record.csac_service_date == None  %}
+{% if record.csrv_due_date %}
      <select style="width:auto" id="compliancedropdown{{ record.csrv_id }}" name="compliancedropdown{{ record.csrv_id }}"
               onchange="servicebasischange('compliancedropdown{{ record.csrv_id }}',this)">
               <option value="ANNUAL" {% if record.basi_code|stringformat:"s"  == 'ANNUAL' %} selected {% endif %}>Annual</option>
@@ -67,8 +67,7 @@ basi_template = """
               <option value="SEMIAN" {% if record.basi_code|stringformat:"s"  == 'SEMIAN' %} selected {% endif %}>Semi-Annual</option>
               <option value="WEEKLY" {% if record.basi_code|stringformat:"s"  == 'WEEKLY' %} selected {% endif %}>Weekly</option>
      </select>
-{% endif %}
-{% if record.csac_service_date != None  %}
+{% else %}
         {% if record.basi_code|stringformat:"s"  == 'ANNUAL' %} Annual {% endif %}
         {% if record.basi_code|stringformat:"s"  == 'BIEN' %} Bi-Annual {% endif %}
         {% if record.basi_code|stringformat:"s"  == 'DAILY' %} Daily {% endif %}
@@ -78,12 +77,14 @@ basi_template = """
         {% if record.basi_code|stringformat:"s"  == 'WEEKLY' %} Weekly {% endif %}
 {% endif %}
 """
+# {% endif %}
+# {% if record.csrv_due_date != None  %}
 
 
 
 due_date_template = """
 {% if record.csac_service_date == None  %}
-<a href="#" class="dismiss" title="Clear Alert" name="complianceinputduedate{{ record.csrv_id }}"
+<a href="#" class="dismiss" title="" name="complianceinputduedate{{ record.csrv_id }}"
    id="complianceinputduedate{{ record.csrv_id }}"
    onclick="servicerenewaldateclick('compliancedropdown{{ record.csrv_id }}',this)">
 <input style="width:60%;text-align: center;" name="compliancerenewaldate{{ record.csrv_id }}" id="compliancerenewaldate{{  record.csrv_id }}"
@@ -98,7 +99,7 @@ maxlength="9" value="{{ record.csrv_due_date|date:"m/d/y" }}" type="text" onclic
 
 schedule_template = """
  {% if record.due_status != 'completed'  %}
-    <a href="" onclick="return schedulepopup('/app/schedule/?type={{record.Service }}&service={{ record.csrv_id }}&scdtyp=new&csrv_due_date={{record.csrv_due_date |date:"m/d/y" }}&csac_price_last={{record.csac_price_last}}&csac_service_date_last={{record.csac_service_date_last |date:"m/d/y" }}&off_from_avg={{record.off_from_avg}}')" class="dismiss" onclick='javascript:openDialog()' title="Clear Alert">
+    <a href="" onclick="return schedulepopup('/app/schedule/?type={{record.Service }}&service={{ record.csrv_id }}&scdtyp=new&csrv_due_date={{record.csrv_due_date |date:"m/d/y" }}&csac_price_last={{record.csac_price_last}}&csac_service_date_last={{record.csac_service_date_last |date:"m/d/y" }}&off_from_avg={{record.off_from_avg}}')" class="dismiss" onclick='javascript:openDialog()' title="">
     <i class="fa fa-clock-o fa-2x text-danger" style="color: #72a525"></i>
 </a>
  {% endif %}
@@ -106,7 +107,7 @@ schedule_template = """
 """
 action_date_template = """
 {% if record.csac_service_date == None  %}
-<a href="#" class="dismiss" title="Clear Alert" }}"
+<a href="#" class="dismiss" title="" }}"
    onclick="serviceactiondateclick('compliancedropdown{{ record.csrv_id }}',this)">
  <i class="fa fa-calendar-plus-o fa-2x" style="color: black;text-align: center;;" onclick="serviceactiondateclick('compliancedropdown{{ record.csrv_id }}',this)"></i>
  </a>
@@ -118,7 +119,7 @@ action_date_template = """
 
 # action_date_template = """
 # {% if record.csac_service_date == None  %}
-# <a href="#" class="dismiss" title="Clear Alert" name="complianceinputactiondate{{ record.csrv_id }}"
+# <a href="#" class="dismiss" title="" name="complianceinputactiondate{{ record.csrv_id }}"
 #    id="complianceinputactiondate{{ record.csrv_id }}"
 #    onclick="serviceactiondateclick('compliancedropdown{{ record.csrv_id }}',this)">
 # <input style="width:auto" name="complianceactiondate{{ record.csrv_id }}" id="complianceactiondate{{  record.csrv_id }}"
@@ -152,10 +153,20 @@ lastaction_date_template = """
 
 value_template = """
 {% if record.csac_service_date_last %}
-<a href="#" class="dismiss" title="Clear Alert">
+<a href="#" class="dismiss" title="">
 {% if record.off_from_avg  <= 0  %} <i class="fa fa-thumbs-o-up fa-2x" style="color: #72a525"></i> {% endif %}
 {% if record.off_from_avg  > 0  %} <i class="fa fa-thumbs-o-down fa-2x" style="color: red"></i> {% endif %}
 </a>
+{% endif %}
+"""
+
+responsible_template = """
+{% if record.csac_service_date_last %}
+<a href="#" class="dismiss" title="">
+{% if record.off_from_avg  > 0  %} <i class="fa fa-user-times fa-2x" style="color: red"></i> {% endif %}
+</a>
+{% else %}
+<i class="fa fa-user fa-2x" style="color: #72a525"></i>&nbsp&nbspJoe
 {% endif %}
 """
 
@@ -183,7 +194,7 @@ class SubscribedServicesTable(tables.Table):
     # due_status = tables.Column(accessor='due_status', verbose_name=('DueStatus'))
     agen_code = tables.Column(accessor='agen_code', orderable=False, verbose_name=('Agency'))
     govl_code = tables.Column(accessor='govl_code', orderable=False, verbose_name=('Jurisdiction'))
-
+    responsible = tables.TemplateColumn(responsible_template, orderable=False, verbose_name="Coordinator")
 
     class Meta:
         attrs = {'class': 'paleblue' , 'id' :'SubscribedServicesTable'}
@@ -447,13 +458,13 @@ class NameTable(tables.Table):
 
 
 action_template = """
-<a href="#" class="dismiss" title="Clear Alert">
+<a href="#" class="dismiss" title="">
     <i class="fa fa-eye fa-2x text-danger"></i>
 </a>
 """
 
 delete_template = """
-<a href="#" class="dismiss" title="Clear Alert">
+<a href="#" class="dismiss" title="">
     <i class="fa fa-trash-o fa-2x"></i>
 </a>
 """
