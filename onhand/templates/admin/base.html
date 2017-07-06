@@ -1,0 +1,1502 @@
+{% load staticfiles i18n compress %}{% load admin_static %}{% load suit_tags %}{% load url from suit_compat %}{% load static %}<!DOCTYPE html>
+{% load crispy_forms_tags %}
+{% load admin_urls  admin_list %}
+{#{% load humanize %}#}
+<html lang="{{ LANGUAGE_CODE|default:"en-us" }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% block css %}
+        {% compress css %}
+            <link href="{% static 'css/screen.css' %}" rel="stylesheet"/>
+{#            <link href="{% static 'css/servicesignup_wizard.css' %}" rel="stylesheet">#}
+{#            <link href="{% static 'css/welcometheme.css' %}" rel="stylesheet">#}
+            <link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet">
+{#            <link href="{% static 'css/jquery-ui1.12.1.min.css' %}" rel="stylesheet">#}
+{#            <link href="{% static 'css/jquery-ui1.12.1.theme.min.css' %}" rel="stylesheet">#}
+{#            <link href="{% static 'css/jquery-ui1.12.1.structure.min.css' %}" rel="stylesheet">#}
+        {% endcompress %}
+    {% endblock %}
+    <title>{% block title %}{{ title }} | {{ 'ADMIN_NAME'|suit_conf }}{% endblock %}</title>
+    {% block before_suit_styles %}{% endblock %}
+    <link rel="stylesheet" type="text/css" href="{% block stylesheet %}{% endblock %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/jquery.dropdown.css' %}" media="all">
+    <link rel="stylesheet" type="text/css" href="{% static 'suit/bootstrap/css/bootstrap.min.css' %}" media="all"/>
+{#    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap4/css/bootstrap.css' %}" media="all"/>#}
+    {#    <link rel="stylesheet" type="text/css" href="{% static '/suit/css/suit.css' %}" media="all">#}
+    <link rel="stylesheet" type="text/css" href="{% static 'suit/css/suit.css' %}" media="all">
+            <link href="{% static 'css/jquery-ui1.12.1.min.css' %}" rel="stylesheet">
+            <link href="{% static 'css/jquery-ui1.12.1.theme.min.css' %}" rel="stylesheet">
+            <link href="{% static 'css/jquery-ui1.12.1.structure.min.css' %}" rel="stylesheet">
+
+{#    {% block extrajs %}{% endblock %}#}
+    {% block extrastyle %}{% endblock %}
+    {% if LANGUAGE_BIDI %}
+        <link rel="stylesheet" type="text/css"
+              href="{% block stylesheet_rtl %}{% static "admin/css/rtl.css" %}{% endblock %}"/>{% endif %}
+    <script type="text/javascript">window.__admin_media_prefix__ = "{% filter escapejs %}{% static "admin/" %}{% endfilter %}";</script>
+    <script src="{% static 'suit/js/jquery-1.8.3.min.js' %}"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.js"/>
+
+    <script type="text/javascript">var Suit = {$: $.noConflict()};
+    if (!$) $ = Suit.$; </script>
+{#    <script src="{% static 'suit/bootstrap/js/bootstrap.min.js' %}"></script>#}
+    <script src="{% static 'js/jquery.dropdown.js' %}"></script>
+    {% if 'SHOW_REQUIRED_ASTERISK'|suit_conf %}
+        <style type="text/css">.required:after {
+            content: '*';
+            margin: 0 0 0 5px;
+            position: absolute;
+            color: #ccc;
+        }</style>
+    {% endif %}
+    {% block extrahead %}{% endblock %}
+    {% block blockbots %}
+        <meta name="robots" content="NONE,NOARCHIVE"/>{% endblock %}
+</head>
+{% load i18n %}
+
+<body class="{% if is_popup %}popup {% endif %}{% block bodyclass %}{% endblock %}">
+
+<!-- Sticky footer wrap -->
+<div id="wrap">
+
+    <!-- Container -->
+    {% block container %}
+        <div id="container">
+
+            {% block header %}
+                {% if not is_popup %}
+                    <!-- Header -->
+                    <div id="header" class="header">
+                        <div id="branding">
+                            {% load static %}
+
+                            <a href="{% url 'admin:index' %}"><h1 id="site-name"><img
+                                    src="{% static "images/logo_white.png" %}"
+                                    style="width:45px; margin-bottom:20px; margin-left:0px;"/>{% block branding %}
+                                {{ 'ADMIN_NAME'|suit_conf }}{% endblock %}</h1></a>
+                        </div>
+
+                        {% block header_time %}
+                            {#                                        <div >#}
+                            {#                                          <div class="header-column icon">#}
+                            {#                                            <i class="icon-time"></i>#}
+                            {#                                          <img src="{% static "images/menu/menuhide.png" %}"#}
+                            {#                                                 style="width:30px; margin-bottom:2px; margin-left:2px;margin-top: 3px"/>#}
+
+                            {#                                          </div>#}
+
+                            <div id="header-content-first">
+                                <div class="header-column icon">
+                                    <i class="fa fa-bars fa-2x" style="color: #FFFFFF;width:30px; margin-bottom:2px; margin-left:2px;margin-top: 3px" id="menucontrol"></i>
+{#                                     <img src="{% static "images/menu/menuhide.png" %}"#}
+{#                                                                             style="width:30px; margin-bottom:2px; margin-left:2px;margin-top: 3px"/>#}
+                                <strong>{{ user.cprs_id.comp }}
+{#                                        {% filter force_escape %}#}
+{#                                            {% firstof user.cprs_id|stringformat:"d" user.username %}#}
+{#                                        {% endfilter %}#}
+                                </strong>
+                                </div>
+                            </div>
+                        {% endblock %}
+
+                        {% if user.is_active %}
+                            {% ifnotequal user.role_code|cut:" "|stringformat:"s" "Customer" %}
+                                {% block header_content %}
+                                    <!--<div class="header-content">
+                                      <div class="header-column icon">
+                                        <i class="icon-comment"></i>
+                                      </div>
+
+                                      <div class="header-column">
+                                        <a href="" class="grey"><b>2</b> new messages</a>
+                                      </div>
+                                    </div>-->
+                                {% endblock %}
+                            {% endifnotequal %}
+                            {% ifequal user.role_code|cut:" "|stringformat:"s" "Customer" %}
+                                {% block header_menu_content %}
+                                    <div class="header-content">
+                                        <div class="header-column-add icon">
+{#                                            <a href="{% url 'compliance:compliance_addnew' %}">#}
+                                            <img src="{% static "images/menu/add-menu.png" %}"
+                                                 style="width:30px; margin-bottom:2px; margin-left:20px;"/>
+{#                                            </a>#}
+                                            {#                  <i class="icon-comment"></i>#}
+                                        </div>
+                                        <div class="header-column icon">
+                                            {#                  <i class="icon-comment"></i>#}
+{#                                            <a href="{% url 'admin:logout' %}">#}
+                                            <a href="{% url 'compliance:compliance_addnew' %}">
+                                            <img src="{% static "images/menu/subscription_white.png" %}"
+                                                 style="width:30px; margin-left:20px;"/>
+                                            </a>
+                                        </div>
+                                        <div class="header-column icon">
+                                            {#                  <i class="icon-comment"></i>#}
+                                            <img src="{% static "images/menu/insurance_policy_new_white.png" %}"
+                                                 style="width:30px; margin-left:20px;"/>
+                                        </div>
+                                        <div class="header-column icon">
+                                            {#                  <i class="icon-comment"></i>#}
+                                            <img src="{% static "images/menu/insurance_policy_renew_white.png" %}"
+                                                 style="width:30px; margin-left:20px;"/>
+                                        </div>
+                                        <div class="header-column icon">
+                                            {#                  <i class="icon-comment"></i>#}
+                                            <img src="{% static "images/menu/govermerment_filling_add_white.png" %}"
+                                                 style="width:30px; margin-left:20px;"/>
+                                        </div>
+                                        <div class="header-column icon">
+                                            {#                  <i class="icon-comment"></i>#}
+                                            <img src="{% static "images/menu/violation.png" %}"
+                                                 style="width:35px; margin-left:20px;"/>
+                                        </div>
+
+                                    </div>
+                                {% endblock %}
+                            {% endifequal %}
+                        {% endif %}
+
+                        {% if user.is_active %}
+                            <div id="user-tools">
+                                {% block welcome-msg %}
+                                    <span class="companydropdown" data-jq-dropdown="#jq-dropdown-1"><img
+                                            src="{% static "images/menu/company-sprocket.png" %}"
+                                            style="width:35px; margin-left:0px;"/></span>
+                                    <div id="jq-dropdown-1" class="jq-dropdown jq-dropdown-tip has-icons"
+                                         >
+                                        <ul class="jq-dropdown-menu">
+                                            <li class="userprofile"><a href="#1">Your Account</a></li>
+                                            <li class="administrator"><a href="#1">Administration</a></li>
+                                            <li class="manageBilling"><a href="#1">Manage Billing</a></li>
+                                            <li class="switchcompany"><a href="#1">Switch company</a></li>
+                                            <li class="newservice"><a href="#1">New Service</a></li>
+                                            <li class="signout">{% ifnotequal user.role_code|cut:" "|stringformat:"s" "Admin" %}
+                        <a class="nav-link" href="{% url 'account_logout' %}">{% trans "Sign Out" %}</a>
+                    {% endifnotequal %}
+                    {% ifequal user.role_code|cut:" "|stringformat:"s" "Admin" %}
+                        <a href="{% url 'admin:logout' %}">{% trans 'Log out' %}</a>
+                    {% endifequal %}</li>
+                                        </ul>
+                                    </div>
+
+                                    <span class="separator">|</span>
+                                    <img
+                                            src="{% static "images/menu/help.png" %}"
+                                            style="width:30px; margin-left:10px;"/></span>
+                                {% endblock %}
+
+                                <span class="user-links">
+                {% block userlinks %}
+                    {% url 'django-admindocs-docroot' as docsroot %}
+                    {% if docsroot %}
+                        <a href="{{ docsroot }}">{% trans 'Documentation' %}</a>
+                        <span class="separator">|</span>
+                    {% endif %}
+{#                    <a href="{% url 'admin:password_change' %}">{% trans 'Change password' %}</a>#}
+{#                    <span class="separator">|</span>#}
+{#                    {% ifnotequal user.role_code|cut:" "|stringformat:"s" "Admin" %}#}
+{#                        <a class="nav-link" href="{% url 'account_logout' %}">{% trans "Sign Out" %}</a>#}
+{#                    {% endifnotequal %}#}
+{#                    {% ifequal user.role_code|cut:" "|stringformat:"s" "Admin" %}#}
+{#                        <a href="{% url 'admin:logout' %}">{% trans 'Log out' %}</a>#}
+{#                    {% endifequal %}#}
+
+
+
+
+
+                {% endblock %}
+                </span>
+                            </div>
+                        {% endif %}
+                        {% block nav-global %}{% endblock %}
+                    </div>
+                {% endif %}
+                <!-- END Header -->
+            {% endblock %}
+
+
+            <div class="suit-columns {{ is_popup|yesno:'one-column,two-columns' }}">
+
+                {% block content-center %}
+                    <div id="suit-center" class="suit-column" style="height: 75vh;">
+
+                        {% if not is_popup %}
+
+
+{#                            {% block breadcrumbs %}#}
+{#                                <ul class="breadcrumb">#}
+{#                                    <li><a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>#}
+{#                                        {% if title %}#}
+{#                                            <span class="divider">&raquo;</span>#}
+{#                                            </li>#}
+{#                                            <li class="active">#}
+{#                                            {{ title }}#}
+{#                                        {% endif %}#}
+{#                                        </li>#}
+{#                                </ul>#}
+{#                            {% endblock %}#}
+                        {% endif %}
+
+
+
+                        <!-- Content -->
+                        <div id="content" class="{% block coltype %}colM{% endblock %} row-fluid" style="height: 90vh">
+
+                            {% block pretitle %}{% endblock %}
+                            {% block content_title %}{% if title %}
+                                <h2 class="content-title">{{ title }}</h2>
+
+                            {% endif %}{% endblock %}
+                            {% block content %}
+                                {% block object-tools %}{% endblock %}
+                                {{ content }}
+
+{##}
+                            {% endblock %}
+
+{#{% crispy example_form %}#}
+
+{#                        {{ form }}#}
+
+{#                        <table align="center" border="0" cellpadding="0" cellspacing="0" style="margin:auto;background-color: white">#}
+{#                <tr>#}
+{#                    <td><!-- Smart Wizard -->#}
+{##}
+{#                        <div id="wizard" class="swMain">#}
+{##}
+{#                            <div id="step-1" style="height:480px;">#}
+{#                                <div class="form_wapper_m">#}
+{#                                    <div class="step1_services">#}
+{#                                        <div class="step1_services_form_wapper">#}
+                                            {#                                            {% render_table defaultservicetable %}#}
+{#                                            <table class="responstableheader">#}
+{##}
+{#                                                <tr>#}
+{#                                                    <th>Select</th>#}
+{#                                                    <th data-th="Plans"><span style="width: 49px;">Type</span></th>#}
+{#                                                    <th style="width: 187px">Description</th>#}
+{#                                                    <th style="width: 124px">Frequency</th>#}
+{#                                                    <th style="width: 143px">Due/Renewal date</th>#}
+{#                                                    <th style="width: 175px">Agency</th>#}
+{#                                                    <th style="width: 94px">Goverment level</th>#}
+{#                                                </tr>#}
+{#                                            </table>#}
+{#                                            <div style="overflow-y: scroll;height: 382px;">#}
+{#                                                <table class="responstable">#}
+{#                                                    {% for service in ServiceJurisdiction %}#}
+{#                                                        <tr>#}
+{#                                                            <td><input type="checkbox" name="complianceselect"#}
+{#                                                                       id="complianceselect{{ service.srvj_id }}"#}
+{#                                                                       value="{{ service.srvj_id }}"#}
+{#                                                                       onchange="servicebasischeck('compliancecheckbox{{ service.srvj_id }}',this)"/>#}
+{#                                                            </td>#}
+{#                                                            <td>Service</td>#}
+{#                                                            <td>{{ service.ctyp.ctyp_desc }}</td>#}
+{#                                                            <td>#}
+{#                                                                <select disabled#}
+{#                                                                        id="compliancedropdown{{ service.srvj_id }}"#}
+{#                                                                        name="compliancedropdown{{ service.srvj_id }}"#}
+{#                                                                        onchange="servicebasischange('compliancedropdown{{ service.srvj_id }}',this)">#}
+{#                                                                    <option value="DAILY"#}
+{#                                                                            {% if service.ctyp.basi_code|stringformat:"s"  == "DAILY" %}#}
+{#                                                                            selected {% endif %}>Daily#}
+{#                                                                    </option>#}
+{#                                                                    <option value="WEEKLY"#}
+{#                                                                            {% if service.ctyp.basi_code|stringformat:"s"  == "WEEKLY" %}#}
+{#                                                                            selected {% endif %}>Weekly#}
+{#                                                                    </option>#}
+{#                                                                    <option value="MNTHLY"#}
+{#                                                                            {% if service.ctyp.basi_code|stringformat:"s"  == "MNTHLY" %}#}
+{#                                                                            selected {% endif %}>Monthly#}
+{#                                                                    </option>#}
+{#                                                                    <option value="QTLY"#}
+{#                                                                            {% if service.ctyp.basi_code|stringformat:"s"  == "QTLY" %}#}
+{#                                                                            selected {% endif %}>Quartely#}
+{#                                                                    </option>#}
+{#                                                                    <option value="SEMIAN"#}
+{#                                                                            {% if service.ctyp.basi_code|stringformat:"s"  == "SEMIAN" %}#}
+{#                                                                            selected {% endif %}>Semi-Annual#}
+{#                                                                    </option>#}
+{#                                                                    <option value="ANNUAL"#}
+{#                                                                            {% if service.ctyp.basi_code|stringformat:"s"  == "ANNUAL" %}#}
+{#                                                                            selected {% endif %}>Annual#}
+{#                                                                    </option>#}
+{#                                                                    <option value="BIEN"#}
+{#                                                                            {% if service.ctyp.basi_code|stringformat:"s"  == "BIEN" %}#}
+{#                                                                            selected {% endif %}>Biennial#}
+{#                                                                    </option>#}
+{#                                                                    <option value="ONCE"#}
+{#                                                                            {% if service.ctyp.basi_code|stringformat:"s"  == "ONCE" %}#}
+{#                                                                            selected {% endif %}>One Time Only#}
+{#                                                                    </option>#}
+{#                                                                    <option value="CUSTOM"#}
+{#                                                                            {% if service.ctyp.basi_code|stringformat:"s"  == "CUSTOM" %}#}
+{#                                                                            selected {% endif %}>Custom#}
+{#                                                                    </option>#}
+{#                                                                </select>#}
+{#                                                            </td>#}
+{#                                                            <td><input disabled type="text"#}
+{#                                                                       name="compliancedate{{ service.srvj_id }}"#}
+{#                                                                       id="compliancedate{{ service.srvj_id }}"#}
+{#                                                                       value="{% now "m/d/y" %}"/></td>#}
+{#                                                            <td>{{ service.ctyp.agen_code.agen_name }}</td>#}
+{#                                                            <td>{{ service.govl_code.govl_desc }}</td>#}
+{##}
+{#                                                        </tr>#}
+{#                                                    {% endfor %}#}
+{##}
+{#                                                    {% for insurance in InsuranceJurisdiction %}#}
+{#                                                        <tr>#}
+{#                                                            <td><input type="checkbox" name="insuranceselect"#}
+{#                                                                       id="insuranceselect{{ insurance.insj_id }}"#}
+{#                                                                       value="{{ insurance.insj_id }}"#}
+{#                                                                       onchange="insurancebasischeck('insurancecheckbox{{ insurance.insj_id }}',this)"/>#}
+{#                                                            </td>#}
+{#                                                            <td>Insurance</td>#}
+{#                                                            <td>{{ insurance.inty.inty_desc }}</td>#}
+{#                                                            <td>#}
+{#                                                                <select disabled#}
+{#                                                                        id="insurancedropdown{{ insurance.insj_id }}"#}
+{#                                                                        name="insurancedropdown{{ insurance.insj_id }}"#}
+{#                                                                        onchange="insurancebasischange('insurancedropdown{{ insurance.insj_id }}',this)">#}
+{#                                                                    <option value="DAILY"#}
+{#                                                                            {% if insurance.inty.basi_code|stringformat:"s"  == "DAILY" %}#}
+{#                                                                            selected {% endif %}>Daily#}
+{#                                                                    </option>#}
+{#                                                                    <option value="WEEKLY"#}
+{#                                                                            {% if insurance.inty.basi_code|stringformat:"s"  == "WEEKLY" %}#}
+{#                                                                            selected {% endif %}>Weekly#}
+{#                                                                    </option>#}
+{#                                                                    <option value="MNTHLY"#}
+{#                                                                            {% if insurance.inty.basi_code|stringformat:"s"  == "MNTHLY" %}#}
+{#                                                                            selected {% endif %}>Monthly#}
+{#                                                                    </option>#}
+{#                                                                    <option value="QTLY"#}
+{#                                                                            {% if insurance.inty.basi_code|stringformat:"s"  == "QTLY" %}#}
+{#                                                                            selected {% endif %}>Quartely#}
+{#                                                                    </option>#}
+{#                                                                    <option value="SEMIAN"#}
+{#                                                                            {% if insurance.inty.basi_code|stringformat:"s"  == "SEMIAN" %}#}
+{#                                                                            selected {% endif %}>Semi-Annual#}
+{#                                                                    </option>#}
+{#                                                                    <option value="ANNUAL"#}
+{#                                                                            {% if insurance.inty.basi_code|stringformat:"s"  == "ANNUAL" %}#}
+{#                                                                            selected {% endif %}>Annual#}
+{#                                                                    </option>#}
+{#                                                                    <option value="BIEN"#}
+{#                                                                            {% if insurance.inty.basi_code|stringformat:"s"  == "BIEN" %}#}
+{#                                                                            selected {% endif %}>Biennial#}
+{#                                                                    </option>#}
+{#                                                                    <option value="ONCE"#}
+{#                                                                            {% if insurance.inty.basi_code|stringformat:"s"  == "ONCE" %}#}
+{#                                                                            selected {% endif %}>One Time Only#}
+{#                                                                    </option>#}
+{#                                                                    <option value="CUSTOM"#}
+{#                                                                            {% if insurance.inty.basi_code|stringformat:"s"  == "CUSTOM" %}#}
+{#                                                                            selected {% endif %}>Custom#}
+{#                                                                    </option>#}
+{#                                                                </select>#}
+{#                                                            </td>#}
+{#                                                            <td><input disabled type="text"#}
+{#                                                                       name="insurancedate{{ insurance.insj_id }}"#}
+{#                                                                       id="insurancedate{{ insurance.insj_id }}"#}
+{#                                                                       value="{% now "m/d/y" %}"/></td>#}
+{#                                                            <td>{{ insurance.inty.agen_code.agen_name }}</td>#}
+{#                                                            <td>{{ insurance.govl_code.govl_desc }}</td>#}
+{##}
+{#                                                        </tr>#}
+{#                                                    {% endfor %}#}
+{#                                                    {% for submission in SubmissionJurisdiction %}#}
+{#                                                        <tr>#}
+{#                                                            <td><input type="checkbox" name="submissionselect"#}
+{#                                                                       id="submissionselect{{ submission.subj_id }}"#}
+{#                                                                       value="{{ submission.subj_id }}"#}
+{#                                                                       onchange="submissionbasischeck('submissioncheckbox{{ submission.subj_id }}',this)"/>#}
+{#                                                            </td>#}
+{#                                                            <td>Filings, Licensing & Permits</td>#}
+{#                                                            <td>{{ submission.subt.subt_desc }}</td>#}
+{#                                                            <td>#}
+{#                                                                <select disabled#}
+{#                                                                        id="submissiondropdown{{ submission.subj_id }}"#}
+{#                                                                        name="submissiondropdown{{ submission.subj_id }}"#}
+{#                                                                        onchange="submissionbasischange('submissiondropdown{{ submission.subj_id }}',this)">#}
+{#                                                                    <option value="DAILY"#}
+{#                                                                            {% if submission.subt.basi_code|stringformat:"s"  == "DAILY" %}#}
+{#                                                                            selected {% endif %}>Daily#}
+{#                                                                    </option>#}
+{#                                                                    <option value="WEEKLY"#}
+{#                                                                            {% if submission.subt.basi_code|stringformat:"s"  == "WEEKLY" %}#}
+{#                                                                            selected {% endif %}>Weekly#}
+{#                                                                    </option>#}
+{#                                                                    <option value="MNTHLY"#}
+{#                                                                            {% if submission.subt.basi_code|stringformat:"s"  == "MNTHLY" %}#}
+{#                                                                            selected {% endif %}>Monthly#}
+{#                                                                    </option>#}
+{#                                                                    <option value="QTLY"#}
+{#                                                                            {% if submission.subt.basi_code|stringformat:"s"  == "QTLY" %}#}
+{#                                                                            selected {% endif %}>Quartely#}
+{#                                                                    </option>#}
+{#                                                                    <option value="SEMIAN"#}
+{#                                                                            {% if submission.subt.basi_code|stringformat:"s"  == "SEMIAN" %}#}
+{#                                                                            selected {% endif %}>Semi-Annual#}
+{#                                                                    </option>#}
+{#                                                                    <option value="ANNUAL"#}
+{#                                                                            {% if submission.subt.basi_code|stringformat:"s"  == "ANNUAL" %}#}
+{#                                                                            selected {% endif %}>Annual#}
+{#                                                                    </option>#}
+{#                                                                    <option value="BIEN"#}
+{#                                                                            {% if submission.subt.basi_code|stringformat:"s"  == "BIEN" %}#}
+{#                                                                            selected {% endif %}>Biennial#}
+{#                                                                    </option>#}
+{#                                                                    <option value="ONCE"#}
+{#                                                                            {% if submission.subt.basi_code|stringformat:"s"  == "ONCE" %}#}
+{#                                                                            selected {% endif %}>One Time Only#}
+{#                                                                    </option>#}
+{#                                                                    <option value="CUSTOM"#}
+{#                                                                            {% if submission.subt.basi_code|stringformat:"s"  == "CUSTOM" %}#}
+{#                                                                            selected {% endif %}>Custom#}
+{#                                                                    </option>#}
+{#                                                                </select>#}
+{#                                                            </td>#}
+{#                                                            <td><input disabled type="text"#}
+{#                                                                       name="submissiondate{{ submission.subj_id }}"#}
+{#                                                                       id="submissiondate{{ submission.subj_id }}"#}
+{#                                                                       value="{% now "m/d/y" %}"/></td>#}
+{#                                                            <td>{{ submission.subt.agen_code.agen_name }}</td>#}
+{#                                                            <td>{{ submission.govl_code.govl_desc }}</td>#}
+{##}
+{#                                                        </tr>#}
+{#                                                    {% endfor %}#}
+{#                                                </table>#}
+{#                                            </div>#}
+{#                                            <div class="clear"></div>#}
+{#                                        </div>#}
+{#                                        <div class="clear"></div>#}
+{#                                    </div>#}
+{##}
+{#                                </div>#}
+{#                            </div>#}
+{#                        </div>#}
+{##}
+{#                        <!-- End SmartWizard Content --></td>#}
+{#                </tr>#}
+{#            </table>#}
+                            {% block sidebar_content %}
+                                {% block sidebar %}{% endblock %}
+                            {% endblock %}
+
+                        </div>
+
+
+                        <!-- END Content -->
+                    </div>
+                {% endblock %}
+
+
+                {% block content-left %}
+                    {% if not is_popup %}
+                        <div id="suit-left" class="suit-column">
+{#                                          {% block quick-search %}#}
+{#                                            {% with 'SEARCH_URL'|suit_conf as search_url %}#}
+{#                                              {% if search_url %}#}
+{#                                                <form class="form-search nav-quick-search" autocomplete="off" action="{% if '/' in search_url %}{{ search_url }}{% else %}{% url search_url %}{% endif %}" method="GET">#}
+{#                                                  <input type="text" name="q" class="input-medium search-query" id="quick-search">#}
+{#                                                  <i class="input-icon icon-search"></i>#}
+{#                                                  <input type="submit" class="submit" value="">#}
+{#                                                </form>#}
+{#                                              {% endif %}#}
+{#                                            {% endwith %}#}
+{#                                          {% endblock %}#}
+
+                            {% include 'dashboard/menu.html' %}
+
+                        </div>
+                    {% endif %}
+                {% endblock %}
+
+            </div>
+        </div>
+    {% endblock %}
+
+    {% if not is_popup %}
+        <!-- Sticky footer push -->
+        <div id="push"></div>
+    {% endif %}
+
+</div>
+
+{% block footer %}
+    {% if not is_popup %}
+        <div id="footer" class="footer">
+            <div class="content">
+                <div class="tools">
+                    {% block footer_links %}
+                        <a href="http://djangosuit.com/support/" target="_blank" >Privacy</a>
+                        <span class="separator">|</span>
+                        <a href="http://djangosuit.com/pricing/" target="_blank" >Terms of Service</a>
+
+                        {% block messages %}
+                            {% if messages %}
+                               <i class="icon-comment"></i> :
+                                {% for message in messages %}
+                                    {{ message }}
+{#                                    <div class="alert alert-{% firstof message.tags 'info' %}">#}
+{#                                        <button class="close" data-dismiss="alert">×</button>#}
+{#                                        {{ message }}#}
+{#                                    </div>#}
+                                {% endfor %}
+                            {% endif %}
+                        {% endblock messages %}
+                    {% endblock %}
+                </div>
+
+                <div class="copyright">
+                    {% block copyright %}
+                        Copyright &copy; {% now "Y" %}
+{#                        <a href="http://onhand.us" target="_blank">Onhand.us</a>#}
+                    {% endblock %}
+                </div>
+
+{#                <div class="branding">{% block footer_branding %}#}
+{#                    {% with 'ADMIN_NAME'|suit_conf as admin_name %}#}
+{#                        {{ admin_name }}#}
+{#                        {% if admin_name == 'Django Suit' %}#}
+{#                            v{{ 'VERSION'|suit_conf }}#}
+{#                        {% endif %}#}
+{#                    {% endwith %}#}
+{#                {% endblock %}</div>#}
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block javascript %}
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.js"></script>
+
+{#    {% compress js %}#}
+{#        <script src="{% static 'js/project.js' %}"></script>#}
+{#        #}
+{#        <script src="{% static 'js/jquery.smartWizardService.js' %}"></script>#}
+{#    {% endcompress %}#}
+
+    {% compress js %}
+{#        <script src="{% static 'suit/js/suit.js' %}"></script>#}
+        <script src="{% static 'js/project.js' %}"></script>
+{#        <script src="{% static 'bootstrap4/js/tether.min.js' %}"></script>#}
+{#        <script src="{% static 'bootstrap4/js/bootstrap.js' %}"></script>#}
+{#        <script src="{% static 'bootstrap4/js/moment.min.js' %}"></script>#}
+{#        <script src="{% static 'bootstrap4/js/bootstrap-datetimepicker.min.js' %}"></script>#}
+        <script src="{% static 'js/jquery-2.0.0.min.js' %}"></script>
+        <script src="{% static 'js/jquery-ui1.12.1.js' %}"></script>
+    {% endcompress %}
+
+    <script type="text/javascript" language="javascript">
+
+{#        $('#dropdown-1').on('show', function (event, dropdownData) {#}
+{#            console.log(dropdownData);#}
+{#        }).on('hide', function (event, dropdownData) {#}
+{#            console.log(dropdownData);#}
+{#        });#}
+{#$( function() {#}
+{#    $( "#tabs" ).tabs();#}
+{#  } );#}
+
+          $(document).ready(function () {
+            // Smart Wizard
+{#            console.log('yummy1');#}
+{#            console.log($(".SubscribedServicesTable > tbody > tr:nth-child(2)"));#}
+             $("table.paleblue > thead > tr  > th.alert_action").attr("colspan", "2");
+             $("table.paleblue > thead > tr  > th.delete_action").hide();
+{#             $("table.paleblue > tbody > tr  > td.alert_action").attr("colspan", "2");#}
+        });
+
+{#         $('#menucontrol').onclick(function () {#}
+{#            console.log('menucontrol Clicked');#}
+{#        });#}
+
+         $("#menucontrol").click(function(){
+{#             console.log($(".suit-columns").css('padding-left'));#}
+             if($("#wrap").css('background-image') != 'none'){
+{#                 console.log('menucontrol Clicked, remove css');#}
+                 $("#wrap").css({'background-image': 'none'});
+                 $(".suit-columns").css({'padding-left':'0px'});
+             }
+             else{
+{#                 console.log('menucontrol Clicked, added css');#}
+                 $("#wrap").css({'background-image': 'url("/static/suit/img/bg_left_white.gif")'});
+                 $(".suit-columns").css({'padding-left':'200px'});
+             }
+
+
+
+});
+
+
+
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+      }
+      var csrftoken = getCookie('csrftoken');
+
+$("#alerts a.dismiss").on('click', function() {
+          alert("Deleting");
+            var $row = $(this).closest('tr'),
+                pk = $row.attr('data-alert-pk');
+
+            if (!pk) return;
+
+{#            var url = '{% url 'dismiss-alert' %}';#}
+            $.ajax({
+                url: 'app/dismiss-alert/',
+{#                url: url,#}
+                headers: {
+                    'X-CSRFToken': csrftoken
+                },
+                method: 'POST',
+                data: {
+                    'pk': pk
+                }
+            }).done(function() {
+                $row.remove();
+            }).fail(function() {
+                alert('Error dismissing alert');
+            });
+        });
+
+$("#dboxallitems").on('click', function() {
+        var checkbox_completeditems = document.getElementsByName("checkbox_completeditems");
+
+        $('#checkboxallitems').prop('checked', false);
+
+        $("#dboxcurrentdue").removeClass("dboxcurrentdue_selected");
+        $("#dboxcurrentdue").addClass("dboxcurrentdue");
+
+        $("#dboxpastdue").removeClass("dboxpastdue_selected");
+        $("#dboxpastdue").addClass("dboxpastdue");
+
+        $('#checkboxdboxcomingdue').prop('checked', false);
+        $("#dboxcomingdue").removeClass("dboxcomingdue_selected");
+        $("#dboxcomingdue").addClass("dboxcomingdue");
+
+
+        if($(checkboxdboxallitems).is(':checked')){
+{#            console.log('checkboxdboxcurrentdue:checked True' , $(checkboxdboxcurrentdue).is(':checked'));#}
+                $("#filterselected").text("All Items");
+                $('#checkboxdboxallitems').prop('checked', false);
+{#                $("#dboxcurrentdue").removeClass("dboxcurrentdue_selected");#}
+{#                $("#dboxcurrentdue").addClass("dboxcurrentdue");#}
+                if($(checkbox_completeditems).is(':checked'))
+                    $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?completedfilter_checked=true");
+                else
+                    $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?completedfilter_checked=false");
+
+            }else{
+{#            console.log('checkboxdboxcurrentdue:checked False' , $(checkboxdboxcurrentdue).is(':checked'));#}
+                $("#filterselected").text("All Items");
+                $('#checkboxdboxallitems').prop('checked', true);
+{#                 $("#dboxpastdue").css({"background-color": "rgba(241, 11, 11, 0.51)","padding": "5px 0px","color": "white","text-align": "center", "border": "2px solid #e5f700", "cursor": "pointer","font-size": "200%"});#}
+{#                $("#dboxcurrentdue").removeClass("dboxcurrentdue");#}
+{#                $("#dboxcurrentdue").addClass("dboxcurrentdue_selected");#}
+                if($(checkbox_completeditems).is(':checked'))
+                    $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?completedfilter_checked=true");
+                else
+                    $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?completedfilter_checked=false");
+
+            }
+
+        });
+
+$("#dboxcurrentdue").on('click', function() {
+        var checkbox_completeditems = document.getElementsByName("checkbox_completeditems");
+
+        $('#checkboxdboxpastdue').prop('checked', false);
+        $("#dboxpastdue").removeClass("dboxpastdue_selected");
+        $("#dboxpastdue").addClass("dboxpastdue");
+
+        $('#checkboxdboxcomingdue').prop('checked', false);
+        $("#dboxcomingdue").removeClass("dboxcomingdue_selected");
+    if($(checkboxdboxcurrentdue).is(':checked')){
+                    console.log('checkboxdboxcurrentdue:checked True' , $(checkboxdboxcurrentdue).is(':checked'));
+        $("#filterselected").text("All Items");
+        $('#checkboxdboxcurrentdue').prop('checked', false);
+        $("#dboxcurrentdue").removeClass("dboxcurrentdue_selected");
+        $("#dboxcurrentdue").addClass("dboxcurrentdue");
+        if($(checkbox_completeditems).is(':checked'))
+            $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?completedfilter_checked=true&currentduefilter_checked=false");
+        else
+            $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?completedfilter_checked=false&currentduefilter_checked=false");
+
+    }else{
+                    console.log('checkboxdboxcurrentdue:checked False' , $(checkboxdboxcurrentdue).is(':checked'));
+        $("#filterselected").text("Current");
+        $('#checkboxdboxcurrentdue').prop('checked', true);
+        {#                 $("#dboxpastdue").css({"background-color": "rgba(241, 11, 11, 0.51)","padding": "5px 0px","color": "white","text-align": "center", "border": "2px solid #e5f700", "cursor": "pointer","font-size": "200%"});#}
+        $("#dboxcurrentdue").removeClass("dboxcurrentdue");
+        $("#dboxcurrentdue").addClass("dboxcurrentdue_selected");
+        if($(checkbox_completeditems).is(':checked')){
+        console.log(location.href + "ajax_completion_filter?completedfilter_checked=true&currentduefilter_checked=true");
+        $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?completedfilter_checked=true&currentduefilter_checked=true");
+        }
+    else
+        {
+            console.log(location.href + "ajax_completion_filter?completedfilter_checked=false&currentduefilter_checked=true")
+            $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?completedfilter_checked=false&currentduefilter_checked=true");
+        }
+
+    }
+
+
+        $("#dboxcomingdue").addClass("dboxcomingdue");
+
+        });
+
+$("#dboxcomingdue").on('click', function() {
+        var checkbox_completeditems = document.getElementsByName("checkbox_completeditems");
+{#        console.log('checkboxdboxcomingdue' , $(checkboxdboxcomingdue).is(':checked'));#}
+
+        $('#checkboxdboxcurrentdue').prop('checked', false);
+        $("#dboxcurrentdue").removeClass("dboxcurrentdue_selected");
+        $("#dboxcurrentdue").addClass("dboxcurrentdue");
+
+        $('#checkboxdboxpastdue').prop('checked', false);
+        $("#dboxpastdue").removeClass("dboxpastdue_selected");
+        $("#dboxpastdue").addClass("dboxpastdue");
+
+        if($(checkboxdboxcomingdue).is(':checked')){
+{#            console.log('checkboxdboxcomingdue:checked True' , $(checkboxdboxcomingdue).is(':checked'));#}
+                $("#filterselected").text("All Items");
+                $('#checkboxdboxcomingdue').prop('checked', false);
+                $("#dboxcomingdue").removeClass("dboxcomingdue_selected");
+                $("#dboxcomingdue").addClass("dboxcomingdue");
+                if($(checkbox_completeditems).is(':checked'))
+                    $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?completedfilter_checked=true&comingduefilter_checked=false");
+                else
+                    $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?completedfilter_checked=false&comingduefilter_checked=false");
+
+            }else{
+{#            console.log('checkboxdboxcomingdue:checked False' , $(checkboxdboxcomingdue).is(':checked'));#}
+                $("#filterselected").text("Coming Due");
+                $('#checkboxdboxcomingdue').prop('checked', true);
+{#                 $("#dboxpastdue").css({"background-color": "rgba(241, 11, 11, 0.51)","padding": "5px 0px","color": "white","text-align": "center", "border": "2px solid #e5f700", "cursor": "pointer","font-size": "200%"});#}
+                $("#dboxcomingdue").removeClass("dboxcomingdue");
+                $("#dboxcomingdue").addClass("dboxcomingdue_selected");
+                if($(checkbox_completeditems).is(':checked'))
+                    $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?completedfilter_checked=true&comingduefilter_checked=true");
+                else
+                    $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?completedfilter_checked=false&comingduefilter_checked=true");
+
+            }
+
+        });
+
+$("#dboxpastdue").on('click', function() {
+
+{#    console.log($(checkboxdboxpastdue).is(':checked'));#}
+        var checkbox_recurringItems = document.getElementsByName("checkbox_recurringItems");
+        var checkbox_nonrecurringItems = document.getElementsByName("checkbox_nonrecurringItems");
+        var checkbox_completeditems = document.getElementsByName("checkbox_completeditems");
+
+        $('#checkboxdboxcurrentdue').prop('checked', false);
+        $("#dboxcurrentdue").removeClass("dboxcurrentdue_selected");
+        $("#dboxcurrentdue").addClass("dboxcurrentdue");
+
+        $('#checkboxdboxcomingdue').prop('checked', false);
+        $("#dboxcomingdue").removeClass("dboxcomingdue_selected");
+        $("#dboxcomingdue").addClass("dboxcomingdue");
+
+        if($(checkboxdboxpastdue).is(':checked')){
+                $("#filterselected").text("All Items");
+                $('#checkboxdboxpastdue').prop('checked', false);
+                $("#dboxpastdue").removeClass("dboxpastdue_selected");
+                $("#dboxpastdue").addClass("dboxpastdue");
+                if($(checkbox_completeditems).is(':checked'))
+                    $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?completedfilter_checked=true&pastduefilter_checked=false");
+                else
+                    $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?completedfilter_checked=false&pastduefilter_checked=false");
+
+            }else{
+                 $('#checkboxdboxpastdue').prop('checked', true);
+                 $("#filterselected").text("Past Due");
+{#                 $("#dboxpastdue").css({"background-color": "rgba(241, 11, 11, 0.51)","padding": "5px 0px","color": "white","text-align": "center", "border": "2px solid #e5f700", "cursor": "pointer","font-size": "200%"});#}
+                $("#dboxpastdue").removeClass("dboxpastdue");
+                $("#dboxpastdue").addClass("dboxpastdue_selected");
+{#                $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?pastduefilter_checked=false");#}
+                if($(checkbox_completeditems).is(':checked'))
+                    $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?completedfilter_checked=true&pastduefilter_checked=true");
+                else
+                    $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?completedfilter_checked=false&pastduefilter_checked=true");
+
+            }
+
+        });
+
+
+
+{#    $("#checkboxdboxpastdue").on('click', function() {#}
+{##}
+{#            console.log($(checkboxdboxpastdue).is(':checked'))#}
+{#        });#}
+
+$("#checkbox_recurringItems").on('click', function() {
+        var checkbox_recurringItems = document.getElementsByName("checkbox_recurringItems");
+        var checkbox_nonrecurringItems = document.getElementsByName("checkbox_nonrecurringItems");
+        var checkbox_completeditems = document.getElementsByName("checkbox_completeditems");
+
+{#        console.log($(checkbox_nonrecurringItems).is(':checked'));#}
+
+        if($(checkbox_recurringItems).is(':checked'))
+        {
+            if($(checkbox_nonrecurringItems).is(':checked'))
+            {
+                if($(checkbox_completeditems).is(':checked'))
+                    $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?recurringfilter_checked=true&nonrecurringfilter_checked=true&completedfilter_checked=true");
+                else
+                    $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?recurringfilter_checked=true&nonrecurringfilter_checked=true&completedfilter_checked=false");
+
+            }
+            else
+            {
+                if($(checkbox_completeditems).is(':checked'))
+                    $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?recurringfilter_checked=true&nonrecurringfilter_checked=false&completedfilter_checked=true");
+                else
+                    $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?recurringfilter_checked=true&nonrecurringfilter_checked=false&completedfilter_checked=false");
+
+            }
+        }
+        else
+        {
+            if($(checkbox_nonrecurringItems).is(':checked'))
+            {
+                if($(checkbox_completeditems).is(':checked'))
+                    $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?recurringfilter_checked=false&nonrecurringfilter_checked=true&completedfilter_checked=true");
+                else
+                    $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?recurringfilter_checked=false&nonrecurringfilter_checked=true&completedfilter_checked=false");
+
+            }
+            else
+            {
+                if($(checkbox_completeditems).is(':checked'))
+                    $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?recurringfilter_checked=false&nonrecurringfilter_checked=false&completedfilter_checked=true");
+                else
+                    $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?recurringfilter_checked=false&nonrecurringfilter_checked=false&completedfilter_checked=false");
+
+            }
+
+        }
+
+        });
+
+$("#checkbox_nonrecurringItems").on('click', function() {
+        var checkbox_recurringItems = document.getElementsByName("checkbox_recurringItems");
+        var checkbox_nonrecurringItems = document.getElementsByName("checkbox_nonrecurringItems");
+        var checkbox_completeditems = document.getElementsByName("checkbox_completeditems");
+
+{#        console.log($(checkbox_nonrecurringItems).is(':checked'));#}
+
+        if($(checkbox_recurringItems).is(':checked'))
+        {
+            if($(checkbox_nonrecurringItems).is(':checked'))
+            {
+                if($(checkbox_completeditems).is(':checked'))
+                    $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?recurringfilter_checked=true&nonrecurringfilter_checked=true&completedfilter_checked=true");
+                else
+                    $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?recurringfilter_checked=true&nonrecurringfilter_checked=true&completedfilter_checked=false");
+
+            }
+            else
+            {
+                if($(checkbox_completeditems).is(':checked'))
+                    $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?recurringfilter_checked=true&nonrecurringfilter_checked=false&completedfilter_checked=true");
+                else
+                    $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?recurringfilter_checked=true&nonrecurringfilter_checked=false&completedfilter_checked=false");
+
+            }
+        }
+        else
+        {
+            if($(checkbox_nonrecurringItems).is(':checked'))
+            {
+                if($(checkbox_completeditems).is(':checked'))
+                    $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?recurringfilter_checked=false&nonrecurringfilter_checked=true&completedfilter_checked=true");
+                else
+                    $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?recurringfilter_checked=false&nonrecurringfilter_checked=true&completedfilter_checked=false");
+
+            }
+            else
+            {
+                if($(checkbox_completeditems).is(':checked'))
+                    $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?recurringfilter_checked=false&nonrecurringfilter_checked=false&completedfilter_checked=true");
+                else
+                    $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?recurringfilter_checked=false&nonrecurringfilter_checked=false&completedfilter_checked=false");
+
+            }
+
+        }
+{#        if($(checkbox_nonrecurringItems).is(':checked'))#}
+{#        {#}
+{#            if($(checkbox_completeditems).is(':checked'))#}
+{#                $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?completedfilter_checked=true&nonrecurringfilter_checked=true");#}
+{#            else#}
+{#                $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?completedfilter_checked=false&nonrecurringfilter_checked=true");#}
+{##}
+{#        }#}
+{#        else#}
+{#        {#}
+{#            if($(checkbox_completeditems).is(':checked'))#}
+{#                $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?completedfilter_checked=true&nonrecurringfilter_checked=false");#}
+{#            else#}
+{#                $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?completedfilter_checked=false&nonrecurringfilter_checked=false");#}
+{##}
+{#        }#}
+        });
+
+
+$("#checkbox_completeditems").on('click', function() {
+
+        var checkbox_recurringItems = document.getElementsByName("checkbox_recurringItems");
+        var checkbox_nonrecurringItems = document.getElementsByName("checkbox_nonrecurringItems");
+        var checkbox_completeditems = document.getElementsByName("checkbox_completeditems");
+
+        $("#filterselected").text("All Items");
+
+         $('#checkboxdboxcurrentdue').prop('checked', false);
+        $("#dboxcurrentdue").removeClass("dboxcurrentdue_selected");
+        $("#dboxcurrentdue").addClass("dboxcurrentdue");
+
+        $('#checkboxdboxcomingdue').prop('checked', false);
+        $("#dboxcomingdue").removeClass("dboxcomingdue_selected");
+        $("#dboxcomingdue").addClass("dboxcomingdue");
+
+        $('#checkboxdboxpastdue').prop('checked', false);
+        $("#dboxpastdue").removeClass("dboxpastdue_selected");
+        $("#dboxpastdue").addClass("dboxpastdue");
+
+        if($(checkbox_completeditems).is(':checked'))
+                    $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?completedfilter_checked=true");
+                else
+                    $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?completedfilter_checked=false");
+
+
+{#       if($(checkbox_recurringItems).is(':checked'))#}
+{#        {#}
+{#            if($(checkbox_nonrecurringItems).is(':checked'))#}
+{#            {#}
+{#                if($(checkbox_completeditems).is(':checked'))#}
+{#                    $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?recurringfilter_checked=true&nonrecurringfilter_checked=true&completedfilter_checked=true");#}
+{#                else#}
+{#                    $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?recurringfilter_checked=true&nonrecurringfilter_checked=true&completedfilter_checked=false");#}
+{##}
+{#            }#}
+{#            else#}
+{#            {#}
+{#                if($(checkbox_completeditems).is(':checked'))#}
+{#                    $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?recurringfilter_checked=true&nonrecurringfilter_checked=false&completedfilter_checked=true");#}
+{#                else#}
+{#                    $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?recurringfilter_checked=true&nonrecurringfilter_checked=false&completedfilter_checked=false");#}
+{##}
+{#            }#}
+{#        }#}
+{#        else#}
+{#        {#}
+{#            if($(checkbox_nonrecurringItems).is(':checked'))#}
+{#            {#}
+{#                if($(checkbox_completeditems).is(':checked'))#}
+{#                    $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?recurringfilter_checked=false&nonrecurringfilter_checked=true&completedfilter_checked=true");#}
+{#                else#}
+{#                    $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?recurringfilter_checked=false&nonrecurringfilter_checked=true&completedfilter_checked=false");#}
+{##}
+{#            }#}
+{#            else#}
+{#            {#}
+{#                if($(checkbox_completeditems).is(':checked'))#}
+{#                    $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?recurringfilter_checked=false&nonrecurringfilter_checked=false&completedfilter_checked=true");#}
+{#                else#}
+{#                    $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?recurringfilter_checked=false&nonrecurringfilter_checked=false&completedfilter_checked=false");#}
+{##}
+{#            }#}
+{##}
+{#        }#}
+{#        if($(checkbox_completeditems).is(':checked'))#}
+{#            $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?completedfilter_checked=true");#}
+{#        else#}
+{#            $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?completedfilter_checked=false");#}
+{#        $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter");#}
+{#          alert("checkbox_completeditems");#}
+{#            var $row = $(this).closest('tr'),#}
+{#                pk = $row.attr('data-alert-pk');#}
+{##}
+{#            if (!pk) return;#}
+{##}
+{#            var url = '{% url '/getfilteredservicelist/' %}';#}
+
+{#            $.ajax({#}
+{#                url: url,#}
+{#                url: 'ajax_completion_filter',#}
+{#                headers: {#}
+{#                    'X-CSRFToken': csrftoken#}
+{#                },#}
+{#                method: 'GET',#}
+{#                data: {#}
+{#                    'filter_checked': $(checkbox_completeditems).is(':checked')#}
+{#                }#}
+{#            }).done(function() {#}
+{#                console.log("Filter set to ",$(checkbox_completeditems).is(':checked'));#}
+{#                  $row.remove();#}
+{#                $('#table-container').html('').load(location.href +'ajax_completion_filter?filter_checked=true ');#}
+{#                    $("#SubscribedServicesTableDiv").load(location.href + "ajax_completion_filter");#}
+{#                $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter");#}
+{#                        .load(location.href + "ajax_completion_filter");#}
+{#                    $("#auto_load_div").html(data);#}
+{#                console.log($("#table-container")+ location.href );#}
+{#                $("#table-container").load(location.href + "#table-container");#}
+{##}
+{#            }).fail(function() {#}
+{#                console.log('Error setting the  filters');#}
+{#            });#}
+        });
+
+{#$("#checkbox_completeditems").on('click', function() {#}
+{##}
+{#        var checkbox_recurringItems = document.getElementsByName("checkbox_recurringItems");#}
+{#        var checkbox_nonrecurringItems = document.getElementsByName("checkbox_nonrecurringItems");#}
+{#        var checkbox_completeditems = document.getElementsByName("checkbox_completeditems");#}
+{#        $('#checkboxdboxpastdue').prop('checked', false);#}
+{#        $("#dboxpastdue").removeClass("dboxpastdue_selected");#}
+{#        $("#dboxpastdue").addClass("dboxpastdue");#}
+{##}
+{#        if($(checkbox_completeditems).is(':checked'))#}
+{#                    $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?completedfilter_checked=true");#}
+{#                else#}
+{#                    $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?completedfilter_checked=false");#}
+{##}
+{##}
+{#       if($(checkbox_recurringItems).is(':checked'))#}
+{#        {#}
+{#            if($(checkbox_nonrecurringItems).is(':checked'))#}
+{#            {#}
+{#                if($(checkbox_completeditems).is(':checked'))#}
+{#                    $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?recurringfilter_checked=true&nonrecurringfilter_checked=true&completedfilter_checked=true");#}
+{#                else#}
+{#                    $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?recurringfilter_checked=true&nonrecurringfilter_checked=true&completedfilter_checked=false");#}
+{##}
+{#            }#}
+{#            else#}
+{#            {#}
+{#                if($(checkbox_completeditems).is(':checked'))#}
+{#                    $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?recurringfilter_checked=true&nonrecurringfilter_checked=false&completedfilter_checked=true");#}
+{#                else#}
+{#                    $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?recurringfilter_checked=true&nonrecurringfilter_checked=false&completedfilter_checked=false");#}
+{##}
+{#            }#}
+{#        }#}
+{#        else#}
+{#        {#}
+{#            if($(checkbox_nonrecurringItems).is(':checked'))#}
+{#            {#}
+{#                if($(checkbox_completeditems).is(':checked'))#}
+{#                    $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?recurringfilter_checked=false&nonrecurringfilter_checked=true&completedfilter_checked=true");#}
+{#                else#}
+{#                    $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?recurringfilter_checked=false&nonrecurringfilter_checked=true&completedfilter_checked=false");#}
+{##}
+{#            }#}
+{#            else#}
+{#            {#}
+{#                if($(checkbox_completeditems).is(':checked'))#}
+{#                    $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?recurringfilter_checked=false&nonrecurringfilter_checked=false&completedfilter_checked=true");#}
+{#                else#}
+{#                    $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?recurringfilter_checked=false&nonrecurringfilter_checked=false&completedfilter_checked=false");#}
+{##}
+{#            }#}
+{##}
+{#        }#}
+{#        if($(checkbox_completeditems).is(':checked'))#}
+{#            $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?completedfilter_checked=true");#}
+{#        else#}
+{#            $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter?completedfilter_checked=false");#}
+{#        $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter");#}
+{#          alert("checkbox_completeditems");#}
+{#            var $row = $(this).closest('tr'),#}
+{#                pk = $row.attr('data-alert-pk');#}
+{##}
+{#            if (!pk) return;#}
+{##}
+{#            var url = '{% url '/getfilteredservicelist/' %}';#}
+{##}
+{#            $.ajax({#}
+{#                url: url,#}
+{#                url: 'ajax_completion_filter',#}
+{#                headers: {#}
+{#                    'X-CSRFToken': csrftoken#}
+{#                },#}
+{#                method: 'GET',#}
+{#                data: {#}
+{#                    'filter_checked': $(checkbox_completeditems).is(':checked')#}
+{#                }#}
+{#            }).done(function() {#}
+{#                console.log("Filter set to ",$(checkbox_completeditems).is(':checked'));#}
+{#                  $row.remove();#}
+{#                $('#table-container').html('').load(location.href +'ajax_completion_filter?filter_checked=true ');#}
+{#                    $("#SubscribedServicesTableDiv").load(location.href + "ajax_completion_filter");#}
+{#                $("#SubscribedServicesTable").load(location.href + "ajax_completion_filter");#}
+{#                        .load(location.href + "ajax_completion_filter");#}
+{#                    $("#auto_load_div").html(data);#}
+{#                console.log($("#table-container")+ location.href );#}
+{#                $("#table-container").load(location.href + "#table-container");#}
+{##}
+{#            }).fail(function() {#}
+{#                console.log('Error setting the  filters');#}
+{#            });#}
+{#        });#}
+
+    function addDays(days) {
+            return new Date(new Date().getTime() + (days * 24 * 60 * 60 * 1000))
+        }
+
+        function servicerenewaldateclick(value, object) {
+{#            value = value.replace('compliancecheckbox', 'compliancedropdown');#}
+{##}
+{#            if (document.getElementById(value).disabled)#}
+{#                $("#" + value).removeAttr('disabled');#}
+{#            else#}
+{#                $("#" + value).attr("disabled", "disabled");#}
+
+{#            alert('Im called');#}
+            basis = document.getElementById(value).value;
+            value = value.replace('compliancedropdown', 'compliancerenewaldate');
+            $("#" + value).datepicker({
+                minDate: 0,
+                showButtonPanel: true,
+                changeMonth: true,
+                changeYear: true,
+                showAnim: "slide",
+                // The hidden field to receive the date
+                altField: "#" + value,
+                // The format you want
+                altFormat: "mm/dd/y",
+                // The format the user actually sees
+                dateFormat: "mm/dd/y",
+                onSelect: function (date) {
+
+                    // Your CSS changes, just in case you still need them
+                    $('a.ui-state-default').removeClass('ui-state-highlight');
+                    $(this).addClass('ui-state-highlight');
+                }
+            });
+
+{#            if (document.getElementById(value).disabled)#}
+{#                $("#" + value).removeAttr('disabled');#}
+{#            else#}
+{#                $("#" + value).attr("disabled", "disabled");#}
+
+            switch (basis) {
+                case 'DAILY':
+                    var tomorrow = addDays(1);
+                    tomorrow_dd = ("0" + tomorrow.getDate()).slice(-2);
+                    tomorrow_mm = ("0" + (tomorrow.getMonth() + 1)).slice(-2);
+                    tomorrow_yy = ("0" + (tomorrow.getYear())).slice(-2);
+                    tomorrow = tomorrow_mm + '/' + tomorrow_dd + '/' + tomorrow_yy;
+                    document.getElementById(value).value = tomorrow;
+                    break;
+
+                case 'WEEKLY':
+                    var nextweek = addDays(7);
+                    nextweek_dd = ("0" + nextweek.getDate()).slice(-2);
+                    nextweek_mm = ("0" + (nextweek.getMonth() + 1)).slice(-2);
+                    nextweek_yy = ("0" + (nextweek.getYear())).slice(-2);
+                    nextweek = nextweek_mm + '/' + nextweek_dd + '/' + nextweek_yy;
+                    document.getElementById(value).value = nextweek;
+                    break;
+
+                case 'WEEKLY':
+                    var nextweek = addDays(7);
+                    nextweek_dd = ("0" + nextweek.getDate()).slice(-2);
+                    nextweek_mm = ("0" + (nextweek.getMonth() + 1)).slice(-2);
+                    nextweek_yy = ("0" + (nextweek.getYear())).slice(-2);
+                    nextweek = nextweek_mm + '/' + nextweek_dd + '/' + nextweek_yy;
+                    document.getElementById(value).value = nextweek;
+                    break;
+
+                case 'MNTHLY':
+                    var nextmonth = addDays(30);
+                    nextmonth_dd = ("0" + nextmonth.getDate()).slice(-2);
+                    nextmonth_mm = ("0" + (nextmonth.getMonth() + 1)).slice(-2);
+                    nextmonth_yy = ("0" + (nextmonth.getYear())).slice(-2);
+                    nextmonth = nextmonth_mm + '/' + nextmonth_dd + '/' + nextmonth_yy;
+                    document.getElementById(value).value = nextmonth;
+                    break;
+
+                case 'QTLY':
+                    var nextquarter = addDays(90);
+                    nextquarter_dd = ("0" + nextquarter.getDate()).slice(-2);
+                    nextquarter_mm = ("0" + (nextquarter.getMonth() + 1)).slice(-2);
+                    nextquarter_yy = ("0" + (nextquarter.getYear())).slice(-2);
+                    nextquarter = nextquarter_mm + '/' + nextquarter_dd + '/' + nextquarter_yy;
+                    document.getElementById(value).value = nextquarter;
+                    break;
+
+                case 'SEMIAN':
+                    var nextsemian = addDays(180);
+                    nextsemian_dd = ("0" + nextsemian.getDate()).slice(-2);
+                    nextsemian_mm = ("0" + (nextsemian.getMonth() + 1)).slice(-2);
+                    nextsemian_yy = ("0" + (nextsemian.getYear())).slice(-2);
+                    nextsemian = nextsemian_mm + '/' + nextsemian_dd + '/' + nextsemian_yy;
+                    document.getElementById(value).value = nextsemian;
+                    break;
+
+                case 'ANNUAL':
+                    var nextannual = addDays(365);
+                    nextannual_dd = ("0" + nextannual.getDate()).slice(-2);
+                    nextannual_mm = ("0" + (nextannual.getMonth() + 1)).slice(-2);
+                    nextannual_yy = ("0" + (nextannual.getYear())).slice(-2);
+                    nextannual = nextannual_mm + '/' + nextannual_dd + '/' + nextannual_yy;
+                    document.getElementById(value).value = nextannual;
+                    break;
+
+                case 'BIEN':
+                    var nextbien = addDays(730);
+                    nextbien_dd = ("0" + nextbien.getDate()).slice(-2);
+                    nextbien_mm = ("0" + (nextbien.getMonth() + 1)).slice(-2);
+                    nextbien_yy = ("0" + (nextbien.getYear())).slice(-2);
+                    nextbien = nextbien_mm + '/' + nextbien_dd + '/' + nextbien_yy;
+                    document.getElementById(value).value = nextbien;
+                    break;
+
+                case 'ONCE':
+                    break;
+
+                case 'CUSTOM':
+                    break;
+
+            }
+
+        }
+
+        function serviceactiondateclick(value, object) {
+{#            value = value.replace('compliancecheckbox', 'compliancedropdown');#}
+{##}
+{#            if (document.getElementById(value).disabled)#}
+{#                $("#" + value).removeAttr('disabled');#}
+{#            else#}
+{#                $("#" + value).attr("disabled", "disabled");#}
+
+{#            alert('Im called');#}
+            basis = document.getElementById(value).value;
+            value = value.replace('compliancedropdown', 'complianceactiondate');
+            $("#" + value).datepicker({
+                minDate: 0,
+                showButtonPanel: true,
+                changeMonth: true,
+                changeYear: true,
+                showAnim: "slide",
+                // The hidden field to receive the date
+                altField: "#" + value,
+                // The format you want
+                altFormat: "mm/dd/y",
+                // The format the user actually sees
+                dateFormat: "mm/dd/y",
+                onSelect: function (date) {
+
+                    // Your CSS changes, just in case you still need them
+                    $('a.ui-state-default').removeClass('ui-state-highlight');
+                    $(this).addClass('ui-state-highlight');
+                }
+            });
+
+{#            if (document.getElementById(value).disabled)#}
+{#                $("#" + value).removeAttr('disabled');#}
+{#            else#}
+{#                $("#" + value).attr("disabled", "disabled");#}
+
+            switch (basis) {
+                case 'DAILY':
+                    var tomorrow = addDays(1);
+                    tomorrow_dd = ("0" + tomorrow.getDate()).slice(-2);
+                    tomorrow_mm = ("0" + (tomorrow.getMonth() + 1)).slice(-2);
+                    tomorrow_yy = ("0" + (tomorrow.getYear())).slice(-2);
+                    tomorrow = tomorrow_mm + '/' + tomorrow_dd + '/' + tomorrow_yy;
+                    document.getElementById(value).value = tomorrow;
+                    break;
+
+                case 'WEEKLY':
+                    var nextweek = addDays(7);
+                    nextweek_dd = ("0" + nextweek.getDate()).slice(-2);
+                    nextweek_mm = ("0" + (nextweek.getMonth() + 1)).slice(-2);
+                    nextweek_yy = ("0" + (nextweek.getYear())).slice(-2);
+                    nextweek = nextweek_mm + '/' + nextweek_dd + '/' + nextweek_yy;
+                    document.getElementById(value).value = nextweek;
+                    break;
+
+                case 'WEEKLY':
+                    var nextweek = addDays(7);
+                    nextweek_dd = ("0" + nextweek.getDate()).slice(-2);
+                    nextweek_mm = ("0" + (nextweek.getMonth() + 1)).slice(-2);
+                    nextweek_yy = ("0" + (nextweek.getYear())).slice(-2);
+                    nextweek = nextweek_mm + '/' + nextweek_dd + '/' + nextweek_yy;
+                    document.getElementById(value).value = nextweek;
+                    break;
+
+                case 'MNTHLY':
+                    var nextmonth = addDays(30);
+                    nextmonth_dd = ("0" + nextmonth.getDate()).slice(-2);
+                    nextmonth_mm = ("0" + (nextmonth.getMonth() + 1)).slice(-2);
+                    nextmonth_yy = ("0" + (nextmonth.getYear())).slice(-2);
+                    nextmonth = nextmonth_mm + '/' + nextmonth_dd + '/' + nextmonth_yy;
+                    document.getElementById(value).value = nextmonth;
+                    break;
+
+                case 'QTLY':
+                    var nextquarter = addDays(90);
+                    nextquarter_dd = ("0" + nextquarter.getDate()).slice(-2);
+                    nextquarter_mm = ("0" + (nextquarter.getMonth() + 1)).slice(-2);
+                    nextquarter_yy = ("0" + (nextquarter.getYear())).slice(-2);
+                    nextquarter = nextquarter_mm + '/' + nextquarter_dd + '/' + nextquarter_yy;
+                    document.getElementById(value).value = nextquarter;
+                    break;
+
+                case 'SEMIAN':
+                    var nextsemian = addDays(180);
+                    nextsemian_dd = ("0" + nextsemian.getDate()).slice(-2);
+                    nextsemian_mm = ("0" + (nextsemian.getMonth() + 1)).slice(-2);
+                    nextsemian_yy = ("0" + (nextsemian.getYear())).slice(-2);
+                    nextsemian = nextsemian_mm + '/' + nextsemian_dd + '/' + nextsemian_yy;
+                    document.getElementById(value).value = nextsemian;
+                    break;
+
+                case 'ANNUAL':
+                    var nextannual = addDays(365);
+                    nextannual_dd = ("0" + nextannual.getDate()).slice(-2);
+                    nextannual_mm = ("0" + (nextannual.getMonth() + 1)).slice(-2);
+                    nextannual_yy = ("0" + (nextannual.getYear())).slice(-2);
+                    nextannual = nextannual_mm + '/' + nextannual_dd + '/' + nextannual_yy;
+                    document.getElementById(value).value = nextannual;
+                    break;
+
+                case 'BIEN':
+                    var nextbien = addDays(730);
+                    nextbien_dd = ("0" + nextbien.getDate()).slice(-2);
+                    nextbien_mm = ("0" + (nextbien.getMonth() + 1)).slice(-2);
+                    nextbien_yy = ("0" + (nextbien.getYear())).slice(-2);
+                    nextbien = nextbien_mm + '/' + nextbien_dd + '/' + nextbien_yy;
+                    document.getElementById(value).value = nextbien;
+                    break;
+
+                case 'ONCE':
+                    break;
+
+                case 'CUSTOM':
+                    break;
+
+            }
+
+        }
+
+
+        function servicebasischange(value, object) {
+            value = value.replace('compliancedropdown', 'compliancedate');
+            $("#" + value).removeClass('ui-state-highlight');
+            switch (object.value) {
+                case 'DAILY':
+                    var tomorrow = addDays(1);
+                    tomorrow_dd = ("0" + tomorrow.getDate()).slice(-2);
+                    tomorrow_mm = ("0" + (tomorrow.getMonth() + 1)).slice(-2);
+                    tomorrow_yy = ("0" + (tomorrow.getYear())).slice(-2);
+                    tomorrow = tomorrow_mm + '/' + tomorrow_dd + '/' + tomorrow_yy;
+                    document.getElementById(value).value = tomorrow;
+                    break;
+
+                case 'WEEKLY':
+                    var nextweek = addDays(7);
+                    nextweek_dd = ("0" + nextweek.getDate()).slice(-2);
+                    nextweek_mm = ("0" + (nextweek.getMonth() + 1)).slice(-2);
+                    nextweek_yy = ("0" + (nextweek.getYear())).slice(-2);
+                    nextweek = nextweek_mm + '/' + nextweek_dd + '/' + nextweek_yy;
+                    document.getElementById(value).value = nextweek;
+                    break;
+
+                case 'WEEKLY':
+                    var nextweek = addDays(7);
+                    nextweek_dd = ("0" + nextweek.getDate()).slice(-2);
+                    nextweek_mm = ("0" + (nextweek.getMonth() + 1)).slice(-2);
+                    nextweek_yy = ("0" + (nextweek.getYear())).slice(-2);
+                    nextweek = nextweek_mm + '/' + nextweek_dd + '/' + nextweek_yy;
+                    document.getElementById(value).value = nextweek;
+                    break;
+
+                case 'MNTHLY':
+                    var nextmonth = addDays(30);
+                    nextmonth_dd = ("0" + nextmonth.getDate()).slice(-2);
+                    nextmonth_mm = ("0" + (nextmonth.getMonth() + 1)).slice(-2);
+                    nextmonth_yy = ("0" + (nextmonth.getYear())).slice(-2);
+                    nextmonth = nextmonth_mm + '/' + nextmonth_dd + '/' + nextmonth_yy;
+                    document.getElementById(value).value = nextmonth;
+                    break;
+
+                case 'QTLY':
+                    var nextquarter = addDays(90);
+                    nextquarter_dd = ("0" + nextquarter.getDate()).slice(-2);
+                    nextquarter_mm = ("0" + (nextquarter.getMonth() + 1)).slice(-2);
+                    nextquarter_yy = ("0" + (nextquarter.getYear())).slice(-2);
+                    nextquarter = nextquarter_mm + '/' + nextquarter_dd + '/' + nextquarter_yy;
+                    document.getElementById(value).value = nextquarter;
+                    break;
+
+                case 'SEMIAN':
+                    var nextsemian = addDays(180);
+                    nextsemian_dd = ("0" + nextsemian.getDate()).slice(-2);
+                    nextsemian_mm = ("0" + (nextsemian.getMonth() + 1)).slice(-2);
+                    nextsemian_yy = ("0" + (nextsemian.getYear())).slice(-2);
+                    nextsemian = nextsemian_mm + '/' + nextsemian_dd + '/' + nextsemian_yy;
+                    document.getElementById(value).value = nextsemian;
+                    break;
+
+                case 'ANNUAL':
+                    var nextannual = addDays(365);
+                    nextannual_dd = ("0" + nextannual.getDate()).slice(-2);
+                    nextannual_mm = ("0" + (nextannual.getMonth() + 1)).slice(-2);
+                    nextannual_yy = ("0" + (nextannual.getYear())).slice(-2);
+                    nextannual = nextannual_mm + '/' + nextannual_dd + '/' + nextannual_yy;
+                    document.getElementById(value).value = nextannual;
+                    break;
+
+                case 'BIEN':
+                    var nextbien = addDays(730);
+                    nextbien_dd = ("0" + nextbien.getDate()).slice(-2);
+                    nextbien_mm = ("0" + (nextbien.getMonth() + 1)).slice(-2);
+                    nextbien_yy = ("0" + (nextbien.getYear())).slice(-2);
+                    nextbien = nextbien_mm + '/' + nextbien_dd + '/' + nextbien_yy;
+                    document.getElementById(value).value = nextbien;
+                    break;
+
+                case 'ONCE':
+                    break;
+
+                case 'CUSTOM':
+                    break;
+            }
+
+        }
+    </script>
+
+{% endblock javascript %}
+
+
+{% block extrajs %}{% endblock %}
+
+</body>
+</html>
