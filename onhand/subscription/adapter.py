@@ -15,6 +15,7 @@ from django.template import TemplateDoesNotExist
 from django.urls import reverse
 from django.utils import six, dateparse
 
+
 from onhand.management.models import City, Zipcode, State, County, Basis, NaicsLevel5
 from onhand.management.utils import calculated_basis_date
 from onhand.products.models import ProductDiscount, Discount, ProductBasis
@@ -199,7 +200,6 @@ class DefaultAccountAdapter(object):
         """
         person_language  = get_person_language_model()()
         return person_language
-
 
     def populate_person(self, request, person):
         """
@@ -697,6 +697,83 @@ class DefaultAccountAdapter(object):
             company.save()
         return company
 
+    def save_vendor(self, company, vendorname, phone, email, commit=True):
+        from .utils import company_field
+        print('request, company, vendorname', company, vendorname)
+        if vendorname:
+            company_field(company, 'name', vendorname)
+        if phone:
+            company_field(company, 'phone', phone)
+        if email:
+            company_field(company, 'email', email)
+
+        if commit:
+            print('Saving Vendor: Provider_Adapter_save_vendor', company)
+            company.save()
+        return company
+
+
+    def save_vendor_contact(self, person, firstname, lastname, phone, email, commit=True):
+        from .utils import person_field
+        print('person, firstname, lastname, phone, email', person, firstname, lastname, phone, email)
+        if firstname:
+            person_field(person, 'first_name', firstname)
+        if lastname:
+            person_field(person, 'last_name', lastname)
+        if phone:
+            person_field(person, 'office_phone', phone )
+        if email:
+            person_field(person, 'email', email)
+
+        if commit:
+            print('Saving Vendor contact: Provider_Adapter_save_vendor_contact', person)
+            person.save()
+        return person
+
+
+
+    def save_company_vendorperson_role(self, person_role_company, company, person, commit=True):
+        from .utils import company_field
+        from onhand.subscription.utils import company_person_role_field
+        # data = form.cleaned_data
+        # compname = data.get('compname')
+
+        # adapter = get_adapter()
+        # person_role_company = adapter.new_person_role_company(request)
+        print('New Vendor Company ID, Company',company )
+        print('New Vendor Company Contact ID , Person', person)
+        if company:
+            company_person_role_field(person_role_company, 'comp_id', company)
+            print('Saved comp_id')
+
+        if person:
+            company_person_role_field(person_role_company, 'prsn_id', person)
+            print('Saved prsn_id')
+        # if (form == 'onhand.subscription.forms.RegisterForm'):
+        default_companyperson_role = 'EMPLOY'
+        company_person_role_field(person_role_company, 'crol_code',
+                                  CompanyRole.objects.get(pk=default_companyperson_role))
+        print('Saved crol_code')
+
+        if commit:
+            person_role_company.save()
+            print('Committing person_role_company:',person_role_company)
+        return person_role_company
+
+    def save_schedule_service(self, company, vendorname, phone, email, commit=True):
+        from .utils import company_field
+        print('request, company, vendorname', company, vendorname)
+        if vendorname:
+            company_field(company, 'name', vendorname)
+        if phone:
+            company_field(company, 'phone', phone)
+        if email:
+            company_field(company, 'email', email)
+
+        if commit:
+            print('Saving Vendor: Provider_Adapter_save_vendor', company)
+            company.save()
+        return company
 
     def save_company_person_role(self, request, person_role_company, company, person, form, commit=True):
         from .utils import company_field

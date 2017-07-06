@@ -12,14 +12,16 @@
 {% endblock %}
 
 <form id="scheduleserviceform">
-    <input type="hidden" name="scheduletype" id="scheduletype"  value="{{ scheduletype}}"/>
-    <input type="hidden" name="modified_cssc_id" id="modified_cssc_id"  value="{{ service_schedule.cssc_id}}"/>
+    <input type="hidden" name="actiontype" id="actiontype"  value="{{ actiontype}}"/>
+    <input type="hidden" name="modified_cssc_id" id="modified_cssc_id"  value="{{ cssc_id}}"/>
     <input type="hidden" name="cres_id" id="cres_id"  value="{{ cres_id }}"/>
+    <input type="hidden" name="basi_code" id="basi_code"  value="{{ basi_code }}"/>
+    <input type="hidden" name="complianceservice_id" id="complianceservice_id"  value="{{ service.csrv_id }}"/>
     <div id="scddiv">
         <div style="text-align: center">
-            <i class="fa fa-clock-o fa-3x oh_scd_servkeeComponent oh_scd_servkeeIcon rotate360 newscd-form-img-titleheader"
+            <i class="fa fa-truck fa-3x oh_scd_servkeeComponent oh_scd_servkeeIcon rotate360 newscd-form-img-titleheader"
                style="color: #073763"></i>
-            <span class="oh_scd_servkeeComponent oh_scd_servkeeLabel newscd-form-titleheader">Schedule {{ rectype }}</span>
+            <span class="oh_scd_servkeeComponent oh_scd_servkeeLabel newscd-form-titleheader">{{ rectype }}&nbsp;Action </span>
             <input type="hidden" name="recordtype" id="recordtype"  value="{{ rectype }}"/>
         </div>
         <div class="oh_scd_servkeeComponent oh_scd_servkeeHrule newscd-form-titleheader-horizontol"></div>
@@ -37,17 +39,17 @@
             <span class="oh_scd_servkeeComponent oh_scd_servkeeLabel newscd-label-lastamtpaid-content">{% if csac_price_last != 'None' %}
                 $&nbsp;
                 {{ csac_price_last }} {% else %} - {% endif %}</span>
-            {% if csac_service_date_last %}
-                {% if off_from_avg <= 0 %}
-                    <i
-                            class="fa fa-thumbs-o-up fa-2x oh_scd_servkeeComponent oh_scd_servkeeIcon rotate360 newscd-lastamt-valueformoney"
-                            style="color: #72a525"></i>
-                {% else %}
-                    <i
-                            class="fa fa-thumbs-o-down fa-2x oh_scd_servkeeComponent oh_scd_servkeeIcon rotate360 newscd-lastamt-valueformoney"
-                            style="color: red"></i>
+                {% if csac_price_last !=  'None' %}
+                    {% if off_from_avg <= 0 %}
+                        <i
+                                class="fa fa-thumbs-o-up fa-2x oh_scd_servkeeComponent oh_scd_servkeeIcon rotate360 newscd-lastamt-valueformoney"
+                                style="color: #72a525"></i>
+                    {% else %}
+                        <i
+                                class="fa fa-thumbs-o-down fa-2x oh_scd_servkeeComponent oh_scd_servkeeIcon rotate360 newscd-lastamt-valueformoney"
+                                style="color: red"></i>
+                    {% endif %}
                 {% endif %}
-            {% endif %}
         </div>
 
         <div>
@@ -58,29 +60,23 @@
             </div>
             <select id="vendorlist" name="vendorlist"
                     class="oh_scd_servkeeComponent oh_scd_servkeeCombobox newscd-dropdown-serviceprovider">
-                {% ifequal scheduletype 'mod'%}
-                    {% if service_schedule %}
+                {% if service_schedule %}
                          {% for serviceprovider in serviceproviderlist %}
-                        <option value="{{ serviceprovider.comp_id }}" {% ifequal serviceprovider.comp_id service_schedule.comp_id %}selected{% endifequal %}>{{ serviceprovider.comp_name}}</option>
-                    {% endfor %}
+                            <option value="{{ serviceprovider.comp_id }}" {% ifequal serviceprovider.comp_id service_schedule.comp_id %}selected{% endifequal %}>{{ serviceprovider.comp_name}}</option>
+                        {% endfor %}
 {#                   <option value="{{ service_schedule.comp_id }}" selected>{{ service_schedule.comp.name }}</option>#}
-                    {% endif %}
-                 {% else %}
-                    {% ifequal scheduletype 'new'%}
-                        {% ifequal lastactioncomplianceexists False %}
-                            <option value="" selected>Select Vendor</option>
+                {% else %}
+                    {% ifequal lastactioncomplianceexists False %}
+                            <option value="">Select Service Provider</option>
                         {% endifequal %}>
-                        {% for serviceprovider in serviceproviderlist %}
+                    {% for serviceprovider in serviceproviderlist %}
                         <option value="{{ serviceprovider.comp_id }}"
                                 {% ifequal lastactioncomplianceexists True %}
                                     {% ifequal serviceprovider.comp_id|stringformat:"s"  lastactioncompliance.comp_id_id  %}selected{% endifequal %}
                                 {% endifequal %}>
                             {{ serviceprovider.comp_name}}</option>
                     {% endfor %}
-                        {% else %}
-                        <option value="{{ service_schedule.comp_id }}" selected>{{ service_schedule.comp.name }}</option>
-                    {% endifequal %}
-                {% endifequal %}
+                {% endif %}
 
             </select>
             <a href=""
@@ -108,17 +104,14 @@
                style="color: #f72006"></i>
             <select id="vendorcontactlist" name="vendorcontactlist"
                     class="oh_scd_servkeeComponent oh_scd_servkeeCombobox newscd-dropdown-contact">
-                {% ifequal scheduletype 'mod'%}
-                    {% if service_schedule %}
-{#                        <option value="{{ service_schedule.cprs_id_provider }}" selected>{{ service_schedule.cprs_id_provider.prsn.first_name }}&nbsp;{{ service_schedule.cprs_id_provider.prsn.last_name }}</option>#}
-                        {% for contacts in vendorcontactlist %}
+
+             {% if service_schedule %}
+                         {% for contacts in vendorcontactlist %}
                             <option value="{{ contacts.cprs_id }}" {% ifequal contacts.cprs_id|stringformat:"s" service_schedule.cprs_id_provider|stringformat:"s"  %}selected{% endifequal %}>
                                 {{ contacts.prsn_name}}</option>
                         {% endfor %}
-                    {% endif %}
                 {% else %}
-                {% ifequal scheduletype 'new'%}
-                        {% ifequal lastactioncomplianceexists False %}
+                    {% ifequal lastactioncomplianceexists False %}
                             <option value="" selected>Select Contact</option>
                         {% endifequal %}>
                         {% for contacts in lastactionvendorcontactlist %}
@@ -128,10 +121,19 @@
                                 {% endifequal %}>
                             {{ contacts.prsn_name}}</option>
                     {% endfor %}
-                        {% else %}
-                        <option value="{{ contacts.cprs_id  }}" selected>{{ contacts.prsn_name }}</option>
-                {% endifequal %}
-            {% endifequal %}
+             {% endif %}
+
+{#                {% ifequal actiontype 'mod'%}#}
+{#                    {% if service_schedule %}#}
+{#                        <option value="{{ service_schedule.cprs_id_provider }}" selected>{{ service_schedule.cprs_id_provider.prsn.first_name }}&nbsp;{{ service_schedule.cprs_id_provider.prsn.last_name }}</option>#}
+{#                        {% for contacts in vendorcontactlist %}#}
+{#                            <option value="{{ contacts.cprs_id }}" {% ifequal contacts.cprs_id|stringformat:"s" service_schedule.cprs_id_provider|stringformat:"s"  %}selected{% endifequal %}>#}
+{#                                {{ contacts.prsn_name}}</option>#}
+{#                        {% endfor %}#}
+{#                    {% endif %}#}
+{#                {% else %}#}
+{#                <option value="">Select contact</option>#}
+{#            {% endifequal %}#}
             </select>
         </div>
 
@@ -140,14 +142,20 @@
                  cellpadding="0">
                 Phone
                 no:<br/></div>
-             {% ifequal scheduletype 'mod'%}
+             {% ifequal actiontype 'mod'%}
                     {% if service_schedule %}
                         <input id="phone" name="phone" type="text" value="{{ service_schedule.cprs_id_provider.prsn.office_phone }}" placeholder="Phone number"
                        class="oh_scd_servkeeComponent oh_scd_servkeeTextinput newscd-input-phone"/>
                     {% endif %}
              {% else %}
+                 {% if service_schedule %}
+                        <input id="phone" name="phone" type="text" value="{{ service_schedule.cprs_id_provider.prsn.office_phone }}" placeholder="Phone number"
+                       class="oh_scd_servkeeComponent oh_scd_servkeeTextinput newscd-input-phone"/>
+                 {% else %}
                 <input id="phone" name="phone" type="text" value="{% ifequal lastactioncomplianceexists True %}{{ lastactioncompliance.prsn_mobile_phone }}{% endifequal %}" placeholder="Phone number"
                        class="oh_scd_servkeeComponent oh_scd_servkeeTextinput newscd-input-phone"/>
+                 {% endif %}
+
             {% endifequal %}
             <i class="fa fa-phone fa-2x oh_scd_servkeeComponent oh_scd_servkeeIcon rotate360 newscd-img-phone"
                style="color: #080041"></i>
@@ -158,160 +166,153 @@
                  cellpadding="0">
                 Email
                 :<br/></div>
-            {% ifequal scheduletype 'mod'%}
+            {% ifequal actiontype 'mod'%}
                     {% if service_schedule %}
                         <input id="email" name="email" type="text" value="{{ service_schedule.cprs_id_provider.prsn.email }}" placeholder="Email address"
                    class="oh_scd_servkeeComponent oh_scd_servkeeTextinput newscd-input-email"/>
                     {% endif %}
              {% else %}
+                {% if service_schedule %}
+                        <input id="email" name="email" type="text" value="{{ service_schedule.cprs_id_provider.prsn.email }}" placeholder="Email address"
+                   class="oh_scd_servkeeComponent oh_scd_servkeeTextinput newscd-input-email"/>
+                {% else %}
                 <input id="email" name="email" type="text" value="{% ifequal lastactioncomplianceexists True %}{{ lastactioncompliance.prsn_email }}{% endifequal %}" placeholder="Email address"
                    class="oh_scd_servkeeComponent oh_scd_servkeeTextinput newscd-input-email"/>
+                {% endif %}
             {% endifequal %}
 
             <i class="fa fa-envelope-o fa-2x oh_scd_servkeeComponent oh_scd_servkeeIcon rotate360 newscd-img-email"
                style="color: #080041"></i>
         </div>
+    <div>
+            <div class="oh_scd_servkeeComponent oh_scd_servkeeParagraph newscd-label-email" cellspacing="0"
+                 cellpadding="0" style="top: 308px">
+                Price
+                :<br/>
+            </div>
+            {% ifequal actiontype 'mod'%}
+                    {% if service_schedule %}
+                        <input id="price" name="price" type="text" value="{{ service_schedule.csac_price }}" placeholder="Amount paid in $"
+                   class="oh_scd_servkeeComponent oh_scd_servkeeTextinput newscd-input-email" style="top: 308px"/>
+                    {% endif %}
+             {% else %}
+                <input id="price" name="price" type="text" value="" placeholder="Amount in $"
+                   class="oh_scd_servkeeComponent oh_scd_servkeeTextinput newscd-input-email" style="top: 308px;"/>
+            {% endifequal %}
+            <div class="oh_scd_servkeeComponent oh_scd_servkeeParagraph newscd-label-email" cellspacing="0"
+                 cellpadding="0" style="top: 308px;left: 369px;">
+                Frequency:
+            </div>
+            <div class="oh_scd_servkeeComponent oh_scd_servkeeParagraph newscd-label-email" cellspacing="0"
+                 cellpadding="0" style="top: 308px;left: 464px;">
+                {{ basis_description.basi_desc }}
+{#                <i class="fa fa-hourglass-start fa-2x oh_scd_servkeeComponent oh_scd_servkeeIcon rotate360 newscd-img-email"#}
+{#               style="color: #080041;top: -3px;left: 90px;"></i>#}
+            </div>
+    </div>
         <div>
-            <span class="oh_scd_servkeeComponent oh_scd_servkeeLabel newscd-label-schedule">Scheduled:</span>
-             {% ifequal scheduletype 'mod'%}
+            <span class="oh_scd_servkeeComponent oh_scd_servkeeLabel newscd-label-schedule" style="top: 348px;font-size: 13px;">Action date:</span>
+             {% ifequal actiontype 'mod'%}
                     {% if service_schedule %}
                         <input id="id_schdeduledinputcal" name="id_schdeduledinputcal" type="text" value="{{ service_schedule.cssc_service_date|date:"m/d/y H:m" }}"
-                   class="oh_scd_servkeeComponent oh_scd_servkeeTextinput newscd-input-schedule"/>
+                   class="oh_scd_servkeeComponent oh_scd_servkeeTextinput newscd-input-schedule" style="top: 348px"/>
                     {% endif %}
              {% else %}
                 <input id="id_schdeduledinputcal" name="id_schdeduledinputcal" type="text" value=""
-                   class="oh_scd_servkeeComponent oh_scd_servkeeTextinput newscd-input-schedule"/>
+                   class="oh_scd_servkeeComponent oh_scd_servkeeTextinput newscd-input-schedule" style="top: 348px"/>
             {% endifequal %}
 
             <i id="id_schdeduledcalicon" name="id_schdeduledcalicon"
                class="fa fa-calendar fa-2x oh_scd_servkeeComponent oh_scd_servkeeIcon rotate360 newscd-img-schedule"
-               style="color: #080041"></i>
+               style="color: #080041;top: 346px"></i>
+            <span class="oh_scd_servkeeComponent oh_scd_servkeeLabel newscd-label-schedule" style="left: 369px;top: 348px;font-size: 13px;">Next Due:</span>
+             {% ifequal actiontype 'mod'%}
+                    {% if service_schedule %}
+                        <input id="id_schdeduledinputcal" name="id_schdeduledinputcal" type="text" value="{{ service_schedule.cssc_service_date|date:"m/d/y H:m" }}"
+                   class="oh_scd_servkeeComponent oh_scd_servkeeTextinput newscd-input-schedule" style="left: 464px;top: 348px"/>
+                    {% endif %}
+             {% else %}
+                <input id="id_nextservicedate" name="id_nextservicedate" type="text" value="" {% ifequal basi_code|stringformat:"s" "ONCE"%}readonly{% endifequal %}
+                   class="oh_scd_servkeeComponent oh_scd_servkeeTextinput newscd-input-schedule" style="left: 464px;top: 348px"/>
+            {% endifequal %}
+
+            <i id="id_schdeduledcalicon" name="id_schdeduledcalicon"
+               class="fa fa-calendar fa-2x oh_scd_servkeeComponent oh_scd_servkeeIcon rotate360 newscd-img-schedule"
+               style="color: #080041;left:620px;top: 346px"></i>
+
             <span id="calendar_message" name="calendar_message"
-                  class="oh_scd_servkeeComponent oh_scd_servkeeIcon rotate360 newscd-calmsg-schedule oh-alert-error apphelp-block"></span>
+                  class="oh_scd_servkeeComponent oh_scd_servkeeIcon rotate360 newscd-calmsg-schedule oh-alert-error apphelp-block" style="left: 171px;top: 340px"></span>
         </div>
 
-        <div>
-            <span class="oh_scd_servkeeComponent oh_scd_servkeeLabel newscd-label-note">Notes:</span>
-            <div class="oh_scd_servkeeRelativeComponent newscd-textarea-note">
-            {% ifequal scheduletype 'mod'%}
+        <div style="top: 390px">
+            <span class="oh_scd_servkeeComponent oh_scd_servkeeLabel newscd-label-note" style="top: 390px;font-size: 13px;">Service Note:</span>
+            <div class="oh_scd_servkeeRelativeComponent newscd-textarea-note" style="top: 390px">
+            {% ifequal actiontype 'mod'%}
                 {% if service_schedule %}
                      <textarea id="notes" name="notes" rows="4" cols="50" value="" style="word-wrap: break-word"
-                          placeholder="Enter your notes related to the scheduled service">{{ service_schedule.cssc_note}}</textarea>
+                          placeholder="Enter your notes related to the service been performed">{{ service_schedule.cssc_note}}</textarea>
                     {% endif %}
              {% else %}
                 <textarea id="notes" name="notes" rows="4" cols="50" value="" style="word-wrap: break-word"
-                          placeholder="Enter your notes related to the scheduled service"></textarea>
+                          placeholder="Enter your notes related to the service been performed"></textarea>
             {% endifequal %}
             </div>
         </div>
 
-           <div>
-            <div class="oh_scd_servkeeComponent oh_scd_servkeeParagraph newscd-label-responsible" cellspacing="0"
-                 cellpadding="0">
-                Responsible :
-            </div>
-            <select id="responsiblelist" name="responsiblelist"
-                    class="oh_scd_servkeeComponent oh_scd_servkeeCombobox newscd-dropdown-responsible" >
-                {% ifequal scheduletype 'mod'%}
-{#                    {% if responsiblelist %}#}
-{#                   <option value="{{ service_schedule.cprs_id_provider }}" selected>{{ service_schedule.cprs_id_provider.prsn.first_name }}&nbsp;{{ service_schedule.cprs_id_provider.prsn.last_name }}</option>#}
-{#                    {% endif %}#}
-                        {% for responsible in responsiblelist %}
-{#                                {% if cres_id %}#}
-{#                                    <option value="{{ responsible.cres_id }}" {% ifequal responsible.cprs_id cprs_id_responsible %}selected{% endifequal %}>{{ responsible.prsn.first_name}}&nbsp;{{ responsible.prsn.last_name }}</option>#}
-{#                                {% else %}#}
-                                    <option value="{{ responsible.cprs_id }}" {% ifequal responsible.cprs_id service_schedule.cprs_id_responsible_id %}selected{% endifequal %}>
-                                        {{ responsible.prsn.first_name}}&nbsp;{{ responsible.prsn.last_name }}</option>
-{#                                {% endif %}#}
 
-                        {% endfor %}
-                {% else %}
-                        {% for responsible in responsiblelist %}
-                            {% if cres_id %}
-                                <option value="{{ responsible.cprs_id }}" {% ifequal responsible.cprs_id|stringformat:"s" cprs_id_responsible %}selected{% endifequal %}>
-                                    {{ responsible.prsn.first_name}}&nbsp;{{ responsible.prsn.last_name }}</option>
-                            {% else %}
-                                <option value="{{ responsible.cprs_id }}" {% ifequal responsible.cprs_id loggeduser_cprs_id %}selected{% endifequal %}>
-                                    {{ responsible.prsn.first_name}}&nbsp;{{ responsible.prsn.last_name }}</option>
-                            {% endif %}
-                        {% endfor %}
-                {% endifequal %}
-            </select>
-           <i id="id_schdeduledcalicon" name="id_schdeduledcalicon"
-               class="fa fa-users fa-2x oh_scd_servkeeComponent oh_scd_servkeeIcon rotate360 newscd-img-responsible"
-               style="color: #080041"></i>
-        </div>
 
         <div>
-            <i class="fa fa-user-o   fa-3x oh_scd_servkeeComponent oh_scd_servkeeIcon rotate360 newvendor-img-custexp"
+            <i class="fa fa-commenting-o   fa-3x oh_scd_servkeeComponent oh_scd_servkeeIcon rotate360 newvendor-img-custexp"
                style="color: #073763"></i>
             <div class="oh_scd_servkeeComponent oh_scd_servkeeParagraph newscd-label-custexp" cellspacing="0"
-                 cellpadding="0">
-                Customer Experience<br/></div>
-            <div class="oh_scd_servkeeComponent oh_scd_servkeeCanvas newscd-div-custexp-content">
+                 cellpadding="0" style="width: 200px">Your Feedback on the service<br/></div>
+            <div class="oh_scd_servkeeComponent oh_scd_servkeeCanvas newscd-div-custexp-content" style="background-color: #fff2e5">
 
                 <div class="oh_scd_servkeeRelativeComponent oh_scd_servkeeParagraph newscd-label-jurisdiction-value"
                      cellspacing="0"
-                     cellpadding="0">NYC<br/></div>
+                     cellpadding="0">Yes<br/></div>
 
                 <div class="oh_scd_servkeeRelativeComponent oh_scd_servkeeParagraph newscd-label-overall-value"
                      cellspacing="0"
-                     cellpadding="0">Overall<br/></div>
+                     cellpadding="0">No<br/></div>
 
                 <div class="oh_scd_servkeeRelativeComponent oh_scd_servkeeParagraph newscd-label-custexp-arrivesontime"
                      cellspacing="0"
-                     cellpadding="0">Arrives on time<br/></div>
+                     cellpadding="0">Arrived on time<br/></div>
                 <div class="oh_scd_servkeeRelativeComponent oh_scd_servkeeParagraph newscd-label-custexp-arrivesontime-value-jur"
                      cellspacing="0"
-                     cellpadding="0">75%<br/></div>
+                     cellpadding="0"><input type="radio" id="feedback1yes" name="feedback1" value="Yes" ><br/></div>
                 <div class="oh_scd_servkeeRelativeComponent oh_scd_servkeeParagraph newscd-label-custexp-arrivesontime-value-ovr"
                      cellspacing="0"
-                     cellpadding="0">85%<br/></div>
+                     cellpadding="0"><input type="radio" id="feedback1no" name="feedback1" value="No" ><br/></div>
 
                 <div class="oh_scd_servkeeRelativeComponent oh_scd_servkeeParagraph newscd-label-custexp-compontime"
                      cellspacing="0"
-                     cellpadding="0">Completes on time<br/></div>
+                     cellpadding="0">Completed on time<br/></div>
                 <div class="oh_scd_servkeeRelativeComponent oh_scd_servkeeParagraph newscd-label-custexp-compontime-value-jur"
                      cellspacing="0"
-                     cellpadding="0">25%<br/></div>
+                     cellpadding="0"><input type="radio" id="feedback2yes" name="feedback2" value="Yes" ><br/></div>
                 <div class="oh_scd_servkeeRelativeComponent oh_scd_servkeeParagraph newscd-label-custexp-compontime-value-ovr"
                      cellspacing="0"
-                     cellpadding="0">65%<br/></div>
+                     cellpadding="0"><input type="radio" id="feedback2no" name="feedback2" value="No" ><br/></div>
 
                 <div class="oh_scd_servkeeRelativeComponent oh_scd_servkeeParagraph newscd-label-custexp-satwithjob"
                      cellspacing="0"
                      cellpadding="0">Satisfied with Job<br/></div>
                 <div class="oh_scd_servkeeRelativeComponent oh_scd_servkeeParagraph newscd-label-custexp-satwithjob-value-jur"
                      cellspacing="0"
-                     cellpadding="0">75%<br/></div>
+                     cellpadding="0"><input type="radio" id="feedback3yes" name="feedback3" value="Yes" ><br/></div>
                 <div class="oh_scd_servkeeRelativeComponent oh_scd_servkeeParagraph newscd-label-custexp-satwithjob-value-ovr"
                      cellspacing="0"
-                     cellpadding="0">95%<br/></div>
+                     cellpadding="0"><input type="radio" id="feedback3no" name="feedback3" value="No" ><br/></div>
 
             </div>
-                <div>
-                    <div title="star rating">
-                        <i id="id_schdeduledcalicon" name="id_schdeduledcalicon"
-               class="fa fa-star fa-2x oh_scd_servkeeComponent oh_scd_servkeeIcon rotate360 newscd-img-biz-rating-star1"
-               style="color: #ff0016"></i>
-                        <i id="id_schdeduledcalicon" name="id_schdeduledcalicon"
-               class="fa fa-star fa-2x oh_scd_servkeeComponent oh_scd_servkeeIcon rotate360 newscd-img-biz-rating-star2"
-               style="color: #ff0016"></i>
-                        <i id="id_schdeduledcalicon" name="id_schdeduledcalicon"
-               class="fa fa-star-half-o fa-2x oh_scd_servkeeComponent oh_scd_servkeeIcon rotate360 newscd-img-biz-rating-star3"
-               style="color: #ff0016"></i>
-                        <i id="id_schdeduledcalicon" name="id_schdeduledcalicon"
-               class="fa fa-star-o fa-2x oh_scd_servkeeComponent oh_scd_servkeeIcon rotate360 newscd-img-biz-rating-star4"
-               style="color: #ff0016"></i>
-                        <i id="id_schdeduledcalicon" name="id_schdeduledcalicon"
-               class="fa fa-star-o fa-2x oh_scd_servkeeComponent oh_scd_servkeeIcon rotate360 newscd-img-biz-rating-star5"
-               style="color: #ff0016"></i>
-                    </div>
-                     <span class="oh_scd_servkeeComponent oh_scd_servkeeLabel newscd-div-biz-rating">333 reviews</span>
-                </div>
+
+             <span id="feedback_message" name="feedback_message"
+                  class="oh_scd_servkeeComponent oh_scd_servkeeIcon rotate360 newscd-calmsg-schedule oh-alert-error apphelp-block" style="left: 436px;top: 288px"></span>
         </div>
         <div style="margin-top:470px;text-align: right;margin-right: 100px">
-              {% ifequal scheduletype 'mod'%}
+              {% ifequal actiontype 'mod'%}
                 {% if service_schedule %}
                     <div class="btn">
                           <div class="btn-back" style="display: inline">
@@ -320,12 +321,12 @@
                             <button class="no">No</button>
                           </div>
                             <div class="btn-front" style="font-size: 14px; margin-left: 4px;color: red;background-color: transparent; border: transparent;font-weight: bolder;"><i class="fa fa-trash-o fa-2x"
-                            style="color: Red"></i>&nbsp;Delete Schedule</button>
+                            style="color: Red"></i>&nbsp;Delete</button>
                             </div>
                     </div>
-                    <button type="button" id="updateschedule" class="ui-button ui-corner-all ui-widget"
+                    <button type="button" id="updateaction" class="ui-button ui-corner-all ui-widget"
                     style="font-size: 14px; margin-left: 4px;color: #1E9E74;background-color: transparent; border: transparent;font-weight: bolder;">
-                        <i class="fa fa-pencil-square-o fa-2x" style="color: #1E9E74"></i>&nbsp;Update Schedule
+                        <i class="fa fa-pencil-square-o fa-2x" style="color: #1E9E74"></i>&nbsp;Update
                     </button>
 {#                    <button type="button" id="deleteschedule" class="ui-button ui-corner-all ui-widget"#}
 {#                    style="font-size: 14px; margin-left: 4px;color: Red;background-color: transparent; border: transparent;font-weight: bolder;">#}
@@ -333,9 +334,9 @@
 {#               style="color: Red"></i>&nbsp;Delete Schedule</button>#}
                     {% endif %}
              {% else %}
-                  <button type="button" id="createschedule" class="ui-button ui-corner-all ui-widget"
+                  <button type="button" id="createaction" class="ui-button ui-corner-all ui-widget"
                     style="font-size: 14px; margin-left: 4px;color: #1E9E74;background-color: transparent; border: transparent;font-weight: bolder;">
-                        <i class="fa fa-pencil-square-o fa-2x" style="color: #1E9E74"></i>&nbsp;Create Schedule
+                        <i class="fa fa-pencil-square-o fa-2x" style="color: #1E9E74"></i>&nbsp;Action
                     </button>
             {% endifequal %}
 
@@ -365,10 +366,12 @@
         <script src="{% static 'js/moment-2.17.1.min.js' %}"></script>
         <script src="{% static 'js/jquery.datetimepicker.js' %}"></script>
         <script src="{% static 'js/deleteconfirmation.js' %}"></script>
+        <script src="{% static 'js/jquery.mask.min.js' %}"></script>
+        <script src="{% static 'js/jquery.maskMoney.min.js' %}"></script>
     {% endcompress %}
 
     <script type="text/javascript" language="javascript">
-    {% ifequal scheduletype 'mod'%}
+    {% ifequal actiontype 'mod'%}
                 {% if service_schedule %}
 
     var btn = document.querySelector('.btn');
@@ -425,7 +428,30 @@ function distance(x1, y1, x2, y2) {
 }
 {% endif %}
     {% endifequal %}
-        $(document).ready(function () {
+
+
+$(function(){
+    $('#price').maskMoney();
+  $("#phone").mask("(999) 999-9999");
+
+  $("#phone").on("blur", function() {
+      var last = $(this).val().substr( $(this).val().indexOf("-") + 1 );
+
+      if( last.length == 5 ) {
+          var move = $(this).val().substr( $(this).val().indexOf("-") + 1, 1 );
+
+          var lastfour = last.substr(1,4);
+
+          var first = $(this).val().substr( 0, 9 );
+
+          $(this).val( first + move + '-' + lastfour );
+      }
+  });
+});
+
+$(document).ready(function () {
+            $('#phone').mask('(000) 000-0000');
+
 
 {#            var btn = document.querySelector( '.btn' );#}
 {##}
@@ -465,33 +491,85 @@ function distance(x1, y1, x2, y2) {
                 },
             });
 {#            $("#id_schdeduledinputcal").datepicker({#}
-            $("#id_schdeduledinputcal").datetimepicker({
+{#            $("#id_schdeduledinputcal").datetimepicker({#}
+{##}
+{#                minDate: 0,#}
+{#                showButtonPanel: true,#}
+{#                changeMonth: true,#}
+{#                changeYear: true,#}
+{#                showAnim: "fold",#}
+{#                                buttonImage: "images/calendar.gif",#}
+{#                // The hidden field to receive the date#}
+{#                format:'m/d/y H:i',#}
+{#                format:'H:i',#}
+{#                altField: "#id_schdeduledinputcal",#}
+{#                // The format you want#}
+{#                altFormat: "mm/dd/y",#}
+{#                // The format the user actually sees#}
+{#                dateFormat: "mm/dd/y",#}
+{#                "minTime":"00:00",#}
+{#                "maxTime":"23:59",#}
+{##}
+{#                onSelect: function (date) {#}
+{##}
+{#                    // Your CSS changes, just in case you still need them#}
+{#                    $('a.ui-state-default').removeClass('ui-state-highlight');#}
+{#                    $(this).addClass('ui-state-highlight');#}
+{#                }#}
+{#            });#}
 
+            $("#id_schdeduledinputcal").datepicker({
                 minDate: 0,
                 showButtonPanel: true,
                 changeMonth: true,
                 changeYear: true,
-                showAnim: "fold",
-                {#                buttonImage: "images/calendar.gif",#}
+                showAnim: "slide",
                 // The hidden field to receive the date
-                format:'m/d/y H:i',
-{#                format:'H:i',#}
-                altField: "#id_schdeduledinputcal",
+                altField: "#id_schdeduledinputcal" ,
                 // The format you want
-{#                altFormat: "mm/dd/y",#}
+                altFormat: "mm/dd/y",
                 // The format the user actually sees
-{#                dateFormat: "mm/dd/y",#}
-{#                "minTime":"00:00",#}
-{#                "maxTime":"23:59",#}
-
+                dateFormat: "mm/dd/y",
                 onSelect: function (date) {
-
                     // Your CSS changes, just in case you still need them
                     $('a.ui-state-default').removeClass('ui-state-highlight');
+                    console.log('selected value',$(this).val());
+{#                    var selectedactiondate = document.getElementById('id_schdeduledinputcal').val();#}
+                    actiondate_mm = $(this).val().slice(0,2);
+                    actiondate_dd = $(this).val().slice(3,5);
+                    actiondate_yy = '20' + $(this).val().slice(6);
+                    var selectedactiondate =actiondate_yy +'-'+ actiondate_mm +'-' +actiondate_dd;
+                    document.getElementById('id_nextservicedate').value = setnextduedate(selectedactiondate);
+                    console.log('selectedactiondate:', actiondate_mm,actiondate_dd ,actiondate_yy ,selectedactiondate );
+                    console.log('Moment action',moment(selectedactiondate).add(moment.duration({M: 6})).format("MM-DD-YY"));
 {#                    $(this).addClass('ui-state-highlight');#}
                 }
             });
 
+    if ( $('input:hidden[name=basi_code]').val() != 'ONCE')
+    {
+
+        $("#id_nextservicedate").datepicker({
+            minDate: 0,
+            showButtonPanel: true,
+            changeMonth: true,
+            changeYear: true,
+            showAnim: "slide",
+            // The hidden field to receive the date
+            altField: "#id_nextservicedate",
+            // The format you want
+            altFormat: "mm/dd/y",
+            // The format the user actually sees
+            dateFormat: "mm/dd/y",
+            onSelect: function (date) {
+
+                // Your CSS changes, just in case you still need them
+                $('a.ui-state-default').removeClass('ui-state-highlight');
+                $(this).addClass('ui-state-highlight');
+            }
+
+        });
+    }
 
         });
 
@@ -503,7 +581,7 @@ function distance(x1, y1, x2, y2) {
 
         $('#createschedule').click(function () {
             {#        alert('1');#}
-            $("#dialogschedulepop").dialog("close");
+            $("#dialogrecactionpop").dialog("close");
             window.close();
         });
 
@@ -552,8 +630,8 @@ function distance(x1, y1, x2, y2) {
         }
 
         $('#cancel').click(function () {
-            if (window.parent.$("#dialogschedulepop").dialog("isOpen") == true) {
-                window.parent.$("#dialogschedulepop").dialog("close");
+            if (window.parent.$("#dialogrecactionpop").dialog("isOpen") == true) {
+                window.parent.$("#dialogrecactionpop").dialog("close");
             }
         });
 
@@ -570,12 +648,90 @@ function distance(x1, y1, x2, y2) {
 {#            console.log($("#vendorlist option:selected").val());#}
             if ($("#vendorlist option:selected").val() == '') {
                 form_valid = false;
-                $('#vendorlist').addClass("oh_scd_servkeeComponent oh_scd_servkeeCombobox newscd-dropdown-serviceprovider  has-danger");
+                $('#vendorlist').addClass("oh_scd_servkeeComponent oh_scd_servkeeCombobox newscd-dropdown-serviceprovider has-danger");
 
             } else {
                 $('#vendorlist').removeClass("has-danger");
             }
 
+            if ($("#vendorcontactlist option:selected").val() == '') {
+                form_valid = false;
+                $('#vendorcontactlist').addClass("oh_scd_servkeeComponent oh_scd_servkeeCombobox newscd-dropdown-contact has-danger");
+
+            } else {
+                $('#vendorcontactlist').removeClass("has-danger");
+            }
+
+            if( document.getElementById("price").value == ''){
+                document.getElementById("price").value =0;
+            }
+
+            var feedback1slected=false;
+            document.getElementById("feedback_message").innerHTML='';
+            var feedback1 = document.getElementsByName("feedback1");
+            for(var i=0; i < feedback1.length; i++){
+                if(feedback1[i].checked) {
+                    feedback1radiochecked = i;
+                    feedback1slected =true;
+                }
+            }
+
+            if(feedback1slected==false)
+            {
+                for(var i=0; i < feedback1.length; i++){
+                    feedback1[i].style= "box-shadow: 0px 0px 7px 4px rgba(230,9,52,1)";
+                }
+                document.getElementById("feedback_message").innerHTML="Please provide feedback";
+                form_valid = false;
+            }else{
+                for(var i=0; i < feedback1.length; i++){
+                    feedback1[i].style= "";
+                }
+            }
+
+            var feedback2slected=false;
+            var feedback2 = document.getElementsByName("feedback2");
+            for(var i=0; i < feedback2.length; i++){
+                if(feedback2[i].checked) {
+                    feedback2radiochecked = i;
+                    feedback2slected =true;
+                }
+            }
+
+            if(feedback2slected==false)
+            {
+                for(var i=0; i < feedback2.length; i++){
+                    feedback2[i].style= "box-shadow: 0px 0px 7px 4px rgba(230,9,52,1)";
+                }
+                document.getElementById("feedback_message").innerHTML="Please provide feedback";
+                form_valid = false;
+            }else{
+                for(var i=0; i < feedback2.length; i++){
+                    feedback2[i].style= "";
+                }
+            }
+
+            var feedback3slected=false;
+            var feedback3 = document.getElementsByName("feedback3");
+            for(var i=0; i < feedback3.length; i++){
+                if(feedback3[i].checked) {
+                    feedback3radiochecked = i;
+                    feedback3slected =true;
+                }
+            }
+
+            if(feedback3slected==false)
+            {
+                for(var i=0; i < feedback3.length; i++){
+                    feedback3[i].style= "box-shadow: 0px 0px 7px 4px rgba(230,9,52,1)";
+                }
+                document.getElementById("feedback_message").innerHTML="Please provide feedback";
+                form_valid = false;
+            }else{
+                for(var i=0; i < feedback3.length; i++){
+                    feedback3[i].style= "";
+                }
+            }
 
             if (document.getElementById('email').value != '') {
                 if (ValidateEmail(document.getElementById('email').value) == false) {
@@ -590,8 +746,7 @@ function distance(x1, y1, x2, y2) {
                 $('#id_schdeduledinputcal').removeClass("has-danger");
             document.getElementById("calendar_message").innerHTML = "";
             if (document.getElementById('id_schdeduledinputcal').value != '') {
-{#                console.log(moment(document.getElementById('id_schdeduledinputcal').value, 'MM/DD/YY', true));#}
-                if (!moment(document.getElementById('id_schdeduledinputcal').value, 'MM/DD/YY HH:mm', true).isValid()) {
+                if (!moment(document.getElementById('id_schdeduledinputcal').value, 'MM/DD/YY', true).isValid()) {
                     form_valid = false;
                     $('#id_schdeduledinputcal').addClass("oh_scd_servkeeComponent oh_scd_servkeeTextinput newscd-input-schedule hasDatepicker val-required has-danger");
                     document.getElementById("calendar_message").innerHTML = "Invalid scheduled date. Expected: MM/DD/YY";
@@ -601,49 +756,66 @@ function distance(x1, y1, x2, y2) {
                 $('#id_schdeduledinputcal').addClass("oh_scd_servkeeComponent oh_scd_servkeeTextinput newscd-input-schedule hasDatepicker val-required has-danger");
             }
 
+            if ($('#id_nextservicedate').hasClass("has-danger"))
+                $('#id_nextservicedate').removeClass("has-danger");
+            document.getElementById("calendar_message").innerHTML = "";
+            if (document.getElementById('id_nextservicedate').value != '') {
+                if (!moment(document.getElementById('id_nextservicedate').value, 'MM/DD/YY', true).isValid()) {
+                    form_valid = false;
+                    $('#id_nextservicedate').addClass("oh_scd_servkeeComponent oh_scd_servkeeTextinput newscd-input-schedule hasDatepicker val-required has-danger");
+                    document.getElementById("calendar_message").innerHTML = "Invalid scheduled date. Expected: MM/DD/YY";
+                }
+            } else {
+                form_valid = false;
+                $('#id_nextservicedate').addClass("oh_scd_servkeeComponent oh_scd_servkeeTextinput newscd-input-schedule hasDatepicker val-required has-danger");
+            }
+
             return form_valid;
         }
 
         function perform_updates(action) {
-
-            console.log('All welll for Data updated');
                 document.getElementById("form_action_message").innerHTML = "";
+                complianceservice_id = $('input:hidden[name=complianceservice_id]').val();
+                basi_code = $('input:hidden[name=basi_code]').val();
                 modified_cssc_id = $('input:hidden[name=modified_cssc_id]').val();
-                scheduletype = $('input:hidden[name=scheduletype]').val();
+                actiontype = $('input:hidden[name=actiontype]').val();
                 recordtype = $('input:hidden[name=recordtype]').val();
                 recordtype_id = $('input:hidden[name=recordtype_id]').val();
-                cres_id = $('input:hidden[name=cres_id]').val();
+{#                cres_id = $('input:hidden[name=cres_id]').val();#}
 {#                console.log('cres_id--->',cres_id);#}
                 vendor = $("#vendorlist option:selected").val();
                 vendorcontactrole = $("#vendorcontactlist option:selected").val();
                 phone = document.getElementById('phone').value;
                 email = document.getElementById('email').value;
-                schedule = document.getElementById('id_schdeduledinputcal').value;
-                notes = document.getElementById('notes').value;
-                responsible = $("#responsiblelist option:selected").val();
-                console.log('Form Valid -AJAX- Create Vendor call,responsible',responsible);
+                price = document.getElementById('price').value;
+            schdeduledinputcal = document.getElementById('id_schdeduledinputcal').value;
+            nextservicedate = document.getElementById('id_nextservicedate').value;
+            notes = document.getElementById('notes').value;
+{#                console.log('Form Valid -AJAX- Create action call,responsible',responsible);#}
                 $.ajax({
-                    url: 'ajax_complianceservice_addnewschedule',
+                    url: 'ajax_complianceservice_addnewaction',
                     data: {
                         'action':action,
+                        'complianceservice_id':complianceservice_id,
+                        'basi_code':basi_code,
                         'modified_cssc_id':modified_cssc_id,
-                        'scheduletype':scheduletype,
+                        'actiontype':actiontype,
                         'recordtype': recordtype,
                         'recordtype_id': recordtype_id,
                         'vendor': vendor,
                         'vendorcontactrole': vendorcontactrole,
                         'phone': phone,
                         'email': email,
-                        'schedule': schedule,
                         'notes': notes,
-                        'responsible': responsible,
-                        'cres_id':cres_id
+                        'actiondate':schdeduledinputcal,
+                        'nextservicedate':nextservicedate,
+                        'price':price
                     },
                     dataType: 'json',
                     success: function (response_data) {
                         console.log(response_data.result);
                         if (response_data.result == 'success') {
-                            window.parent.$("#dialogschedulepop").dialog("close");
+                            window.parent.$("#dialogrecactionpop").dialog("close");
                             window.parent.location.reload();
                         }
 
@@ -656,7 +828,7 @@ function distance(x1, y1, x2, y2) {
                 document.getElementById("form_action_message").innerHTML = "";
                 action ='delete';
                 modified_cssc_id = $('input:hidden[name=modified_cssc_id]').val();
-                scheduletype = $('input:hidden[name=scheduletype]').val();
+                actiontype = $('input:hidden[name=actiontype]').val();
                 recordtype = $('input:hidden[name=recordtype]').val();
                 recordtype_id = $('input:hidden[name=recordtype_id]').val();
                 vendor = $("#vendorlist option:selected").val();
@@ -665,14 +837,14 @@ function distance(x1, y1, x2, y2) {
                 email = document.getElementById('email').value;
                 schedule = document.getElementById('id_schdeduledinputcal').value;
                 notes = document.getElementById('notes').value;
-                responsible = $("#responsiblelist option:selected").val();
+{#                responsible = $("#responsiblelist option:selected").val();#}
                 console.log('Form Valid -AJAX- Create Vendor call');
                 $.ajax({
                     url: 'ajax_complianceservice_addnewschedule',
                     data: {
                         'action':action,
                         'modified_cssc_id':modified_cssc_id,
-                        'scheduletype':scheduletype,
+                        'actiontype':actiontype,
                         'recordtype': recordtype,
                         'recordtype_id': recordtype_id,
                         'vendor': vendor,
@@ -688,7 +860,7 @@ function distance(x1, y1, x2, y2) {
                         console.log(response_data.result);
                         if (response_data.result == 'success') {
                             document.getElementById("form_action_message").innerHTML = "";
-                            window.parent.$("#dialogschedulepop").dialog("close");
+                            window.parent.$("#dialogrecactionpop").dialog("close");
                             window.parent.location.reload();
                         }
                         if (response_data.result == 'error') {
@@ -700,19 +872,19 @@ function distance(x1, y1, x2, y2) {
 
         }
 
-        $('#createschedule').click(function () {
+        $('#createaction').click(function () {
             if (form_valid() == true) {
                 perform_updates('create')
             }
         });
 
-         $('#updateschedule').click(function () {
+         $('#updateaction').click(function () {
             if (form_valid() == true) {
                 perform_updates('update')
             }
         });
 
-        $('#deleteschedule').click(function () {
+        $('#deleteaction').click(function () {
             if (form_valid() == true) {
                 perform_delete()
             }
@@ -732,7 +904,7 @@ if($("#vendorlist option:selected").val() != '')
 {#        document.getElementById('id_lastservicedate').value ='';#}
 
         $.ajax({
-            url: 'ajax_vendorcontactlist',
+            url: '/app/schedule/ajax_vendorcontactlist',
             data: {
                 'vendorselected': $("#vendorlist option:selected").val(),
             },
@@ -797,5 +969,176 @@ $('#vendorcontactlist').on('change', function() {
         }
 });
 
-    </script>
+function addDays(days) {
+    if($('input:hidden[name=basi_code]').val() != '') {
+        if (document.getElementById('id_schdeduledinputcal').value != '') {
+            console.log(document.getElementById('id_schdeduledinputcal').value);
+            var nextduedate = new Date(document.getElementById('id_schdeduledinputcal').value);
+            var lastservicedate = new Date(nextduedate.getTime() + (days * 24 * 60 * 60 * 1000));
+            return lastservicedate;
+        }
+        return new Date(new Date().getTime() + (days * 24 * 60 * 60 * 1000));
+    }
+}
+
+{#$('#id_schdeduledinputcal').on('focusout', function() {#}
+{##}
+{#    $('#id_schdeduledinputcal').removeClass("has-danger");#}
+{#    recordtype = $('input:hidden[name=recordtype]').val();#}
+{#    alert($('input:hidden[name=basi_code]').val());#}
+{##}
+{#if($('input:hidden[name=basi_code]').val() != '')#}
+{#    {#}
+{#        console.log($('input:hidden[name=basi_code]').val());#}
+{#          switch ($('input:hidden[name=basi_code]').val()) {#}
+{#                case 'DAILY':#}
+{#                    var tomorrow = addDays(1);#}
+{#                    tomorrow_dd = ("0" + tomorrow.getDate()).slice(-2);#}
+{#                    tomorrow_mm = ("0" + (tomorrow.getMonth() + 1)).slice(-2);#}
+{#                    tomorrow_yy = ("0" + (tomorrow.getYear())).slice(-2);#}
+{#                    tomorrow = tomorrow_mm + '/' + tomorrow_dd + '/' + tomorrow_yy;#}
+{#                    document.getElementById('id_nextservicedate').value = tomorrow;#}
+{#                    break;#}
+{##}
+{#                case 'WEEKLY':#}
+{#                    var nextweek = addDays(7);#}
+{#                    nextweek_dd = ("0" + nextweek.getDate()).slice(-2);#}
+{#                    nextweek_mm = ("0" + (nextweek.getMonth() + 1)).slice(-2);#}
+{#                    nextweek_yy = ("0" + (nextweek.getYear())).slice(-2);#}
+{#                    nextweek = nextweek_mm + '/' + nextweek_dd + '/' + nextweek_yy;#}
+{#                    document.getElementById('id_nextservicedate').value = nextweek;#}
+{#                    break;#}
+{##}
+{#                case 'MNTHLY':#}
+{#                    var nextmonth = addDays(30);#}
+{#                    nextmonth_dd = ("0" + nextmonth.getDate()).slice(-2);#}
+{#                    nextmonth_mm = ("0" + (nextmonth.getMonth() + 1)).slice(-2);#}
+{#                    nextmonth_yy = ("0" + (nextmonth.getYear())).slice(-2);#}
+{#                    nextmonth = nextmonth_mm + '/' + nextmonth_dd + '/' + nextmonth_yy;#}
+{#                    document.getElementById('id_nextservicedate').value = nextmonth;#}
+{#                    break;#}
+{##}
+{#                case 'QTLY':#}
+{#                    var nextquarter = addDays(90);#}
+{#                    nextquarter_dd = ("0" + nextquarter.getDate()).slice(-2);#}
+{#                    nextquarter_mm = ("0" + (nextquarter.getMonth() + 1)).slice(-2);#}
+{#                    nextquarter_yy = ("0" + (nextquarter.getYear())).slice(-2);#}
+{#                    nextquarter = nextquarter_mm + '/' + nextquarter_dd + '/' + nextquarter_yy;#}
+{#                    document.getElementById('id_nextservicedate').value = nextquarter;#}
+{#                    break;#}
+{##}
+{#                case 'SEMIAN':#}
+{##}
+{#                    var nextsemian = addDays(0);#}
+{##}
+{##}
+{#                    nextsemian_dd = ("0" + nextsemian.getDate()).slice(-2);#}
+{#                    nextsemian_mm = ("0" + (nextsemian.getMonth() + 1)).slice(-2);#}
+{#                    nextsemian_yy = ("0" + (nextsemian.getYear())).slice(-2);#}
+{#                    nextsemian = nextsemian_mm + '/' + nextsemian_dd + '/' + nextsemian_yy;#}
+{#                    console.log(moment().add(6, 'M').format('MM-DD-YY'));#}
+{#                    var currentDate = moment().format('DD-MM-YYYY');#}
+{#                    console.log(document.getElementById('id_schdeduledinputcal').textContent);#}
+{#                    var selectedactiondate = document.getElementById('id_schdeduledinputcal').val();#}
+{#                    console.log('selectedactiondate Actual:', selectedactiondate);#}
+{#                    actiondate_mm = selectedactiondate.slice(0,1);#}
+{#                    actiondate_dd = selectedactiondate.slice(3,4);#}
+{#                    actiondate_yy = selectedactiondate.slice(6);#}
+{#                    console.log('selectedactiondate:', actiondate_mm,actiondate_dd ,actiondate_yy);#}
+{#                    console.log('Moment action',moment([actiondate_yy,actiondate_mm,actiondate_dd]).add(6, 'months').format("MM-DD-YY"))#}
+{#                    document.getElementById('id_nextservicedate').value= moment([actiondate_yy,actiondate_mm,actiondate_dd]).month(6).format("MM-DD-YY");#}
+{#                    document.getElementById('id_nextservicedate').value = nextsemian;#}
+{#                    break;#}
+{##}
+{#                case 'ANNUAL':#}
+{#                    var nextannual = addDays(365);#}
+{#                    nextannual_dd = ("0" + nextannual.getDate()).slice(-2);#}
+{#                    nextannual_mm = ("0" + (nextannual.getMonth() + 1)).slice(-2);#}
+{#                    nextannual_yy = ("0" + (nextannual.getYear())).slice(-2);#}
+{#                    nextannual = nextannual_mm + '/' + nextannual_dd + '/' + nextannual_yy;#}
+{#                    document.getElementById('id_nextservicedate').value = nextannual;#}
+{#                    break;#}
+{##}
+{#                case 'BIEN':#}
+{#                    var nextbien = addDays(730);#}
+{#                    nextbien_dd = ("0" + nextbien.getDate()).slice(-2);#}
+{#                    nextbien_mm = ("0" + (nextbien.getMonth() + 1)).slice(-2);#}
+{#                    nextbien_yy = ("0" + (nextbien.getYear())).slice(-2);#}
+{#                    nextbien = nextbien_mm + '/' + nextbien_dd + '/' + nextbien_yy;#}
+{#                    document.getElementById('id_nextservicedate').value = nextbien;#}
+{#                    break;#}
+{##}
+{#                case 'ONCE':#}
+{#                    break;#}
+{##}
+{#                case 'CUSTOM':#}
+{#                    break;#}
+{##}
+{#            }#}
+{#    }else{#}
+{#        if($("#id_complianceservice option:selected").val() != '')#}
+{#            $('#id_complianceservice').addClass("inp_card_info_city_dropdown  has-danger");#}
+{##}
+{#        $('#id_frequency').addClass("inp_card_info_city_dropdown  has-danger");#}
+{# } #}
+{##}
+{# {);#}
+
+function setnextduedate(selectedactiondate){
+
+$('#id_schdeduledinputcal').removeClass("has-danger");
+{#    recordtype = $('input:hidden[name=recordtype]').val();#}
+{#    alert($('input:hidden[name=basi_code]').val());#}
+
+if($('input:hidden[name=basi_code]').val() != '')
+    {
+        console.log($('input:hidden[name=basi_code]').val());
+          switch ($('input:hidden[name=basi_code]').val()) {
+                case 'DAILY':
+                    return moment(selectedactiondate).add(moment.duration({D: 1})).format("MM/DD/YY");
+                    break;
+
+                case 'WEEKLY':
+                    return moment(selectedactiondate).add(moment.duration({D: 7})).format("MM/DD/YY");
+                    break;
+
+                case 'MNTHLY':
+                    return moment(selectedactiondate).add(moment.duration({M: 1})).format("MM/DD/YY");
+                    break;
+
+                case 'QTLY':
+                    return moment(selectedactiondate).add(moment.duration({M: 3})).format("MM/DD/YY");
+                    break;
+
+                case 'SEMIAN':
+                    return moment(selectedactiondate).add(moment.duration({M: 6})).format("MM/DD/YY");
+                    break;
+
+                case 'ANNUAL':
+                    return moment(selectedactiondate).add(moment.duration({Y: 1})).format("MM/DD/YY");
+                    break;
+
+                case 'BIEN':
+                    return moment(selectedactiondate).add(moment.duration({Y: 2})).format("MM/DD/YY");
+                    break;
+
+                case 'ONCE':
+{#                    return moment(new Date(2099-12-31)).format("MM/DD/YY");#}
+                    return "12/31/99";
+                    break;
+
+
+                case 'CUSTOM':
+                    return moment(selectedactiondate).add(moment.duration({Y: 1})).format("MM/DD/YY");
+                    break;
+
+            }
+    }else{
+        if($("#id_complianceservice option:selected").val() != '')
+            $('#id_schdeduledinputcal').addClass("oh_scd_servkeeComponent oh_scd_servkeeTextinput newscd-input-schedule hasDatepicker  ui-state-highlight");
+            return moment(selectedactiondate).add(moment.duration({D: 0})).format("MM/DD/YY");
+}
+
+}
+</script>
 {% endblock %}

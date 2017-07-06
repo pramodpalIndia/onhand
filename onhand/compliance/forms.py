@@ -15,6 +15,7 @@ from onhand.subscription.models import Person, Company, CompanyRole
 from onhand.subscription.utils import  provider_create_account, person_field, ColumnCheckboxSelectMultiple, \
     url_str_to_company_pk, url_str_to_address_pk,  complete_signup_prelim_registration, set_form_field_order
 # from onhand.users.adapter import get_useradapter
+from onhand.users.models import User
 from onhand.users.utils import get_username_max_length, perform_login
 from . import app_settings
 from .adapter import get_adapter
@@ -203,7 +204,7 @@ class BaseComplianceRegisterForm(forms.Form):
         attrs={'class': "inp_card_info_firstname", 'style': "position:relative; left:388px; top:25px; width:78px;"}))
 
 
-    servicenote = forms.CharField(required=False,label="Compliance Service note", widget=forms.TextInput(attrs={'class': "form-control", 'style': "position:relative; left:135px; top:20px; width:440px; height:120px;"}))
+    servicenote = forms.CharField(required=False,label="Compliance Service note", widget=forms.Textarea(attrs={'class': "form-control", 'style': "position:relative; left:135px; top:20px; width:440px; height:120px;"}))
 
 
     def __init__(self, request,*args, **kwargs):
@@ -276,11 +277,34 @@ class ComplianceForm(BaseComplianceRegisterForm):
         Create seperate address for each Person and Company;
         Reason: Address can be changed for each instances
         """
-        complianceservice = adapter.new_complianceservice(request)
-        complianceservice = adapter.save_complianceservice(request, complianceservice, self)
 
-        compliancefactor = adapter.new_complianceservicefactor(request)
-        compliancefactor = adapter.save_complianceservicefactor(request, compliancefactor, complianceservice, self)
+        complianceservice = adapter.new_complianceservice(request)
+        print('Created new complianceservice object', complianceservice)
+        complianceservice_new = adapter.save_complianceservice(request, complianceservice, self)
+        print('Created  complianceservice_new object',complianceservice_new)
+
+        form_factor = request.GET.get('factorvalue', None)
+        if form_factor:
+            compliancefactor = adapter.new_complianceservicefactor(request)
+            compliancefactor = adapter.save_complianceservicefactor(request, compliancefactor, complianceservice_new, self)
+
+        responsible_data = {}
+        responsible_data['form_recordtype_id'] = int(complianceservice_new.csrv_id)
+
+        if request.method == 'POST':
+            responsible_data['form_responsible'] = request.POST.get('responsiblelist', User.objects.get(
+                pk=request.session['_auth_user_id']).cprs_id_id)
+        if request.method == 'GET':
+            responsible_data['form_responsible'] = request.GET.get('responsiblelist',  User.objects.get(pk=request.session['_auth_user_id']).cprs_id_id)
+
+        print('responsible_data[form_responsible]',responsible_data['form_responsible'])
+        responsible_data['form_assigner'] = User.objects.get(pk=request.session['_auth_user_id']).cprs_id_id
+        responsible_data['form_notes'] =  ""
+
+        if responsible_data['form_recordtype_id']:
+            compserviceresponsible = adapter.new_ComplianceResponsibility(request)
+            adapter.save_complianceresponsibility(compserviceresponsible, responsible_data)
+            print('Created New Responsible', compserviceresponsible.cres_id)
 
         ret =HttpResponseRedirect(reverse('home'))
 

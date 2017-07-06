@@ -33,9 +33,9 @@ import django_tables2 as tables
 from onhand.management.models import  GovernmentLevel, v_SubscribedServicesTable
 
 view_template = """
-<a href="#" class="dismiss" title="">
-    <i class="fa fa-eye fa-2x text-danger" style="color: #72a525"></i>
-</a>
+    <a href="" onclick="return viewservicedetailspopup('/app/service/?recordprivilege=mod&type={{record.Service }}&service={{ record.csrv_id }}&srvj_id={{ record.srvj_id }}&ctyp_id={{ record.ctyp_id }}&cssc_id={{ record.cssc_id }}&csrv_due_date={{record.csrv_due_date |date:"m/d/y" }}&csac_price_last={{record.csac_price_last}}&csac_service_date_last={{record.csac_service_date_last |date:"m/d/y" }}&off_from_avg={{record.off_from_avg}}&cres_id={{ record.cres_id}}&cprs_id_responsible={{ record.cprs_id_responsible}}')" class="dismiss" onclick='javascript:openDialog()' title="" style="color: black" >
+        <i class="fa fa-eye fa-2x text-danger" style="color: #046da2"></i>
+    </a>
 """
 
 delete_template = """
@@ -56,31 +56,31 @@ delete_template = """
 #  </select>
 
 basi_template = """
-{% if record.csrv_due_date %}
+{% if record.csrv_due_date != None  %}
      <select style="width:auto" id="compliancedropdown{{ record.csrv_id }}" name="compliancedropdown{{ record.csrv_id }}"
               onchange="servicebasischange('compliancedropdown{{ record.csrv_id }}',this)">
-              <option value="ANNUAL" {% if record.basi_code|stringformat:"s"  == 'ANNUAL' %} selected {% endif %}>Annual</option>
-              <option value="BIEN" {% if record.basi_code|stringformat:"s"  == 'BIEN' %} selected {% endif %}>Bi-Annual</option>
-              <option value="DAILY" {% if record.basi_code|stringformat:"s"  == 'DAILY' %} selected {% endif %}>Daily</option>
-              <option value="MNTHLY" {% if record.basi_code|stringformat:"s" == "MNTHLY" %} selected {% endif %}>Monthly</option>
-              <option value="ONCE" {% if record.basi_code|stringformat:"s"  == 'ONCE' %} selected {% endif %}>One Time Only</option>
-              <option value="SEMIAN" {% if record.basi_code|stringformat:"s"  == 'SEMIAN' %} selected {% endif %}>Semi-Annual</option>
-              <option value="WEEKLY" {% if record.basi_code|stringformat:"s"  == 'WEEKLY' %} selected {% endif %}>Weekly</option>
+              <option value="ANNUAL" {% ifequal record.basi_code.basi_code|stringformat:"s" 'ANNUAL' %} selected {% endifequal %}>Annual</option>
+              <option value="BIEN" {% ifequal record.basi_code.basi_code|stringformat:"s" 'BIEN' %} selected {% endifequal %}>Bi-Annual</option>
+              <option value="DAILY" {% ifequal record.basi_code.basi_code|stringformat:"s" 'DAILY' %} selected {% endifequal %}>Daily</option>
+              <option value="MNTHLY" {% ifequal record.basi_code.basi_code|stringformat:"s" "MNTHLY" %} selected {% endifequal %}>Monthly</option>
+              <option value="ONCE" {% ifequal record.basi_code.basi_code|stringformat:"s" "ONCE" %} selected {% endifequal %}>One Time Only</option>
+              <option value="SEMIAN" {% ifequal record.basi_code.basi_code|stringformat:"s" 'SEMIAN' %} selected {% endifequal %}>Semi-Annual</option>
+              <option value="QTLY" {% ifequal record.basi_code.basi_code|stringformat:"s" 'QTLY' %} selected {% endifequal %}>Quarterly</option>
+              <option value="WEEKLY" {% ifequal record.basi_code.basi_code|stringformat:"s" 'WEEKLY' %} selected {% endifequal %}>Weekly</option>
      </select>
 {% else %}
-        {% if record.basi_code|stringformat:"s"  == 'ANNUAL' %} Annual {% endif %}
-        {% if record.basi_code|stringformat:"s"  == 'BIEN' %} Bi-Annual {% endif %}
-        {% if record.basi_code|stringformat:"s"  == 'DAILY' %} Daily {% endif %}
-        {% if record.basi_code|stringformat:"s"  == 'MNTHLY' %} Monthly {% endif %}
-        {% if record.basi_code|stringformat:"s"  == 'ONCE' %} One Time Only {% endif %}
-        {% if record.basi_code|stringformat:"s"  == 'SEMIAN' %} Semi-Annual {% endif %}
-        {% if record.basi_code|stringformat:"s"  == 'WEEKLY' %} Weekly {% endif %}
+        {% ifequal record.basi_code|stringformat:"s" 'ANNUAL' %} Annual {% endifequal %}
+        {% ifequal record.basi_code|stringformat:"s" 'BIEN' %} Bi-Annual {% endifequal %}
+        {% ifequal record.basi_code|stringformat:"s" 'DAILY' %} Daily {% endifequal %}
+        {% ifequal record.basi_code|stringformat:"s" 'MNTHLY' %} Monthly {% endifequal %}
+        {% ifequal record.basi_code|stringformat:"s" 'ONCE' %} One Time Only {% endifequal %}
+        {% ifequal record.basi_code|stringformat:"s" 'SEMIAN' %} Semi-Annual {% endifequal %}
+        {% ifequal record.basi_code|stringformat:"s" 'QTLY' %} Quartely {% endifequal %}
+        {% ifequal record.basi_code|stringformat:"s" 'WEEKLY' %} Weekly {% endifequal %}
 {% endif %}
 """
 # {% endif %}
 # {% if record.csrv_due_date != None  %}
-
-
 
 due_date_template = """
 {% if record.csac_service_date == None  %}
@@ -99,21 +99,31 @@ maxlength="9" value="{{ record.csrv_due_date|date:"m/d/y" }}" type="text" onclic
 
 schedule_template = """
  {% if record.due_status != 'completed'  %}
-    <a href="" onclick="return schedulepopup('/app/schedule/?type={{record.Service }}&service={{ record.csrv_id }}&scdtyp=new&csrv_due_date={{record.csrv_due_date |date:"m/d/y" }}&csac_price_last={{record.csac_price_last}}&csac_service_date_last={{record.csac_service_date_last |date:"m/d/y" }}&off_from_avg={{record.off_from_avg}}')" class="dismiss" onclick='javascript:openDialog()' title="">
-    <i class="fa fa-clock-o fa-2x text-danger" style="color: #72a525"></i>
-</a>
+ {% if record.cssc_service_date %}
+    <a href="" onclick="return schedulepopup('/app/schedule/?type={{record.Service }}&service={{ record.csrv_id }}&scdtyp=mod&srvj_id={{ record.srvj_id }}&ctyp_id={{ record.ctyp_id }}&cssc_id={{ record.cssc_id }}&cssc_service_date={{ record.cssc_service_date |date:"m/d/y H:m"  }}&csrv_due_date={{record.csrv_due_date |date:"m/d/y" }}&csac_price_last={{record.csac_price_last}}&csac_service_date_last={{record.csac_service_date_last |date:"m/d/y" }}&off_from_avg={{record.off_from_avg}}&cres_id={{ record.cres_id}}&cprs_id_responsible={{ record.cprs_id_responsible}}')" class="dismiss" onclick='javascript:openDialog()' title="" style="color: black" >
+        {{record.cssc_service_date |date:"m/d/y H:i"}}
+    </a>
+    {% else %}
+    <a href="" onclick="return schedulepopup('/app/schedule/?type={{record.Service }}&service={{ record.csrv_id }}&scdtyp=new&srvj_id={{ record.srvj_id }}&ctyp_id={{ record.ctyp_id }}&csrv_due_date={{record.csrv_due_date |date:"m/d/y" }}&csac_price_last={{record.csac_price_last}}&csac_service_date_last={{record.csac_service_date_last |date:"m/d/y" }}&off_from_avg={{record.off_from_avg}}&cres_id={{ record.cres_id}}&cprs_id_responsible={{ record.cprs_id_responsible}}')" class="dismiss" onclick='javascript:openDialog()' title="">
+        <i class="fa fa-clock-o fa-2x text-danger" style="color: #72a525"></i>
+        </a>
+{% endif %}
  {% endif %}
 
 """
 action_date_template = """
-{% if record.csac_service_date == None  %}
-<a href="#" class="dismiss" title="" }}"
-   onclick="serviceactiondateclick('compliancedropdown{{ record.csrv_id }}',this)">
- <i class="fa fa-calendar-plus-o fa-2x" style="color: black;text-align: center;;" onclick="serviceactiondateclick('compliancedropdown{{ record.csrv_id }}',this)"></i>
- </a>
- {% endif %}
- {% if record.csac_service_date != None  %}
+{% if record.due_status != 'completed'  %}
+    {% if record.csac_service_date %}
+        {%if record.csac_service_date %}{{ record.csac_service_date |date:"m/d/y"}}{%else%}None{% endif%}
+    {% else %}
+        <a href="" onclick="return recordactionpopup('/app/serviceaction/?type={{record.Service }}&service={{ record.csrv_id }}&actiontype=new&srvj_id={{ record.srvj_id }}&basi_code={{ record.basi_code.basi_code}}&ctyp_id={{ record.ctyp_id }}&csrv_due_date={{record.csrv_due_date |date:"m/d/y" }}&cssc_id={%if record.cssc_id %}{{ record.cssc_id}}{%else%}None{% endif%}&cssc_service_date={%if record.cssc_service_date %}{{ record.cssc_service_date |date:"m/d/y"}}{%else%}None{% endif%}&csac_price_last={{record.csac_price_last}}&csac_service_date_last={%if record.csac_service_date_last %}{{ record.csac_service_date_last |date:"m/d/y"}}{%else%}None{% endif%}&off_from_avg={{record.off_from_avg}}&cres_id={{ record.cres_id}}&cprs_id_responsible={{ record.cprs_id_responsible}}')" class="dismiss" onclick='javascript:openDialog()' title="">
+            <i class="fa fa-calendar-plus-o fa-2x" style="color: black;text-align: center;"></i>
+        </a>
+    {% endif %}
+{% else %}
+    {% if record.csac_service_date != None  %}
         {{ record.csac_service_date|date:"m/d/y" }}
+    {% endif %}
 {% endif %}
 """
 
@@ -160,13 +170,39 @@ value_template = """
 {% endif %}
 """
 
+# {% if record.csac_service_date_last %}
+# <a href="#" class="dismiss" title="">
+# <i class="fa fa-user fa-2x" style="color: #72a525"></i>
+# {% if record.off_from_avg  > 0  %} <i class="fa fa-user-times fa-2x" style="color: red"></i> {% endif %}
+# </a>
+# {% else %}
+# <i class="fa fa-user fa-2x" style="color: #72a525"></i>&nbsp&nbspJoe
+# {% endif %}
 responsible_template = """
-{% if record.csac_service_date_last %}
-<a href="#" class="dismiss" title="">
-{% if record.off_from_avg  > 0  %} <i class="fa fa-user-times fa-2x" style="color: red"></i> {% endif %}
-</a>
+ {% if record.due_status != 'completed'  %}
+ {% if record.cprs_id_responsible %}
+        {% if record.cssc_id %}
+            <a style="color: black"  href="" onclick="return coordinatepopup('/app/coordinator/?type={{record.Service }}&service={{ record.csrv_id }}&assigntype=mod&cres_id={{ record.cres_id }}&cprs_id_assigner={{ record.cprs_id_assigner }}&cprs_id_responsible={{ record.cprs_id_responsible }}&cssc_id={{ record.cssc_id }}&cssc_service_date={{ record.cssc_service_date |date:"m/d/y H:m"  }}&csrv_due_date={{record.csrv_due_date |date:"m/d/y" }}&csac_service_date_last={%if record.csac_service_date_last %}{{ record.csac_service_date_last |date:"m/d/y"}}{%else%}None{% endif%}')" class="dismiss" onclick='javascript:openDialog()' title="">
+                {{record.cprs_id_responsible.prsn.first_name}}
+            </a>
+            {% else %}
+            <a style="color: black"  href="" onclick="return coordinatepopup('/app/coordinator/?type={{record.Service }}&service={{ record.csrv_id }}&assigntype=mod&cres_id={{ record.cres_id }}&cprs_id_assigner={{ record.cprs_id_assigner }}&cprs_id_responsible={{ record.cprs_id_responsible }}&csrv_due_date={{record.csrv_due_date |date:"m/d/y" }}&csac_service_date_last={%if record.csac_service_date_last %}{{ record.csac_service_date_last |date:"m/d/y"}}{%else%}None{% endif%}')" class="dismiss" onclick='javascript:openDialog()' title="">
+                {{record.cprs_id_responsible.prsn.first_name}}
+            </a>
+            {% endif %}
+    {% else %}
+        {% if record.cssc_service_date %}
+        <a href="" onclick="return coordinatepopup('/app/coordinator/?type={{record.Service }}&service={{ record.csrv_id }}&assigntype=new&cssc_id={{ record.cssc_id }}&cssc_service_date={{ record.cssc_service_date |date:"m/d/y H:m"  }}&csrv_due_date={{record.csrv_due_date |date:"m/d/y" }}&csac_service_date_last={%if record.csac_service_date_last %}{{ record.csac_service_date_last |date:"m/d/y"}}{%else%}None{% endif%}')" class="dismiss" onclick='javascript:openDialog()' title="">
+        <i class="fa fa-user-times fa-2x text-danger" style="color: red"></i>
+        </a>
+        {% else %}
+        <a href="" onclick="return coordinatepopup('/app/coordinator/?type={{record.Service }}&service={{ record.csrv_id }}&assigntype=new&csrv_due_date={{record.csrv_due_date |date:"m/d/y" }}&csac_price_last={{record.csac_price_last}}&csac_service_date_last={%if record.csac_service_date_last %}{{ record.csac_service_date_last |date:"m/d/y"}}{%else%}None{% endif%}')" class="dismiss" onclick='javascript:openDialog()' title="">
+        <i class="fa fa-user-times fa-2x text-danger" style="color: red"></i>
+        </a>
+        {% endif %}
+{% endif %}
 {% else %}
-<i class="fa fa-user fa-2x" style="color: #72a525"></i>&nbsp&nbspJoe
+ <i class="fa fa-user-times fa-2x " style="color: #72a525"></i>
 {% endif %}
 """
 

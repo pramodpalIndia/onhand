@@ -4,7 +4,7 @@
 
 {% block extrastyle %}
     <link href="{% static 'css/font-awesome.css' %}" rel="stylesheet" media="all">
-    <link rel="stylesheet" type="text/css" href="{% static 'css/naic722/dashboard/schedulepopup.css' %}" media="all">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/naic722/dashboard/s.css' %}" media="all">
     <link href="{% static 'css/jquery-ui1.12.1.theme.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/jquery-ui1.12.1.structure.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/jquery.datetimepicker.css' %}" rel="stylesheet">
@@ -19,7 +19,7 @@
         <div style="text-align: center">
             <i class="fa fa-clock-o fa-3x oh_scd_servkeeComponent oh_scd_servkeeIcon rotate360 newscd-form-img-titleheader"
                style="color: #073763"></i>
-            <span class="oh_scd_servkeeComponent oh_scd_servkeeLabel newscd-form-titleheader">Schedule {{ rectype }}</span>
+            <span class="oh_scd_servkeeComponent oh_scd_servkeeLabel newscd-form-titleheader">{{ rectype }}</span>
             <input type="hidden" name="recordtype" id="recordtype"  value="{{ rectype }}"/>
         </div>
         <div class="oh_scd_servkeeComponent oh_scd_servkeeHrule newscd-form-titleheader-horizontol"></div>
@@ -67,15 +67,9 @@
                     {% endif %}
                  {% else %}
                     {% ifequal scheduletype 'new'%}
-                        {% ifequal lastactioncomplianceexists False %}
-                            <option value="" selected>Select Vendor</option>
-                        {% endifequal %}>
-                        {% for serviceprovider in serviceproviderlist %}
-                        <option value="{{ serviceprovider.comp_id }}"
-                                {% ifequal lastactioncomplianceexists True %}
-                                    {% ifequal serviceprovider.comp_id|stringformat:"s"  lastactioncompliance.comp_id_id  %}selected{% endifequal %}
-                                {% endifequal %}>
-                            {{ serviceprovider.comp_name}}</option>
+                    <option value="" selected>Select Vendor</option>
+                    {% for serviceprovider in serviceproviderlist %}
+                        <option value="{{ serviceprovider.comp_id }}" >{{ serviceprovider.comp_name}}</option>
                     {% endfor %}
                         {% else %}
                         <option value="{{ service_schedule.comp_id }}" selected>{{ service_schedule.comp.name }}</option>
@@ -102,37 +96,18 @@
                 Contact/Department:
             </div>
 
-            <i id="vendorcontactaddicon" name="vendorcontactaddicon"
-               onclick="return  schedulepopupnewvendorcontact('/app/newvendorcontact/?type={{ rectype }}&service={{ record.csrv_id }}&scdtyp=newvendorcontact')"
-               class="fa fa-plus-square-o fa-2x oh_scd_servkeeComponent oh_scd_servkeeIcon rotate360 newscd-img-serviceprovider"
-               style="color: #f72006"></i>
             <select id="vendorcontactlist" name="vendorcontactlist"
                     class="oh_scd_servkeeComponent oh_scd_servkeeCombobox newscd-dropdown-contact">
                 {% ifequal scheduletype 'mod'%}
                     {% if service_schedule %}
-{#                        <option value="{{ service_schedule.cprs_id_provider }}" selected>{{ service_schedule.cprs_id_provider.prsn.first_name }}&nbsp;{{ service_schedule.cprs_id_provider.prsn.last_name }}</option>#}
-                        {% for contacts in vendorcontactlist %}
-                            <option value="{{ contacts.cprs_id }}" {% ifequal contacts.cprs_id|stringformat:"s" service_schedule.cprs_id_provider|stringformat:"s"  %}selected{% endifequal %}>
-                                {{ contacts.prsn_name}}</option>
-                        {% endfor %}
+                   <option value="{{ service_schedule.cprs_id_provider }}" selected>{{ service_schedule.cprs_id_provider.prsn.first_name }}&nbsp;{{ service_schedule.cprs_id_provider.prsn.last_name }}</option>
                     {% endif %}
-                {% else %}
-                {% ifequal scheduletype 'new'%}
-                        {% ifequal lastactioncomplianceexists False %}
-                            <option value="" selected>Select Contact</option>
-                        {% endifequal %}>
-                        {% for contacts in lastactionvendorcontactlist %}
-                        <option value="{{ contacts.cprs_id}}"
-                                {% ifequal lastactioncomplianceexists True %}
-                                    {% ifequal contacts.cprs_id|stringformat:"s"  lastactioncompliance.cprs_id_id|stringformat:"s"  %}selected{% endifequal %}
-                                {% endifequal %}>
-                            {{ contacts.prsn_name}}</option>
-                    {% endfor %}
-                        {% else %}
-                        <option value="{{ contacts.cprs_id  }}" selected>{{ contacts.prsn_name }}</option>
                 {% endifequal %}
-            {% endifequal %}
+                <option value="">Select contact</option>
             </select>
+            <i id="vendorcontactaddicon" name="vendorcontactaddicon"
+               class="fa fa-plus-square-o fa-2x oh_scd_servkeeComponent oh_scd_servkeeIcon rotate360 newscd-img-serviceprovider"
+               style="color: #f72006"></i>
         </div>
 
         <div>
@@ -146,7 +121,7 @@
                        class="oh_scd_servkeeComponent oh_scd_servkeeTextinput newscd-input-phone"/>
                     {% endif %}
              {% else %}
-                <input id="phone" name="phone" type="text" value="{% ifequal lastactioncomplianceexists True %}{{ lastactioncompliance.prsn_mobile_phone }}{% endifequal %}" placeholder="Phone number"
+                <input id="phone" name="phone" type="text" value="" placeholder="Phone number"
                        class="oh_scd_servkeeComponent oh_scd_servkeeTextinput newscd-input-phone"/>
             {% endifequal %}
             <i class="fa fa-phone fa-2x oh_scd_servkeeComponent oh_scd_servkeeIcon rotate360 newscd-img-phone"
@@ -164,7 +139,7 @@
                    class="oh_scd_servkeeComponent oh_scd_servkeeTextinput newscd-input-email"/>
                     {% endif %}
              {% else %}
-                <input id="email" name="email" type="text" value="{% ifequal lastactioncomplianceexists True %}{{ lastactioncompliance.prsn_email }}{% endifequal %}" placeholder="Email address"
+                <input id="email" name="email" type="text" value="" placeholder="Email address"
                    class="oh_scd_servkeeComponent oh_scd_servkeeTextinput newscd-input-email"/>
             {% endifequal %}
 
@@ -228,14 +203,16 @@
                 {% else %}
                         {% for responsible in responsiblelist %}
                             {% if cres_id %}
-                                <option value="{{ responsible.cprs_id }}" {% ifequal responsible.cprs_id|stringformat:"s" cprs_id_responsible %}selected{% endifequal %}>
-                                    {{ responsible.prsn.first_name}}&nbsp;{{ responsible.prsn.last_name }}</option>
+                                <option value="{{ responsible.cres_id }}" {% ifequal responsible.cprs_id cprs_id_responsible %}selected{% endifequal %}>{{ responsible.prsn.first_name}}&nbsp;{{ responsible.prsn.last_name }}</option>
                             {% else %}
                                 <option value="{{ responsible.cprs_id }}" {% ifequal responsible.cprs_id loggeduser_cprs_id %}selected{% endifequal %}>
                                     {{ responsible.prsn.first_name}}&nbsp;{{ responsible.prsn.last_name }}</option>
                             {% endif %}
+
                         {% endfor %}
                 {% endifequal %}
+
+                <option value="">Select contact</option>
             </select>
            <i id="id_schdeduledcalicon" name="id_schdeduledcalicon"
                class="fa fa-users fa-2x oh_scd_servkeeComponent oh_scd_servkeeIcon rotate360 newscd-img-responsible"
@@ -352,10 +329,7 @@
         <iframe id="newvendorIframe" src="" width="" height=""
                 style="border: none;margin-top: -1px;margin-left: -3px"></iframe>
     </div>
-    <div id="dialogschedulepopnewvendorcontact">
-        <iframe id="newvendorcontactIframe" src="" width="" height=""
-                style="border: none;margin-top: -1px;margin-left: -3px"></iframe>
-    </div>
+
 </form>
 {% block extrajs %}
     <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-3.1.1.min.js"></script>
@@ -449,21 +423,6 @@ function distance(x1, y1, x2, y2) {
                 },
             });
 
-            $("#dialogschedulepopnewvendorcontact").dialog({
-                modal: true,
-                {#                minHeight: 530,#}
-                {#                minWidth: 634,#}
-                minHeight: 520,
-                minWidth: 670,
-                resizable: false,
-                draggable: false,
-                autoOpen: false,
-                dialogClass: "no-close",
-                position: {
-                    my: 'center',
-                    at: 'center'
-                },
-            });
 {#            $("#id_schdeduledinputcal").datepicker({#}
             $("#id_schdeduledinputcal").datetimepicker({
 
@@ -529,28 +488,6 @@ function distance(x1, y1, x2, y2) {
             return false;
         }
 
-        function schedulepopupnewvendorcontact(url) {
-            $('#scddiv').hide();
-            $('.ui-button.ui-corner-all.ui-widget').css('font-size', '14px');
-            $('.ui-button.ui-corner-all.ui-widget').css('margin-left', '4px');
-
-            $.ajax({
-                url: url,
-                success: function (data) {
-
-                    console.log('url', url);
-                    $("#scheduleIframe").attr("visibility", "hidden");
-                    $("#dialogschedulepop").dialog("close");
-                    $("#newvendorcontactIframe").attr("src", url);
-                    $("#newvendorcontactIframe").attr("width", 670);
-                    $("#newvendorcontactIframe").attr("height", 520);
-                    $("#newvendorcontactIframe").attr("style", "border:None;font-family: Open Sans, sans-serif;");
-                    $("#dialogschedulepopnewvendorcontact").dialog("open");
-                }
-            });
-            return false;
-        }
-
         $('#cancel').click(function () {
             if (window.parent.$("#dialogschedulepop").dialog("isOpen") == true) {
                 window.parent.$("#dialogschedulepop").dialog("close");
@@ -567,7 +504,7 @@ function distance(x1, y1, x2, y2) {
 
         function form_valid() {
             var form_valid = true;
-{#            console.log($("#vendorlist option:selected").val());#}
+            console.log($("#vendorlist option:selected").val());
             if ($("#vendorlist option:selected").val() == '') {
                 form_valid = false;
                 $('#vendorlist').addClass("oh_scd_servkeeComponent oh_scd_servkeeCombobox newscd-dropdown-serviceprovider  has-danger");
@@ -590,7 +527,7 @@ function distance(x1, y1, x2, y2) {
                 $('#id_schdeduledinputcal').removeClass("has-danger");
             document.getElementById("calendar_message").innerHTML = "";
             if (document.getElementById('id_schdeduledinputcal').value != '') {
-{#                console.log(moment(document.getElementById('id_schdeduledinputcal').value, 'MM/DD/YY', true));#}
+                console.log(moment(document.getElementById('id_schdeduledinputcal').value, 'MM/DD/YY', true));
                 if (!moment(document.getElementById('id_schdeduledinputcal').value, 'MM/DD/YY HH:mm', true).isValid()) {
                     form_valid = false;
                     $('#id_schdeduledinputcal').addClass("oh_scd_servkeeComponent oh_scd_servkeeTextinput newscd-input-schedule hasDatepicker val-required has-danger");
@@ -613,7 +550,6 @@ function distance(x1, y1, x2, y2) {
                 recordtype = $('input:hidden[name=recordtype]').val();
                 recordtype_id = $('input:hidden[name=recordtype_id]').val();
                 cres_id = $('input:hidden[name=cres_id]').val();
-{#                console.log('cres_id--->',cres_id);#}
                 vendor = $("#vendorlist option:selected").val();
                 vendorcontactrole = $("#vendorcontactlist option:selected").val();
                 phone = document.getElementById('phone').value;
@@ -621,7 +557,7 @@ function distance(x1, y1, x2, y2) {
                 schedule = document.getElementById('id_schdeduledinputcal').value;
                 notes = document.getElementById('notes').value;
                 responsible = $("#responsiblelist option:selected").val();
-                console.log('Form Valid -AJAX- Create Vendor call,responsible',responsible);
+                console.log('Form Valid -AJAX- Create Vendor call');
                 $.ajax({
                     url: 'ajax_complianceservice_addnewschedule',
                     data: {
@@ -636,8 +572,7 @@ function distance(x1, y1, x2, y2) {
                         'email': email,
                         'schedule': schedule,
                         'notes': notes,
-                        'responsible': responsible,
-                        'cres_id':cres_id
+                        'responsible': responsible
                     },
                     dataType: 'json',
                     success: function (response_data) {

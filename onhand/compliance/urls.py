@@ -10,5 +10,5 @@ from . import views
 urlpatterns = [
     url(r"^register$", views.registercompliance, name="compliance_addnew"),
     url(r'^ajax_complianceservice_details/$', get_complianceservice_details, name="complianceservice_details"),
-    url(r'^ajax_complianceservice_addnewvendor/$', add_new_vendor_compliance, name="complianceservice_addnewvendor"),
+
 ]

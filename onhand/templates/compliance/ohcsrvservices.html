@@ -1,0 +1,754 @@
+{% load i18n admin_static %}
+{% load staticfiles i18n compress %}
+{% load humanize %}
+
+{% block extrastyle %}
+    <link href="{% static 'css/font-awesome.css' %}" rel="stylesheet" media="all">
+    <link href="{% static 'css/naic722/dashboard/serviceview.css' %}" rel="stylesheet" type="text/css" media="all">
+    <link href="{% static 'css/jquery-ui1.12.1.theme.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/jquery-ui1.12.1.structure.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/jquery.datetimepicker.css' %}" rel="stylesheet">
+    <link href="{% static 'css/deleteconfirmation.css' %}" rel="stylesheet">
+{% endblock %}
+{#<a href="#" class="close">#}
+<span id='serviceview-close' class="serviceview-close serviceview-boxclosecircle"
+      onclick='window.parent.$("#dialogohsrvrecordspop").dialog("close");window.parent.location.reload(); return false;'></span>
+<body class="serviceview-body ">
+<form id="scheduleserviceform">
+    <input type="hidden" name="ohrecordtype" id="scheduletype" value="{{ ohrecordtype }}"/>
+    <input type="hidden" name="scheduletype" id="scheduletype" value="{{ ohrecordtype }}"/>
+    <input type="hidden" name="modified_cssc_id" id="modified_cssc_id" value="{{ service_schedule.cssc_id }}"/>
+    <input type="hidden" name="cres_id" id="cres_id" value="{{ cres_id }}"/>
+    <input type="hidden" name="basi_code" id="basi_code" value="{{ basi_code }}"/>
+
+    <div class="divservice half left">
+        <div class="top">
+            <table style="width: 100%;border-collapse: collapse;height: 100%;">
+                <tr style="background: #046da2;">
+                    <td class="serviceview-tdleft1-rowlabel"
+                        style="color: #FFFFFF;font-size: 17px;">{{ ohrecordtype }}</td>
+                    <td></td>
+                    <td></td>
+                    <td style="width: 100%;"></td>
+                    {#                    #}
+                    {#                    <td class="serviceview-tdleft3-rowlabel" style="color: #085394;font-size: 17px;"></td>#}
+                    {#                    <td class="serviceview-tdleft4-rowdata"></td>#}
+                    {#                    <td class="serviceview-tdleft4-rowdata"></td>#}
+                </tr>
+
+                <tr>
+                    <td class="serviceview-tdleft1-rowlabel" colspan="2"
+                        style="color: #085394;font-size: 17px;width: 360px">{{ service.srvj.ctyp.ctyp_desc }}</td>
+                    {#                    <td style="width: 10px">#}
+                    {##}
+                    {#                        <select id="servicedropdown" disabled="disabled" class="serviceview-dropdown-service">#}
+                    {#                            <option>RPZ Test</option>#}
+                    {#                        </select>#}
+                    {#                    </td>#}
+                    <td class="serviceview-tdleft3-rowlabel" style="color: #085394;font-size: 17px;">Jurisdiction</td>
+                    <td class="serviceview-tdleft4-rowdata">{{ service.srvj.govl_code.govl_desc }}</td>
+                </tr>
+                <tr>
+                    <td class="serviceview-tdleft2-rowdata" colspan="2"
+                        style="text-align: justify;padding-right: 15px;padding-left: 8px;">
+                        {% if service.srvj.srvj_help_text %}
+                            {{ service.srvj.srvj_help_text }}
+                            {#                        {% else %}#}
+                            {#                             #}
+                            {#                        <i#}
+                            {#                                class="fa fa-thumbs-o-down fa-2x oh_scd_servkeeComponent oh_scd_servkeeIcon rotate360 newscd-lastamt-valueformoney"#}
+                            {#                                style="color: red"></i>#}
+                        {% endif %}
+                    </td>
+                    {#           <td class="serviceview-tdleft2-rowdata">#}
+                    {#               #}
+                    {#           </td>#}
+                    <td class="serviceview-tdleft3-rowlabel" style="color: #085394;">Agency</td>
+                    <td class="serviceview-tdleft4-rowdata">{{ service.srvj.ctyp.agen_code.agen_name }}</td>
+
+                </tr>
+                <tr>
+                    <td class="serviceview-tdleft1-rowlabel">Frequency</td>
+                    <td class="serviceview-tdleft2-rowdata">
+                        <select id="frequencydropdown" disabled="disabled" class="serviceview-dropdown-service">
+                            {#                            <option>Annual</option>#}
+                            <option value="ANNUAL" {% ifequal service.basi_code.basi_code|stringformat:"s" 'ANNUAL' %}
+                                    selected {% endifequal %}>Annual
+                            </option>
+                            <option value="BIEN" {% ifequal service.basi_code.basi_code|stringformat:"s" 'BIEN' %}
+                                    selected {% endifequal %}>Bi-Annual
+                            </option>
+                            <option value="DAILY" {% ifequal service.basi_code.basi_code|stringformat:"s" 'DAILY' %}
+                                    selected {% endifequal %}>Daily
+                            </option>
+                            <option value="MNTHLY" {% ifequal service.basi_code.basi_code|stringformat:"s" "MNTHLY" %}
+                                    selected {% endifequal %}>Monthly
+                            </option>
+                            <option value="ONCE" {% ifequal service.basi_code.basi_code|stringformat:"s" "ONCE" %}
+                                    selected {% endifequal %}>One Time Only
+                            </option>
+                            <option value="SEMIAN" {% ifequal service.basi_code.basi_code|stringformat:"s" 'SEMIAN' %}
+                                    selected {% endifequal %}>Semi-Annual
+                            </option>
+                            <option value="QTLY" {% ifequal service.basi_code.basi_code|stringformat:"s" 'QTLY' %}
+                                    selected {% endifequal %}>Quarterly
+                            </option>
+                            <option value="WEEKLY" {% ifequal service.basi_code.basi_code|stringformat:"s" 'WEEKLY' %}
+                                    selected {% endifequal %}>Weekly
+                            </option>
+
+                        </select>
+
+
+                    </td>
+                    <td class="serviceview-tdleft3-rowlabel">{{ factor }} </td>
+                    <td class="serviceview-tdleft4-rowdata"> &nbsp;
+                        {% if factor_value %}
+                            <input id="id_schdeduledinputcal" name="id_schdeduledinputcal" type="text"
+                                   value="{{ factor_value }}"
+                                   class="oh_scd_servkeeComponent oh_scd_servkeeTextinput newscd-input-schedule"
+                                   disabled="disabled"/>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="serviceview-tdleft1-rowlabel">Last serviced</td>
+                    <td class="serviceview-tdleft2-rowdata">
+                        <input id="id_schdeduledinputcal" name="id_schdeduledinputcal" type="text" value=""
+                               class="oh_scd_servkeeComponent oh_scd_servkeeTextinput newscd-input-schedule"/>
+                        <i id="id_schdeduledcalicon" name="id_schdeduledcalicon"
+                           class="fa fa-calendar fa-1x oh_scd_servkeeComponent oh_scd_servkeeIcon rotate360 newscd-img-schedule"
+                           style="color: #080041;top: 346px"></i>
+                    </td>
+                    <td class="serviceview-tdleft3-rowlabel">Next due date</td>
+                    <td class="serviceview-tdleft4-rowdata">
+                        <input id="id_schdeduledinputcal" name="id_schdeduledinputcal" type="text"
+                               value="{{ csrv_due_date }}"
+                               class="oh_scd_servkeeComponent oh_scd_servkeeTextinput newscd-input-schedule"
+                               style="width: 110px"/>
+                        <i id="id_schdeduledcalicon" name="id_schdeduledcalicon"
+                           class="fa fa-calendar fa-1x oh_scd_servkeeComponent oh_scd_servkeeIcon rotate360 newscd-img-schedule"
+                           style="color: #080041;top: 346px"></i>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="serviceview-tdleft1-rowlabel">Service note</td>
+                    <td class="serviceview-tdleft2-rowdata" colspan="4">
+                       <textarea id="notes" name="notes" disabled="disabled" rows="5" cols="60" value=""
+                                 style="word-wrap: break-word"
+                                 placeholder="{% if not service.csrv_note %}Enter your notes related to the scheduled service {% endif %}">{% if service.csrv_note %}
+                           {{ service.csrv_note }}{% endif %}
+                       </textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="serviceview-tdleft1-rowlabel">Responsible</td>
+                    <td class="serviceview-tdleft2-rowdata">
+                        {#                        <select id="servicedropdown" disabled="disabled" class="serviceview-dropdown-service">#}
+                        {#                                <option>Anthony Louis</option>#}
+                        {#                            </select>#}
+
+                        <select id="responsiblecontactlist" name="responsiblecontactlist"
+                                class="oh_scd_servkeeComponent oh_scd_servkeeCombobox newscd-dropdown-serviceprovider"
+                                style="top: 182px" disabled="disabled">
+                            {% for assigne in assignelist %}
+                                {% if cres_id %}
+                                    <option value="{{ assigne.cprs_id }}"
+                                            {% ifequal assigne.cprs_id|stringformat:"s" cprs_id_responsible %}selected{% endifequal %}>
+                                        {{ assigne.prsn.first_name }}&nbsp;{{ assigne.prsn.last_name }}</option>
+                                {% else %}
+                                    <option value="{{ assigne.cprs_id }}"
+                                            {% ifequal assigne.cprs_id loggeduser_cprs_id %}selected{% endifequal %}>
+                                        {{ assigne.prsn.first_name }}&nbsp;{{ assigne.prsn.last_name }}</option>
+                                {% endif %}
+                            {% endfor %}
+                            {% if not cres_id %}
+                                <option value="" selected>Select Responsible</option>
+                            {% endif %}
+                            {#                {% ifequal assigntyp 'mod'%}#}
+                            {#                    {% if assignelist %}#}
+                            {#                   <option value="{{ service_schedule.cprs_id_provider }}" selected>{{ service_schedule.cprs_id_provider.prsn.first_name }}&nbsp;{{ service_schedule.cprs_id_provider.prsn.last_name }}</option>#}
+                            {#                    {% endif %}#}
+                            {#                {% else %}#}
+                            {#                    {% if assignelist %}#}
+                            {#                        {% for assigne in assignelist %}#}
+                            {#                            <option value="{{ assigne.cprs_id }}" >{{ assigne.prsn.first_name}}&nbsp;{{ assigne.prsn.last_name }}</option>#}
+                            {#                        {% endfor %}#}
+                            {#                    {% endif %}#}
+                            {#                {% endifequal %}#}
+
+                            {#                <option value="">Select contact</option>#}
+                        </select>
+
+                    </td>
+                    <td class="serviceview-tdleft3-rowlabel"></td>
+                    <td class="serviceview-tdleft4-rowdata">
+                    </td>
+                </tr>
+
+                <tr style="background: #dce6ef;">
+                    <td class="serviceview-tdleft1-rowlabel"></td>
+                    <td class="serviceview-tdleft2-rowdata">
+
+                    </td>
+                    <td class="serviceview-tdleft3-rowlabel" colspan="4" style="text-align: right;padding-top: 0px;">
+                        <button type="button" id="editservice" class="ui-button ui-corner-all ui-widget"
+                                style="font-size: 14px; margin-left: 4px;color: #000000;background-color: transparent; border: transparent;font-weight: bolder;padding: 0px;">
+                            <i class="fa fa-pencil-square-o fa-2x" style="color: #073763;padding: 0px;"></i>&nbsp;Edit
+                            Service
+                        </button>
+                    </td>
+                    <td class="serviceview-tdleft4-rowdata">
+
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- BOT 50% -->
+        <div class="bot">
+            {#            <div class="left">Attachments</div>#}
+            <div class="">
+                <span style="font-size: 15px;font-weight: bold;"> &nbsp;</span>
+                <table>
+                    <tr>
+                        <td style="font-size: 15px;font-weight: bold;">
+                            Attachments
+                        </td>
+                    </tr>
+                    <tr>
+
+                        <table style="width: 100%;border-collapse: collapse;">
+                            <tr>
+                                <td>Title</td>
+                                <td><input type="text" id="serviceuploadfiletitle" name="serviceuploadfiletitle">&nbsp;&nbsp;<i class="fa fa-folder-open fa-1x"
+                                                                      style="color: #EFD775"></i>&nbsp;<input
+                                        type="file" name="serviceuploadfile" id="serviceuploadfile"></td>
+                                {#                                <td><input type="file" name="pic" accept="image/*"></td>#}
+                                <td></td>
+
+                            </tr>
+
+                            <tr>
+                                <td>Notes</td>
+                                <td><textarea id="notes" name="notes" rows="5" cols="60" value=""
+                                              style="word-wrap: break-word"
+                                              placeholder="Enter your notes related to the attachements"></textarea>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td></td>
+                                {#                                <td><input type="file" name="pic" accept="image/*"></td>#}
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                            <span id="attachments_action_message" name="form_action_message">Test Message</span>
+
+                            </tr>
+                            <tr style="background: #dce6ef">
+                                <td></td>
+                                <td style="text-align: right">
+                                    <button type="button" id="uploadattachment"
+                                            class="ui-button ui-corner-all ui-widget"
+                                            style="font-size: 14px; margin-left: 4px;color: #000000;background-color: transparent; border: transparent;font-weight: bolder;padding: 0px;">
+                                        <i class="fa fa fa-floppy-o fa-2x" style="color: #073763;padding: 0px;"></i>&nbsp;Save
+                                        Attachment
+                                    </button>
+                                </td>
+
+                            </tr>
+                        </table>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="divservice half right">
+        <div class="top">
+            <div class="">
+
+                <table style="width: 100%;border-collapse: collapse;height: 100%;">
+                    <tr style="background: #046da2;">
+                        <td class="serviceview-tdleft1-rowlabel" style="color: #FFFFFF;font-size: 17px;"> Action</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td style="width: 100%;"></td>
+
+                    </tr>
+                    <tr>
+                        <td class="serviceview-tdleft1-rowlabel">Serviced By</td>
+                        <td class="serviceview-tdleft2-rowdata">
+                            {#                            <select id="servicedropdown" disabled="disabled" class="serviceview-dropdown-service">#}
+                            {#                                <option>XYZ RPZ Services</option>#}
+                            {#                            </select>#}
+                            <select disabled="disabled" id="vendorlist" name="vendorlist"
+                                    class="serviceview-dropdown-service">
+                                {#                {% ifequal scheduletype 'mod'%}#}
+                                {% if service_schedule %}
+                                    {% for serviceprovider in serviceproviderlist %}
+                                        <option value="{{ serviceprovider.comp_id }}"
+                                                {% ifequal serviceprovider.comp_id service_schedule.comp_id %}selected{% endifequal %}>
+                                            {{ serviceprovider.comp_name }}
+                                        </option>
+                                    {% endfor %}
+                                    {#                   <option value="{{ service_schedule.comp_id }}" selected>{{ service_schedule.comp.name }}</option>#}
+                                    {#                    {% endif %}#}
+                                {% else %}
+                                    {#                    {% ifequal scheduletype 'new'%}#}
+                                    {% ifequal lastactioncomplianceexists False %}
+                                        <option value="" selected>Select Vendor</option>
+                                    {% endifequal %}>
+                                    {% for serviceprovider in serviceproviderlist %}
+                                        <option value="{{ serviceprovider.comp_id }}">
+                                            {#                                    {% ifequal lastactioncomplianceexists True %}#}
+                                            {#                                    {% ifequal serviceprovider.comp_id|stringformat:"s"  lastactioncompliance.comp_id_id  %}selected{% endifequal %}#}
+                                            {#                                    {% endifequal %}>#}
+                                            {{ serviceprovider.comp_name }}</option>
+                                    {% endfor %}
+                                    {#                        {% else %}#}
+                                    {#                        <option value="{{ service_schedule.comp_id }}" selected>{{ service_schedule.comp.name }}</option>#}
+                                    {#                    {% endifequal %}#}
+                                    {#                {% endifequal %}#}
+                                {% endif %}
+                            </select>
+                        </td>
+                        <td class="serviceview-tdleft3-rowlabel">Contact</td>
+                        <td class="serviceview-tdleft4-rowdata">
+                            {#                            <select id="servicedropdown" disabled="disabled"#}
+                            {#                                                                        class="serviceview-dropdown-service">#}
+                            {#                            <option>James Joseph</option>#}
+                            {#                        </select>#}
+
+                            <select disabled="disabled" id="vendorcontactlist" name="vendorcontactlist"
+                                    class="serviceview-dropdown-service">
+                                {#                {% ifequal scheduletype 'mod'%}#}
+                                {% if service_schedule %}
+                                    {#                        <option value="{{ service_schedule.cprs_id_provider }}" selected>{{ service_schedule.cprs_id_provider.prsn.first_name }}&nbsp;{{ service_schedule.cprs_id_provider.prsn.last_name }}</option>#}
+                                    {% for contacts in vendorcontactlist %}
+                                        <option value="{{ contacts.cprs_id }}"
+                                                {% ifequal contacts.cprs_id|stringformat:"s" service_schedule.cprs_id_provider|stringformat:"s" %}selected{% endifequal %}>
+                                            {{ contacts.prsn_name }}</option>
+                                    {% endfor %}
+                                    {#                    {% endif %}#}
+                                {% else %}
+                                    {#                {% ifequal scheduletype 'new'%}#}
+                                    {% ifequal lastactioncomplianceexists False %}
+                                        <option value="" selected>Select Contact</option>
+                                    {% endifequal %}>
+                                    {% for contacts in lastactionvendorcontactlist %}
+                                        <option value="{{ contacts.cprs_id }}"
+                                                {% ifequal lastactioncomplianceexists True %}
+                                                {% ifequal contacts.cprs_id|stringformat:"s"  lastactioncompliance.cprs_id_id|stringformat:"s" %}selected
+                                                {% endifequal %}
+                                                {% endifequal %}>
+                                            {{ contacts.prsn_name }}
+                                        </option>
+                                    {% endfor %}
+                                    {#                        {% else %}#}
+                                    {#                        <option value="{{ contacts.cprs_id  }}" selected>{{ contacts.prsn_name }}</option>#}
+                                    {#                {% endifequal %}#}
+                                    {#            {% endifequal %}#}
+                                {% endif %}
+                            </select>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="serviceview-tdleft1-rowlabel" style="text-align: right"><i
+                                class="fa fa-mobile-phone fa-2x"></i>&nbsp;
+
+                        </td>
+                        <td class="serviceview-tdleft2-rowdata">
+
+                            {% if service_schedule %}
+                                <input disabled="disabled" id="phone" name="phone" type="text"
+                                       value="{{ service_schedule.cprs_id_provider.prsn.office_phone }}"
+                                       placeholder="Phone number"
+                                       class="oh_scd_servkeeComponent oh_scd_servkeeTextinput newscd-input-schedule"/>
+                            {% else %}
+                                <input disabled="disabled" id="phone" name="phone" type="text" value="
+                                        {% ifequal lastactioncomplianceexists True %}{{ lastactioncompliance.prsn_mobile_phone }}{% endifequal %}"
+                                       placeholder="Phone number"
+                                       class="oh_scd_servkeeComponent oh_scd_servkeeTextinput newscd-input-phone"/>
+                            {% endif %}
+                        </td>
+                        <td class="serviceview-tdleft3-rowlabel" style="text-align: right"><i
+                                class="fa fa-envelope-o fa-1x"></i>&nbsp;
+                        </td>
+                        <td class="serviceview-tdleft4-rowdata">
+                            {% if service_schedule %}
+                                <input disabled="disabled" id="email" name="email" type="text"
+                                       value="{{ service_schedule.cprs_id_provider.prsn.email }}"
+                                       placeholder="Email address"
+                                       class="oh_scd_servkeeComponent oh_scd_servkeeTextinput newscd-input-email"/>
+                            {% else %}
+                                <input disabled="disabled" id="email" name="email" type="text" value="
+                                        {% ifequal lastactioncomplianceexists True %}{{ lastactioncompliance.prsn_email }}{% endifequal %}"
+                                       placeholder="Email address"
+                                       class="oh_scd_servkeeComponent oh_scd_servkeeTextinput newscd-input-email"/>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {#                    <tr>#}
+                    {#                        <td class="serviceview-tdleft1-rowlabel"></td>#}
+                    {#                        <td class="serviceview-tdleft2-rowdata">#}
+                    {#                            #}
+                    {#                        </td>#}
+                    {#                        <td class="serviceview-tdleft3-rowlabel"></td>#}
+                    {#                        <td class="serviceview-tdleft4-rowdata"></td>#}
+                    {#                    </tr>#}
+                    <tr>
+                        <td class="serviceview-tdleft1-rowlabel">Prior Price</td>
+                        <td class="serviceview-tdleft2-rowdata" style="font-weight: bold;font-size: 17px">
+                            &nbsp{% if csac_price_last != 'None' %}
+                            $&nbsp;
+                            {{ csac_price_last }} {% else %} - {% endif %}
+                        </td>
+                        <td class="serviceview-tdleft3-rowlabel">Current Price</td>
+                        <td class="serviceview-tdleft4-rowdata" style="font-weight: bold;font-size: 17px">
+                            $&nbsp;<input disabled="disabled" id="currentprice" name="currentprice" type="text" value=""
+                                          placeholder=""
+                                          class="oh_scd_servkeeComponent oh_scd_servkeeTextinput newscd-input-email"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="serviceview-tdleft1-rowlabel">Action Date</td>
+                        <td class="serviceview-tdleft2-rowdata">
+                            {#                            <input id="id_schdeduledinputcal" name="id_schdeduledinputcal" type="text" value=""#}
+                            {#                                   class="oh_scd_servkeeComponent oh_scd_servkeeTextinput newscd-input-schedule"/>#}
+                            <input id="id_schdeduledinputcal" name="id_schdeduledinputcal" type="text"
+                                   value="{{ service_schedule.cssc_service_date|date:"m/d/y H:m" }}"
+                                   class="oh_scd_servkeeComponent oh_scd_servkeeTextinput newscd-input-schedule"
+                                   style="top: 348px"/>
+                            <i id="id_schdeduledcalicon" name="id_schdeduledcalicon"
+                               class="fa fa-calendar fa-1x oh_scd_servkeeComponent oh_scd_servkeeIcon rotate360 newscd-img-schedule"
+                               style="color: #080041;top: 346px"></i>
+                        </td>
+                        <td class="serviceview-tdleft3-rowlabel"></td>
+                        <td class="serviceview-tdleft4-rowdata">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="serviceview-tdleft1-rowlabel">Action note</td>
+                        <td class="serviceview-tdleft2-rowdata" colspan="4">
+               <textarea id="notes" name="notes" rows="5" cols="60" value="" style="word-wrap: break-word"
+                         placeholder="Enter your notes related to the actioned service"></textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="serviceview-tdleft1-rowlabel">Scheduled by</td>
+                        <td class="serviceview-tdleft2-rowdata">
+                            {#                            <select id="servicedropdown" disabled="disabled" class="serviceview-dropdown-service">#}
+                            {#                                <option>Ray Dawson</option>#}
+                            {#                            </select>#}
+                            <select id="scheduledbycontactlist" name="scheduledbycontactlist"
+                                    class="oh_scd_servkeeComponent oh_scd_servkeeCombobox newscd-dropdown-serviceprovider"
+                                    style="top: 182px" disabled="disabled">
+                                {% for assigne in assignelist %}
+                                    {% if cres_id %}
+                                        <option value="{{ assigne.cprs_id }}"
+                                                {% ifequal assigne.cprs_id|stringformat:"s" cprs_id_responsible %}selected{% endifequal %}>
+                                            {{ assigne.prsn.first_name }}&nbsp;{{ assigne.prsn.last_name }}</option>
+                                    {% else %}
+                                        <option value="{{ assigne.cprs_id }}"
+                                                {% ifequal assigne.cprs_id loggeduser_cprs_id %}selected{% endifequal %}>
+                                            {{ assigne.prsn.first_name }}&nbsp;{{ assigne.prsn.last_name }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                                {#                {% ifequal assigntyp 'mod'%}#}
+                                {#                    {% if assignelist %}#}
+                                {#                   <option value="{{ service_schedule.cprs_id_provider }}" selected>{{ service_schedule.cprs_id_provider.prsn.first_name }}&nbsp;{{ service_schedule.cprs_id_provider.prsn.last_name }}</option>#}
+                                {#                    {% endif %}#}
+                                {#                {% else %}#}
+                                {#                    {% if assignelist %}#}
+                                {#                        {% for assigne in assignelist %}#}
+                                {#                            <option value="{{ assigne.cprs_id }}" >{{ assigne.prsn.first_name}}&nbsp;{{ assigne.prsn.last_name }}</option>#}
+                                {#                        {% endfor %}#}
+                                {#                    {% endif %}#}
+                                {#                {% endifequal %}#}
+
+                                {#                <option value="">Select contact</option>#}
+                            </select>
+                        </td>
+                        <td class="serviceview-tdleft3-rowlabel">Scheduled for</td>
+                        <td class="serviceview-tdleft4-rowdata">
+                            <input id="id_schdeduledinputcal" name="id_schdeduledinputcal" type="text" value=""
+                                   class="oh_scd_servkeeComponent oh_scd_servkeeTextinput newscd-input-schedule"/>
+                        </td>
+                    </tr>
+                    <tr style="background: #dce6ef;">
+                        <td class="serviceview-tdleft1-rowlabel"></td>
+                        <td class="serviceview-tdleft2-rowdata">
+
+                        </td>
+                        <td class="serviceview-tdleft3-rowdata">
+
+                        </td>
+                        <td class="serviceview-tdleft4-rowlabel" style="text-align: right;width:100%;padding-top: 0px;">
+                            <button type="button" id="editaction" class="ui-button ui-corner-all ui-widget"
+                                    style="font-size: 14px; margin-left: 4px;color: #000000;background-color: transparent; border: transparent;font-weight: bolder;padding: 0px;">
+                                <i class="fa fa-pencil-square-o fa-2x" style="color: #073763;padding: 0px;"></i>&nbsp;Edit
+                                Action
+                            </button>
+                        </td>
+
+                    </tr>
+                </table>
+            </div>
+            {#   <div class="right">txt</div>#}
+        </div>
+
+        <!-- BOT 50% -->
+        <div class="bot">
+            <span style="font-size: 15px;font-weight: bold;"> &nbsp;</span>
+            <table class="responstable">
+                <tr>
+                    <th></th>
+                    <th data-th="Driver details"><span>Date Added</span></th>
+                    <th>Name</th>
+                    <th>Title</th>
+                </tr>
+
+                <tr>
+                    <td><i class="fa fa-eye fa-1x text-danger" style="color: #046da2"></i></td>
+                    <td>04/11/17</td>
+                    <td>RPZ Cert.PDF</td>
+                    <td>RPZ certificate for 2017</td>
+                </tr>
+                <tr>
+                    <td><i class="fa fa-eye fa-1x text-danger" style="color: #046da2"></i></td>
+                    <td>02/10/17</td>
+                    <td>XYZ Cert.PDF</td>
+                    <td>XYZ certificate</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+
+            </table>
+            {#            <div class="right">Attachment Notes</div>#}
+            {#            <div class="right"><textarea id="notes" name="notes" rows="5" cols="60" value=""#}
+            {#                                         style="word-wrap: break-word"#}
+            {#                                         placeholder=""></textarea></div>#}
+        </div>
+    </div>
+
+
+</form>
+</body>
+{% block extrajs %}
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-3.1.1.min.js"></script>
+
+    {% compress js %}
+        <script src="{% static 'js/jquery-ui1.12.1.js' %}"></script>
+        <script src="{% static 'js/moment-2.17.1.min.js' %}"></script>
+        <script src="{% static 'js/jquery.datetimepicker.js' %}"></script>
+        <script src="{% static 'js/deleteconfirmation.js' %}"></script>
+        <script src="{% static 'js/jquery.mask.min.js' %}"></script>
+        <script src="{% static 'js/jquery.maskMoney.min.js' %}"></script>
+    {% endcompress %}
+
+    <script type="text/javascript" language="javascript">
+
+        function ValidateEmail(email) {
+            if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
+                return (true);
+            }
+            return (false);
+        }
+
+        $(function () {
+            $('#price').maskMoney();
+            $("#phone").mask("(999) 999-9999");
+
+            $("#phone").on("blur", function () {
+                var last = $(this).val().substr($(this).val().indexOf("-") + 1);
+
+                if (last.length == 5) {
+                    var move = $(this).val().substr($(this).val().indexOf("-") + 1, 1);
+
+                    var lastfour = last.substr(1, 4);
+
+                    var first = $(this).val().substr(0, 9);
+
+                    $(this).val(first + move + '-' + lastfour);
+                }
+            });
+        });
+
+        $(document).ready(function () {
+            $('#phone').mask('(000) 000-0000');
+
+
+            $("#dialogschedulepopnewvendor").dialog({
+                modal: true,
+                {#                minHeight: 530,#}
+                {#                minWidth: 634,#}
+                minHeight: 520,
+                minWidth: 670,
+                resizable: false,
+                draggable: false,
+                autoOpen: false,
+                dialogClass: "no-close",
+                position: {
+                    my: 'center',
+                    at: 'center'
+                },
+            });
+
+            $("#dialogschedulepopnewvendorcontact").dialog({
+                modal: true,
+                {#                minHeight: 530,#}
+                {#                minWidth: 634,#}
+                minHeight: 520,
+                minWidth: 670,
+                resizable: false,
+                draggable: false,
+                autoOpen: false,
+                dialogClass: "no-close",
+                position: {
+                    my: 'center',
+                    at: 'center'
+                },
+            });
+
+
+            $("#id_schdeduledinputcal").datepicker({
+                minDate: 0,
+                showButtonPanel: true,
+                changeMonth: true,
+                changeYear: true,
+                showAnim: "slide",
+                // The hidden field to receive the date
+                altField: "#id_schdeduledinputcal",
+                // The format you want
+                altFormat: "mm/dd/y",
+                // The format the user actually sees
+                dateFormat: "mm/dd/y",
+                onSelect: function (date) {
+                    // Your CSS changes, just in case you still need them
+                    $('a.ui-state-default').removeClass('ui-state-highlight');
+                    console.log('selected value', $(this).val());
+                    {#                    var selectedactiondate = document.getElementById('id_schdeduledinputcal').val();#}
+                    actiondate_mm = $(this).val().slice(0, 2);
+                    actiondate_dd = $(this).val().slice(3, 5);
+                    actiondate_yy = '20' + $(this).val().slice(6);
+                    var selectedactiondate = actiondate_yy + '-' + actiondate_mm + '-' + actiondate_dd;
+                    document.getElementById('id_nextservicedate').value = setnextduedate(selectedactiondate);
+                    console.log('selectedactiondate:', actiondate_mm, actiondate_dd, actiondate_yy, selectedactiondate);
+                    console.log('Moment action', moment(selectedactiondate).add(moment.duration({M: 6})).format("MM-DD-YY"));
+                    {#                    $(this).addClass('ui-state-highlight');#}
+                }
+            });
+
+            if ($('input:hidden[name=basi_code]').val() != 'ONCE') {
+
+                $("#id_nextservicedate").datepicker({
+                    minDate: 0,
+                    showButtonPanel: true,
+                    changeMonth: true,
+                    changeYear: true,
+                    showAnim: "slide",
+                    // The hidden field to receive the date
+                    altField: "#id_nextservicedate",
+                    // The format you want
+                    altFormat: "mm/dd/y",
+                    // The format the user actually sees
+                    dateFormat: "mm/dd/y",
+                    onSelect: function (date) {
+
+                        // Your CSS changes, just in case you still need them
+                        $('a.ui-state-default').removeClass('ui-state-highlight');
+                        $(this).addClass('ui-state-highlight');
+                    }
+
+                });
+            }
+
+        });
+
+        function form_valid() {
+            var form_valid = true;
+
+            return form_valid;
+        }
+
+        function perform_upload(action) {
+            document.getElementById("attachments_action_message").innerHTML = "";
+            complianceservice_id = $('input:hidden[name=complianceservice_id]').val();
+            filetobeuploadedtitle = document.getElementById('serviceuploadfiletitle').value;
+            filetobeuploaded = document.getElementById('serviceuploadfile').value;
+            console.log("filetobeuploadedtitle,filetobeuploaded",filetobeuploadedtitle,filetobeuploaded);
+{#            basi_code = $('input:hidden[name=basi_code]').val();#}
+{#            modified_cssc_id = $('input:hidden[name=modified_cssc_id]').val();#}
+{#            actiontype = $('input:hidden[name=actiontype]').val();#}
+{#            recordtype = $('input:hidden[name=recordtype]').val();#}
+{#            recordtype_id = $('input:hidden[name=recordtype_id]').val();#}
+            {#                cres_id = $('input:hidden[name=cres_id]').val();#}
+            {#                console.log('cres_id--->',cres_id);#}
+{#            vendor = $("#vendorlist option:selected").val();#}
+{#            vendorcontactrole = $("#vendorcontactlist option:selected").val();#}
+{#            phone = document.getElementById('phone').value;#}
+{#            email = document.getElementById('email').value;#}
+{#            price = document.getElementById('price').value;#}
+{#            schdeduledinputcal = document.getElementById('id_schdeduledinputcal').value;#}
+{#            nextservicedate = document.getElementById('id_nextservicedate').value;#}
+{#            notes = document.getElementById('notes').value;#}
+            {#                console.log('Form Valid -AJAX- Create action call,responsible',responsible);#}
+            $.ajax({
+                url: 'ajax_complianceservice_upload',
+                data: {
+                    'action': action,
+                    'complianceservice_id': complianceservice_id,
+                    'filetobeuploadedtitle':filetobeuploadedtitle,
+                    'filetobeuploaded':filetobeuploaded,
+
+{#                    'basi_code': basi_code,#}
+{#                    'modified_cssc_id': modified_cssc_id,#}
+{#                    'actiontype': actiontype,#}
+{#                    'recordtype': recordtype,#}
+{#                    'recordtype_id': recordtype_id,#}
+                },
+                dataType: 'json',
+                success: function (response_data) {
+                    console.log(response_data.result);
+                    if (response_data.result == 'success') {
+                        document.getElementById("attachments_action_message").innerHTML = " Information: "+response_data.error_message;;
+{#                        window.parent.$("#dialogrecactionpop").dialog("close");#}
+{#                        window.parent.location.reload();#}
+                    }
+
+                     if (response_data.result == 'error') {
+                            document.getElementById("attachments_action_message").innerHTML = " Error: "+response_data.error_message;
+                        }
+
+                }
+            });
+        }
+
+        $('#uploadattachment').click(function () {
+            if (form_valid() == true) {
+                perform_upload('create')
+            }
+        });
+
+
+    </script>
+{% endblock %}

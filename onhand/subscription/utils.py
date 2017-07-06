@@ -306,7 +306,20 @@ def provider_create_account(request, ohsubscription, person, company, address):
             creditCard = apicontractsv1.creditCardType()
 
             creditCard.cardNumber = request.POST.get("cardnumber", None)
-            creditCard.expirationDate = str(request.POST.get("cardyear", None) +'-'+request.POST.get("cardmonth", None))
+            # creditCard.expirationDate = str(request.POST.get("cardmonth", None)  +'-'+ request.POST.get("cardyear", None) )
+
+            ccardMonth = request.POST.get("cardmonth", None)
+            if ccardMonth is not None:
+                if len(ccardMonth) < 2:
+                    ccardMonth = '0' + ccardMonth
+
+            print('ccardMonth', request.POST.get("cardmonth", None),ccardMonth)
+            ccardYear =request.POST.get("cardyear", None)
+            print('ccardYear',ccardYear,ccardYear[2:4])
+            ccardExpirationDate = ccardMonth + ccardYear[2:4]
+            print('ccardExpirationDate', ccardMonth,ccardYear,ccardExpirationDate)
+            creditCard.expirationDate = ccardExpirationDate
+            print(' creditCard.expirationDate', creditCard.expirationDate)
             creditCard.cardCode = request.POST.get("cardcvv", None)
             payment = apicontractsv1.paymentType()
             payment.creditCard = creditCard

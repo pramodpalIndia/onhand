@@ -175,30 +175,26 @@
 
     </form>
 
-<div id="dialogschedulepop">
-{# <iframe id="scheduleIframe" src=""></iframe>#}
- <iframe id="scheduleIframe"  src="" width="" height = "" style="border: none"></iframe>
-{#    <iframe id="newvendorIframe"  src="" width="" height = "" ></iframe>#}
-</div>
+    <div id="dialogohsrvrecordspop">
+        <iframe id="ohsrvrecordsIframe" src="" width="" height="" style="border: none"></iframe>
+    </div>
 
+    <div id="dialogschedulepop">
+        {# <iframe id="scheduleIframe" src=""></iframe>#}
+        <iframe id="scheduleIframe" src="" width="" height="" style="border: none"></iframe>
+        {#    <iframe id="newvendorIframe"  src="" width="" height = "" ></iframe>#}
+    </div>
 
-{#    <div id="dialog-form" title="Create new user">#}
-{#      <p class="validateTips">All form fields are required.</p>#}
-{#      <form>#}
-{#    <fieldset>#}
-{#      <label for="name">Name</label>#}
-{#      <input type="text" name="name" id="name" value="Jane Smith" class="text ui-widget-content ui-corner-all">#}
-{#      <label for="email">Email</label>#}
-{#      <input type="text" name="email" id="email" value="jane@smith.com" class="text ui-widget-content ui-corner-all">#}
-{#      <label for="password">Password</label>#}
-{#      <input type="password" name="password" id="password" value="xxxxxxx" class="text ui-widget-content ui-corner-all">#}
-{##}
-{#      <!-- Allow form submission with keyboard without duplicating the dialog button -->#}
-{#      <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">#}
-{#    </fieldset>#}
-{#  </form>#}
-{#    </div>#}
-{#    <button id="create-user">Create new user</button>#}
+     <div id="dialogrecactionpop">
+        {# <iframe id="scheduleIframe" src=""></iframe>#}
+        <iframe id="actionIframe" src="" width="" height="" style="border: none"></iframe>
+        {#    <iframe id="newvendorIframe"  src="" width="" height = "" ></iframe>#}
+    </div>
+
+    <div id="dialogcoordinatepop">
+        <iframe id="coordinateIframe" src="" width="" height="" style="border: none"></iframe>
+    </div>
+
 {% endblock %}
 
 
@@ -208,7 +204,6 @@
 
 
     <!-- END Content -->
-
 
     {% block extrajs %}
         <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-3.1.1.min.js"></script>
@@ -221,12 +216,12 @@
 
         <script type="text/javascript" language="javascript">
 
-{#            $(function() {#}
-{#                $('.js-popup-link').click(function (e) {#}
-{#                    e.preventDefault();#}
-{#                    $('#popup').dialog({modal: true}).dialog('open').load(this.href)#}
-{#                })#}
-{#            }#}
+            {#            $(function() {#}
+            {#                $('.js-popup-link').click(function (e) {#}
+            {#                    e.preventDefault();#}
+            {#                    $('#popup').dialog({modal: true}).dialog('open').load(this.href)#}
+            {#                })#}
+            {#            }#}
             {#function openDialog(){#}
             {#    alert('Ive beencalled to open dialog');#}
             {#    $('#dialogschedule').dialog('open');#}
@@ -235,35 +230,63 @@
             {#    $('#dialogschedulepop').dialog({modal: true}).dialog('open').load(this.href)#}
             {#  })#}
 
-{#            $.ui.dialog.prototype._focusTabbable = $.noop;#}
+            {#            $.ui.dialog.prototype._focusTabbable = $.noop;#}
 
-{#        $(document).ready(function () {#}
-{#        $("#dialogschedulepop").dialog({#}
-{#                  modal : true,#}
-{#                  minHeight: 568,#}
-{#                  minWidth: 634,#}
-{#                  resizable: false,#}
-{#                  draggable: false,#}
-{#                  autoOpen: false,#}
-{#                  dialogClass: "no-close",#}
-{#                  buttons: {#}
-{#                      "Save Schedule": function () {#}
-{#                          $.ajax({#}
-                              {#                 #ajax call for delete#}
-                              {#                 #with url pointing to your delete function#}
-{#                          });#}
-{#                          $(this).dialog("close");#}
-{#                      },#}
-{#                      "Cancel": function () {#}
-                          {#                        $(this).dialog("close");#}
-{#                          $(this).dialog("close");#}
-{#                      }#}
-{#                  }#}
-{#              });#}
-{##}
-{##}
-{##}
-{#        });#}
+            {#        $(document).ready(function () {#}
+            {#        $("#dialogschedulepop").dialog({#}
+            {#                  modal : true,#}
+            {#                  minHeight: 568,#}
+            {#                  minWidth: 634,#}
+            {#                  resizable: false,#}
+            {#                  draggable: false,#}
+            {#                  autoOpen: false,#}
+            {#                  dialogClass: "no-close",#}
+            {#                  buttons: {#}
+            {#                      "Save Schedule": function () {#}
+            {#                          $.ajax({#}
+            {#                 #ajax call for delete#}
+            {#                 #with url pointing to your delete function#}
+            {#                          });#}
+            {#                          $(this).dialog("close");#}
+            {#                      },#}
+            {#                      "Cancel": function () {#}
+            {#                        $(this).dialog("close");#}
+            {#                          $(this).dialog("close");#}
+            {#                      }#}
+            {#                  }#}
+            {#              });#}
+            {##}
+            {##}
+            {##}
+            {#        });#}
+
+
+            function viewservicedetailspopup(url) {
+                $.ajax({
+                    {#                    url: url,#}
+                    success: function (data) {
+                        {#                        console.log('url', url);#}
+                        $("#ohsrvrecordsIframe").attr("src", url);
+                        $("#ohsrvrecordsIframe").attr("width", 1150);
+                        $("#ohsrvrecordsIframe").attr("height", 600);
+                        $("#ohsrvrecordsIframe").attr("style", "border:None;font-size: 14px;font-family:\"Helvetica Neue\",Helvetica,Arial,sans-ser");
+                        $("#dialogohsrvrecordspop").dialog("open");
+                    }
+                });
+                return false;
+            }
+
+            $(function () {
+                $("#dialogohsrvrecordspop").dialog({
+                    modal: true,
+                    minHeight: 601,
+                    minWidth: 1167,
+                    resizable: false,
+                    draggable: false,
+                    autoOpen: false,
+                    dialogClass: "no-close",
+                });
+            });
 
 
             function schedulepopup(url) {
@@ -271,68 +294,85 @@
                     url: url,
                     success: function (data) {
                         console.log('url', url);
-                         $("#scheduleIframe").attr("src", url);
-                         $("#scheduleIframe").attr("width", 615);
-                         $("#scheduleIframe").attr("height", 530);
-                         $("#scheduleIframe").attr("style", "border:None;");
-                        $("#dialogschedulepop").dialog( "open" );
-{#                        open: function(event, ui) {#}
-{#                           $('#divInDialog').load('test.html', function() {#}
-{#                             alert('Load was performed.');#}
-{#                           });#}
-{#                          }#}
-
-{#                        $("#dialogschedulepop").load(url).dialog({modal: true}).dialog('open');#}
+                        $("#scheduleIframe").attr("src", url);
+                        $("#scheduleIframe").attr("width", 700);
+                        $("#scheduleIframe").attr("height", 530);
+                        $("#scheduleIframe").attr("style", "border:None;");
+                        $("#dialogschedulepop").dialog("open");
                     }
                 });
                 return false;
             }
 
 
-$( function() {
-    $("#dialogschedulepop").dialog({
-                  modal : true,
-                  minHeight: 530,
-                  minWidth: 631,
-                  resizable: false,
-                  draggable: false,
-                  autoOpen: false,
-                dialogClass: "no-close",
-{#                  buttons:{#}
-{#                      "MyButton" : {#}
-{#                       text: "OK",#}
-{#                        id: "okbtnid",#}
-{#                        click: function(){#}
-{#                        var bValid = true;#}
-{#                        alert('ok called');#}
-{#                        }#}
-{#                            } ,#}
-{#                      "Save Schedule": function () {#}
-{##}
-{#                          alert('Save Schedule called');#}
-{#                          $.ajax({#}
-{##}
-                              {#                 #ajax call for delete#}
-                              {#                 #with url pointing to your delete function#}
-{#                          });#}
-{#                          $(this).dialog("close");#}
-{#                      },#}
-{#                      Cancel: function () {#}
-                          {#                        $(this).dialog("close");#}
-{#                          dialog.dialog( "close" );#}
-{#                      }#}
-{#                  },#}
-{#                close: function() {#}
-{#                                              dialog.dialog( "close" );#}
-{#                    form[ 0 ].reset();#}
-{#                    allFields.removeClass( "ui-state-error" );#}
-{#                  },#}
-{#                dialogClass: 'dialogschedulepopclass'#}
-              });
-  } );
+            $(function () {
+                $("#dialogschedulepop").dialog({
+                    modal: true,
+                    minHeight: 530,
+                    minWidth: 700,
+                    resizable: false,
+                    draggable: false,
+                    autoOpen: false,
+                    dialogClass: "no-close",
+                });
+            });
+
+            function recordactionpopup(url) {
+                $.ajax({
+                    url: url,
+                    success: function (data) {
+                        console.log('url', url);
+                        $("#actionIframe").attr("src", url);
+                        $("#actionIframe").attr("width", 700);
+                        $("#actionIframe").attr("height", 530);
+                        $("#actionIframe").attr("style", "border:None;");
+                        $("#dialogrecactionpop").dialog("open");
+                    }
+                });
+                return false;
+            }
 
 
+            $(function () {
+                $("#dialogrecactionpop").dialog({
+                    modal: true,
+                    minHeight: 530,
+                    minWidth: 700,
+                    resizable: false,
+                    draggable: false,
+                    autoOpen: false,
+                    dialogClass: "no-close",
+                });
+            });
 
+
+            function coordinatepopup(url) {
+                $.ajax({
+                    url: url,
+                    success: function (data) {
+                        console.log('url', url);
+                        $("#coordinateIframe").attr("src", url);
+                        $("#coordinateIframe").attr("width", 700);
+                        $("#coordinateIframe").attr("height", 345);
+                        $("#coordinateIframe").attr("style", "border:None;");
+                        $("#dialogcoordinatepop").dialog("open");
+                    }
+                });
+                return false;
+            }
+
+            $(function () {
+                $("#dialogcoordinatepop").dialog({
+                    modal: true,
+                    minHeight: 350,
+                    minWidth: 700,
+                    resizable: false,
+                    draggable: false,
+                    autoOpen: false,
+                    dialogClass: "no-close",
+
+                });
+            });
         </script>
     {% endblock %}
 </div>

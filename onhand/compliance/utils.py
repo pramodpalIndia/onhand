@@ -12,7 +12,9 @@ from django import forms
 from django.utils.html import conditional_escape
 from django.utils.safestring import mark_safe
 
-from onhand.compliance import get_complianceservice_model, get_complianceservicefactor_model
+from onhand.compliance import get_complianceservice_model, get_complianceservicefactor_model, \
+    get_complianceserviceschedule_model, get_complianceresponsibility_model, get_complianceserviceaction_model, \
+    get_providerserviceperson_model
 from onhand.subscription import adapter, get_subscription_model, get_company_person_role_model, get_company_language_model, get_person_language_model, \
     get_subscriptiondetail_model, get_secret
 from onhand.subscription import app_settings
@@ -136,34 +138,102 @@ def complianceservice_field(complianceservice, field, *args):
     """
     Gets or sets (optional) user model fields. No-op if fields do not exist.
     """
+    print('field and hasattr(complianceservice, field',field , hasattr(complianceservice, field))
     if field and hasattr(complianceservice, field):
         if args:
             # Setter
             v = args[0]
             if v:
-                complianceservice = get_complianceservice_model()
+                Complianceservice = get_complianceservice_model()
                 # v = v[0:Person._meta.get_field(field).max_length]
             setattr(complianceservice, field, v)
         else:
             # Getter
             return getattr(complianceservice, field)
 
+def complianceserviceaction_field(complianceserviceaction, field, *args):
+    """
+    Gets or sets (optional) user model fields. No-op if fields do not exist.
+    """
+    if field and hasattr(complianceserviceaction, field):
+        if args:
+            # Setter
+            v = args[0]
+            if v:
+                Complianceserviceaction = get_complianceserviceaction_model()
+                # v = v[0:Person._meta.get_field(field).max_length]
+            setattr(complianceserviceaction, field, v)
+        else:
+            # Getter
+            return getattr(complianceserviceaction, field)
+
+def providerserviceperson_field(providerserviceperson, field, *args):
+    """
+    Gets or sets (optional) user model fields. No-op if fields do not exist.
+    """
+    if field and hasattr(providerserviceperson, field):
+        if args:
+            # Setter
+            v = args[0]
+            if v:
+                Providerserviceperson = get_providerserviceperson_model()
+                # v = v[0:Person._meta.get_field(field).max_length]
+            setattr(providerserviceperson, field, v)
+        else:
+            # Getter
+            return getattr(providerserviceperson, field)
+
 def complianceservicefactor_field(complianceservicefactor, field, *args):
     """
     Gets or sets (optional) user model fields. No-op if fields do not exist.
     """
+    print('field and hasattr(complianceservicefactor, field',field , hasattr(complianceservicefactor, field))
+    print('field and getattr(complianceservicefactor, field', field, getattr(complianceservicefactor, field))
     if field and hasattr(complianceservicefactor, field):
         if args:
             # Setter
             v = args[0]
             if v:
-                complianceservice = get_complianceservicefactor_model()
+                Complianceservicefactor = get_complianceservicefactor_model()
                 # v = v[0:Person._meta.get_field(field).max_length]
             setattr(complianceservicefactor, field, v)
         else:
             # Getter
             return getattr(complianceservicefactor, field)
 
+
+def complianceserviceschedule_field(complianceserviceschedule, field, *args):
+    """
+    Gets or sets (optional) user model fields. No-op if fields do not exist.
+    """
+    if field and hasattr(complianceserviceschedule, field):
+        if args:
+            # Setter
+            v = args[0]
+            if v:
+                Complianceserviceschedule = get_complianceserviceschedule_model()
+                # v = v[0:Company._meta.get_field(field).max_length]
+            setattr(complianceserviceschedule, field, v)
+        else:
+            # Getter
+            return getattr(complianceserviceschedule, field)
+
+
+def complianceresponsibility_field(complianceresponsible, field, *args):
+    """
+    Gets or sets (optional) user model fields. No-op if fields do not exist.
+    """
+    if field and hasattr(complianceresponsible, field):
+        if args:
+            # Setter
+            v = args[0]
+            if v:
+                Complianceresponsible = get_complianceresponsibility_model()
+                # v = v[0:Company._meta.get_field(field).max_length]
+            setattr(complianceresponsible, field, v)
+        else:
+            # Getter
+            return getattr(complianceresponsible, field)
 # def person_field(person, field, *args):
 #     """
 #     Gets or sets (optional) user model fields. No-op if fields do not exist.

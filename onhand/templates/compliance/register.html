@@ -167,6 +167,26 @@
 																			</div>
 																			<div class="clear"></div>
 																		</div>
+                                                                        <div class="row_step2_left_responsible">
+            <div class="label_name">
+																				<h5 style="position:relative; left:135px; top:34px; width:241px;">Responsible</h5>
+																			</div>
+                                                                        <i id="id_schdeduledcalicon" name="id_schdeduledcalicon"
+               class="fa fa-users fa-2x oh_scd_servkeeComponent oh_scd_servkeeIcon rotate360 newscd-img-responsible"
+               style="color: #080041;position: relative;left: 218px;top: -2px;width: 241px"></i>
+
+{#                                                                            <div id="responsiblelistdiv" name=responsiblelistdiv">#}
+                                                                            <select id="responsiblelist" name="responsiblelist"
+                    class="oh_scd_servkeeComponent oh_scd_servkeeCombobox newscd-dropdown-responsible" style="position:relative; left:135px; top:3px; width:241px;">
+                        {% for responsible in responsiblelist %}
+                                <option value="{{ responsible.cprs_id }}" {% ifequal responsible.cprs_id loggeduser_cprs_id %}selected{% endifequal %}>
+                                    {{ responsible.prsn_name}}&nbsp;</option>
+                        {% endfor %}
+
+            </select>
+{#                                                                            </div>#}
+
+        </div>
 																	</div>
 																	<div class="form_wapper" >
 																		<div class="row_step2_left">
@@ -297,6 +317,7 @@
 {#        <script src="{% static 'js/project.js' %}"></script>#}
 {#        <script src="{% static 'js/naic722/compliance/complainceadd.js' %}"></script>#}
         <script src="{% static 'js/jquery-ui1.12.1.js' %}"></script>
+        <script src="{% static 'js/moment-2.17.1.min.js' %}"></script>
     {% endcompress %}
 
 <script type="text/javascript" language="javascript">
@@ -381,6 +402,17 @@ if($("#id_complianceservice option:selected").val() != '')
                     $('#servicedesc').text(response_data['compliance_desc']);
                     $('#agency').text(response_data['agency']);
                     $('#factor').text(response_data['factor']);
+                    $('#responsiblelist').find('option').remove().end();
+                    $.each(response_data.responsiblelist, function (key, value) {
+                        $('#responsiblelist').append(
+                                $("<option></option>")
+                                        .attr("value", value[0])
+                                        .text(value[1])
+                        );
+                    });
+                    $("#responsiblelist")[0].selectedIndex = response_data['loggeduser_cprs_id'];
+                    $("div.row_step2_left_responsible select").val(response_data['loggeduser_cprs_id']);
+
                     if(response_data['factor']=='-')
                        $('#id_factorvalue').hide();
                     else
@@ -492,82 +524,40 @@ $('#id_frequency').on('change', function() {
 if($("#id_frequency option:selected").val() != '')
     {
           switch ($("#id_frequency option:selected").val()) {
-                case 'DAILY':
-                    var tomorrow = addDays(1);
-                    tomorrow_dd = ("0" + tomorrow.getDate()).slice(-2);
-                    tomorrow_mm = ("0" + (tomorrow.getMonth() + 1)).slice(-2);
-                    tomorrow_yy = ("0" + (tomorrow.getYear())).slice(-2);
-                    tomorrow = tomorrow_mm + '/' + tomorrow_dd + '/' + tomorrow_yy;
-                    document.getElementById('id_nextservicedate').value = tomorrow;
+               case 'DAILY':
+                    document.getElementById('id_nextservicedate').value= moment().add(moment.duration({D: 1})).format("MM/DD/YY");
                     break;
 
                 case 'WEEKLY':
-                    var nextweek = addDays(7);
-                    nextweek_dd = ("0" + nextweek.getDate()).slice(-2);
-                    nextweek_mm = ("0" + (nextweek.getMonth() + 1)).slice(-2);
-                    nextweek_yy = ("0" + (nextweek.getYear())).slice(-2);
-                    nextweek = nextweek_mm + '/' + nextweek_dd + '/' + nextweek_yy;
-                    document.getElementById('id_nextservicedate').value = nextweek;
-                    break;
-
-                case 'WEEKLY':
-                    var nextweek = addDays(7);
-                    nextweek_dd = ("0" + nextweek.getDate()).slice(-2);
-                    nextweek_mm = ("0" + (nextweek.getMonth() + 1)).slice(-2);
-                    nextweek_yy = ("0" + (nextweek.getYear())).slice(-2);
-                    nextweek = nextweek_mm + '/' + nextweek_dd + '/' + nextweek_yy;
-                    document.getElementById('id_nextservicedate').value = nextweek;
+                    document.getElementById('id_nextservicedate').value= moment().add(moment.duration({D: 7})).format("MM/DD/YY");
                     break;
 
                 case 'MNTHLY':
-                    var nextmonth = addDays(30);
-                    nextmonth_dd = ("0" + nextmonth.getDate()).slice(-2);
-                    nextmonth_mm = ("0" + (nextmonth.getMonth() + 1)).slice(-2);
-                    nextmonth_yy = ("0" + (nextmonth.getYear())).slice(-2);
-                    nextmonth = nextmonth_mm + '/' + nextmonth_dd + '/' + nextmonth_yy;
-                    document.getElementById('id_nextservicedate').value = nextmonth;
+                    document.getElementById('id_nextservicedate').value= moment().add(moment.duration({M: 1})).format("MM/DD/YY");
                     break;
 
                 case 'QTLY':
-                    var nextquarter = addDays(90);
-                    nextquarter_dd = ("0" + nextquarter.getDate()).slice(-2);
-                    nextquarter_mm = ("0" + (nextquarter.getMonth() + 1)).slice(-2);
-                    nextquarter_yy = ("0" + (nextquarter.getYear())).slice(-2);
-                    nextquarter = nextquarter_mm + '/' + nextquarter_dd + '/' + nextquarter_yy;
-                    document.getElementById('id_nextservicedate').value = nextquarter;
+                    document.getElementById('id_nextservicedate').value= moment().add(moment.duration({M: 3})).format("MM/DD/YY");
                     break;
 
                 case 'SEMIAN':
-                    var nextsemian = addDays(180);
-                    nextsemian_dd = ("0" + nextsemian.getDate()).slice(-2);
-                    nextsemian_mm = ("0" + (nextsemian.getMonth() + 1)).slice(-2);
-                    nextsemian_yy = ("0" + (nextsemian.getYear())).slice(-2);
-                    nextsemian = nextsemian_mm + '/' + nextsemian_dd + '/' + nextsemian_yy;
-                    document.getElementById('id_nextservicedate').value = nextsemian;
+                    document.getElementById('id_nextservicedate').value= moment().add(moment.duration({M: 6})).format("MM/DD/YY");
                     break;
 
                 case 'ANNUAL':
-                    var nextannual = addDays(365);
-                    nextannual_dd = ("0" + nextannual.getDate()).slice(-2);
-                    nextannual_mm = ("0" + (nextannual.getMonth() + 1)).slice(-2);
-                    nextannual_yy = ("0" + (nextannual.getYear())).slice(-2);
-                    nextannual = nextannual_mm + '/' + nextannual_dd + '/' + nextannual_yy;
-                    document.getElementById('id_nextservicedate').value = nextannual;
+                    document.getElementById('id_nextservicedate').value= moment().add(moment.duration({Y: 1})).format("MM/DD/YY");
                     break;
 
                 case 'BIEN':
-                    var nextbien = addDays(730);
-                    nextbien_dd = ("0" + nextbien.getDate()).slice(-2);
-                    nextbien_mm = ("0" + (nextbien.getMonth() + 1)).slice(-2);
-                    nextbien_yy = ("0" + (nextbien.getYear())).slice(-2);
-                    nextbien = nextbien_mm + '/' + nextbien_dd + '/' + nextbien_yy;
-                    document.getElementById('id_nextservicedate').value = nextbien;
+                    document.getElementById('id_nextservicedate').value= moment().add(moment.duration({Y: 2})).format("MM/DD/YY");
                     break;
 
                 case 'ONCE':
+                    document.getElementById('id_nextservicedate').value= "12/31/99";
                     break;
 
                 case 'CUSTOM':
+                    document.getElementById('id_nextservicedate').value= moment().add(moment.duration({Y: 1})).format("MM/DD/YY");
                     break;
 
             }
@@ -580,6 +570,54 @@ if($("#id_frequency option:selected").val() != '')
 
 });
 
+
+function setnextduedate(selectedactiondate){
+if($('input:hidden[name=basi_code]').val() != '')
+    {
+        console.log($('input:hidden[name=basi_code]').val());
+          switch ($('input:hidden[name=basi_code]').val()) {
+                case 'DAILY':
+                    return moment(selectedactiondate).add(moment.duration({D: 1})).format("MM/DD/YY");
+                    break;
+
+                case 'WEEKLY':
+                    return moment(selectedactiondate).add(moment.duration({D: 7})).format("MM/DD/YY");
+                    break;
+
+                case 'MNTHLY':
+                    return moment(selectedactiondate).add(moment.duration({M: 1})).format("MM/DD/YY");
+                    break;
+
+                case 'QTLY':
+                    return moment(selectedactiondate).add(moment.duration({M: 3})).format("MM/DD/YY");
+                    break;
+
+                case 'SEMIAN':
+                    return moment(selectedactiondate).add(moment.duration({M: 6})).format("MM/DD/YY");
+                    break;
+
+                case 'ANNUAL':
+                    return moment(selectedactiondate).add(moment.duration({Y: 1})).format("MM/DD/YY");
+                    break;
+
+                case 'BIEN':
+                    return moment(selectedactiondate).add(moment.duration({Y: 2})).format("MM/DD/YY");
+                    break;
+
+                case 'ONCE':
+                    return "12/31/99";
+                    break;
+
+                case 'CUSTOM':
+                    return moment(selectedactiondate).add(moment.duration({Y: 1})).format("MM/DD/YY");
+                    break;
+
+            }
+    }else{
+            return moment(selectedactiondate).add(moment.duration({D: 0})).format("MM/DD/YY");
+}
+
+}
    $(document).ready(function () {
 
 {#       $("#id_lastservicedate").datepicker({#}
