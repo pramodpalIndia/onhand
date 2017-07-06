@@ -187,9 +187,9 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'onhand',
+        'NAME': 'onhand_dev',
         'USER': 'root',
-        'PASSWORD': 'pramod',
+        'PASSWORD': 'Onhand2',
         'HOST': 'localhost',
 	'PORT': '3306',
 	}
@@ -270,6 +270,7 @@ STATIC_URL = '/static/'
 # See: https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#std:setting-STATICFILES_DIRS
 STATICFILES_DIRS = (
     str(APPS_DIR.path('static')),
+	'/home/ubuntu/www/onhand/onhand/static/',
 )
 
 # See: https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#staticfiles-finders
